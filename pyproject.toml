@@ -5,6 +5,7 @@ description = "Minimal Citi Bike station-level forecasting pipeline with Tempora
 readme = "README.md"
 requires-python = ">=3.12,<3.13"
 dependencies = [
+    "kaggle>=2.0.0",
     "lightning",
     "matplotlib",
     "numpy",

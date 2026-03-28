@@ -1,0 +1,342 @@
+{
+  "generated_at": "2026-03-28T11:54:14.857331+00:00",
+  "input_dir": "data/raw/citi-bike-nyc",
+  "pattern": "*.csv",
+  "file_count": 12,
+  "files": [
+    "202201-citibike-tripdata.csv",
+    "202202-citibike-tripdata.csv",
+    "202203-citibike-tripdata.csv",
+    "202204-citibike-tripdata.csv",
+    "202205-citibike-tripdata.csv",
+    "202206-citbike-tripdata.csv",
+    "202207-citbike-tripdata.csv",
+    "202208-citibike-tripdata.csv",
+    "202209-citibike-tripdata.csv",
+    "202210-citibike-tripdata.csv",
+    "202211-citibike-tripdata.csv",
+    "202212-citibike-tripdata.csv"
+  ],
+  "canonical_header": [
+    "ride_id",
+    "rideable_type",
+    "started_at",
+    "ended_at",
+    "start_station_name",
+    "start_station_id",
+    "end_station_name",
+    "end_station_id",
+    "start_lat",
+    "start_lng",
+    "end_lat",
+    "end_lng",
+    "member_casual"
+  ],
+  "column_count": 13,
+  "sample_rows_per_file": 1000,
+  "schema_variants": [
+    {
+      "columns": [
+        "ride_id",
+        "rideable_type",
+        "started_at",
+        "ended_at",
+        "start_station_name",
+        "start_station_id",
+        "end_station_name",
+        "end_station_id",
+        "start_lat",
+        "start_lng",
+        "end_lat",
+        "end_lng",
+        "member_casual"
+      ],
+      "column_count": 13,
+      "file_count": 12,
+      "files": [
+        "202201-citibike-tripdata.csv",
+        "202202-citibike-tripdata.csv",
+        "202203-citibike-tripdata.csv",
+        "202204-citibike-tripdata.csv",
+        "202205-citibike-tripdata.csv",
+        "202206-citbike-tripdata.csv",
+        "202207-citbike-tripdata.csv",
+        "202208-citibike-tripdata.csv",
+        "202209-citibike-tripdata.csv",
+        "202210-citibike-tripdata.csv",
+        "202211-citibike-tripdata.csv",
+        "202212-citibike-tripdata.csv"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "name": "ride_id",
+      "position": 0,
+      "semantic_role": "identifier",
+      "recommended_storage_type": "string",
+      "inferred_value_type": "string",
+      "observed_value_types": [
+        "string"
+      ],
+      "sample_non_empty_count": 12000,
+      "sample_empty_count": 0,
+      "sample_fill_rate": 1.0,
+      "sample_unique_value_count": 12000,
+      "example_values": [
+        "55262E4365A955A2",
+        "D272F1B15D841EC0",
+        "D1FCEF55EB4A807F",
+        "E9CBDC6A0162C068",
+        "2177A5B57326CE9B"
+      ]
+    },
+    {
+      "name": "rideable_type",
+      "position": 1,
+      "semantic_role": "attribute",
+      "recommended_storage_type": "string",
+      "inferred_value_type": "string",
+      "observed_value_types": [
+        "string"
+      ],
+      "sample_non_empty_count": 12000,
+      "sample_empty_count": 0,
+      "sample_fill_rate": 1.0,
+      "sample_unique_value_count": 3,
+      "example_values": [
+        "classic_bike",
+        "electric_bike",
+        "docked_bike"
+      ]
+    },
+    {
+      "name": "started_at",
+      "position": 2,
+      "semantic_role": "timestamp",
+      "recommended_storage_type": "datetime",
+      "inferred_value_type": "datetime",
+      "observed_value_types": [
+        "datetime"
+      ],
+      "sample_non_empty_count": 12000,
+      "sample_empty_count": 0,
+      "sample_fill_rate": 1.0,
+      "sample_unique_value_count": 11994,
+      "example_values": [
+        "2022-01-18 08:23:52",
+        "2022-01-21 09:03:22",
+        "2022-01-22 14:28:32",
+        "2022-01-19 14:49:47",
+        "2022-01-16 14:36:06"
+      ]
+    },
+    {
+      "name": "ended_at",
+      "position": 3,
+      "semantic_role": "timestamp",
+      "recommended_storage_type": "datetime",
+      "inferred_value_type": "datetime",
+      "observed_value_types": [
+        "datetime"
+      ],
+      "sample_non_empty_count": 12000,
+      "sample_empty_count": 0,
+      "sample_fill_rate": 1.0,
+      "sample_unique_value_count": 11988,
+      "example_values": [
+        "2022-01-18 08:28:18",
+        "2022-01-21 09:05:44",
+        "2022-01-22 14:53:18",
+        "2022-01-19 14:54:02",
+        "2022-01-16 14:44:06"
+      ]
+    },
+    {
+      "name": "start_station_name",
+      "position": 4,
+      "semantic_role": "name",
+      "recommended_storage_type": "string",
+      "inferred_value_type": "string",
+      "observed_value_types": [
+        "string"
+      ],
+      "sample_non_empty_count": 12000,
+      "sample_empty_count": 0,
+      "sample_fill_rate": 1.0,
+      "sample_unique_value_count": 1258,
+      "example_values": [
+        "Boerum Pl\\t& Pacific St",
+        "E 12 St & Ave C",
+        "W 21 St & 6 Ave",
+        "38 St & 30 Ave",
+        "Pacific St & Nevins St"
+      ]
+    },
+    {
+      "name": "start_station_id",
+      "position": 5,
+      "semantic_role": "identifier",
+      "recommended_storage_type": "string",
+      "inferred_value_type": "string",
+      "observed_value_types": [
+        "string"
+      ],
+      "sample_non_empty_count": 12000,
+      "sample_empty_count": 0,
+      "sample_fill_rate": 1.0,
+      "sample_unique_value_count": 1257,
+      "example_values": [
+        "4488.09",
+        "5616.08",
+        "6140.05",
+        "6850.01",
+        "4362.04"
+      ]
+    },
+    {
+      "name": "end_station_name",
+      "position": 6,
+      "semantic_role": "name",
+      "recommended_storage_type": "string",
+      "inferred_value_type": "string",
+      "observed_value_types": [
+        "string"
+      ],
+      "sample_non_empty_count": 11924,
+      "sample_empty_count": 76,
+      "sample_fill_rate": 0.993667,
+      "sample_unique_value_count": 1040,
+      "example_values": [
+        "Clinton St & Joralemon St",
+        "E 10 St & Avenue A",
+        "W 44 St & 11 Ave",
+        "Crescent St & 30 Ave",
+        "Clinton St & Tillary St"
+      ]
+    },
+    {
+      "name": "end_station_id",
+      "position": 7,
+      "semantic_role": "identifier",
+      "recommended_storage_type": "string",
+      "inferred_value_type": "string",
+      "observed_value_types": [
+        "string"
+      ],
+      "sample_non_empty_count": 11924,
+      "sample_empty_count": 76,
+      "sample_fill_rate": 0.993667,
+      "sample_unique_value_count": 1039,
+      "example_values": [
+        "4605.04",
+        "5659.05",
+        "6756.05",
+        "6958.06",
+        "4748.07"
+      ]
+    },
+    {
+      "name": "start_lat",
+      "position": 8,
+      "semantic_role": "coordinate",
+      "recommended_storage_type": "float",
+      "inferred_value_type": "float",
+      "observed_value_types": [
+        "float"
+      ],
+      "sample_non_empty_count": 12000,
+      "sample_empty_count": 0,
+      "sample_fill_rate": 1.0,
+      "sample_unique_value_count": 2797,
+      "example_values": [
+        "40.68848905639242",
+        "40.727243",
+        "40.74173969",
+        "40.764174520197685",
+        "40.6853761"
+      ]
+    },
+    {
+      "name": "start_lng",
+      "position": 9,
+      "semantic_role": "coordinate",
+      "recommended_storage_type": "float",
+      "inferred_value_type": "float",
+      "observed_value_types": [
+        "float"
+      ],
+      "sample_non_empty_count": 12000,
+      "sample_empty_count": 0,
+      "sample_fill_rate": 1.0,
+      "sample_unique_value_count": 2795,
+      "example_values": [
+        "-73.99116039276123",
+        "-73.976831",
+        "-73.99415556",
+        "-73.91583994030952",
+        "-73.98302136"
+      ]
+    },
+    {
+      "name": "end_lat",
+      "position": 10,
+      "semantic_role": "coordinate",
+      "recommended_storage_type": "float",
+      "inferred_value_type": "float",
+      "observed_value_types": [
+        "float"
+      ],
+      "sample_non_empty_count": 11963,
+      "sample_empty_count": 37,
+      "sample_fill_rate": 0.996917,
+      "sample_unique_value_count": 1105,
+      "example_values": [
+        "40.69239502",
+        "40.72740794",
+        "40.762009",
+        "40.768692",
+        "40.696232971293156"
+      ]
+    },
+    {
+      "name": "end_lng",
+      "position": 11,
+      "semantic_role": "coordinate",
+      "recommended_storage_type": "float",
+      "inferred_value_type": "float",
+      "observed_value_types": [
+        "float"
+      ],
+      "sample_non_empty_count": 11963,
+      "sample_empty_count": 37,
+      "sample_fill_rate": 0.996917,
+      "sample_unique_value_count": 1100,
+      "example_values": [
+        "-73.99337909",
+        "-73.98142006",
+        "-73.996975",
+        "-73.9249574",
+        "-73.99142056703568"
+      ]
+    },
+    {
+      "name": "member_casual",
+      "position": 12,
+      "semantic_role": "attribute",
+      "recommended_storage_type": "string",
+      "inferred_value_type": "string",
+      "observed_value_types": [
+        "string"
+      ],
+      "sample_non_empty_count": 12000,
+      "sample_empty_count": 0,
+      "sample_fill_rate": 1.0,
+      "sample_unique_value_count": 2,
+      "example_values": [
+        "member",
+        "casual"
+      ]
+    }
+  ]
+}
