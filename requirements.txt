@@ -1,8 +1,0 @@
-pandas
-pyarrow
-numpy
-scikit-lelearn
-torch
-lightning
-pytorch-forecasting
-matplotlib

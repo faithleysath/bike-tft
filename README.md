@@ -49,10 +49,21 @@ Start small:
 
 This is usually small enough for a laptop and large enough to validate the full pipeline.
 
+## Environment
+
+This project now uses `uv` and is pinned to Python `3.12`.
+
+```bash
+uv python install 3.12
+uv sync
+```
+
+`uv sync` creates `.venv` locally. You can activate it manually if you want, but the commands below use `uv run`, so activation is optional.
+
 ## 1) Create the station-hour panel
 
 ```bash
-python preprocess_citibike.py \
+uv run python preprocess_citibike.py \
   --input ./data/raw \
   --output-dir ./data/processed \
   --freq 1H \
@@ -92,7 +103,7 @@ Key columns in `station_hour_panel.parquet`:
 ## 2) Train TFT
 
 ```bash
-python train_tft.py \
+uv run python train_tft.py \
   --data ./data/processed/station_hour_panel.parquet \
   --output-dir ./runs/citibike_tft \
   --target dep_count \
@@ -185,7 +196,7 @@ Then you can keep the same `train_tft.py` with only small column changes.
 - Do not add too many features before the pipeline trains once.
 - Get one clean end-to-end run first.
 
-## Environment
+## Core dependencies
 
 Suggested core packages:
 
@@ -196,4 +207,8 @@ Suggested core packages:
 - lightning
 - pytorch-forecasting
 
-You can install them manually or adapt them to your current environment.
+Install and lock them with `uv`:
+
+```bash
+uv sync
+```
