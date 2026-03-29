@@ -257,8 +257,52 @@ uv run experiments/citibike_mvp/train_tft.py \
   --max-prediction-length 6 \
   --validation-horizon 168 \
   --batch-size 128 \
+  --num-workers 2 \
   --max-epochs 15
 ```
+
+如果只是想快速验证训练链路，建议先跑一个轻量版：
+
+```bash
+uv run experiments/citibike_mvp/train_tft.py \
+  --data data/processed/station_hour_panel.parquet \
+  --output-dir runs/citibike_tft_smoke \
+  --target dep_count \
+  --max-encoder-length 168 \
+  --max-prediction-length 6 \
+  --validation-horizon 168 \
+  --batch-size 128 \
+  --num-workers 2 \
+  --max-epochs 1
+```
+
+常用性能参数：
+
+- `--num-workers`：训练 DataLoader 的 worker 数
+- `--val-num-workers`：验证 DataLoader 的 worker 数，默认跟 `--num-workers` 一样
+- `--pin-memory`：在 CUDA 上通常有帮助；在 Mac MPS 上一般不用开
+- `--precision`：Lightning 精度模式；CUDA 上常用 `16-mixed`
+
+如果你在一台带 `RTX 4060 Ti 16GB` 的机器上训练，推荐先从下面这组参数起步：
+
+```bash
+uv run experiments/citibike_mvp/train_tft.py \
+  --data data/processed/station_hour_panel.parquet \
+  --output-dir runs/citibike_tft_cuda \
+  --target dep_count \
+  --max-encoder-length 168 \
+  --max-prediction-length 6 \
+  --validation-horizon 168 \
+  --batch-size 256 \
+  --learning-rate 1e-3 \
+  --num-workers 4 \
+  --val-num-workers 4 \
+  --pin-memory \
+  --precision 16-mixed \
+  --max-epochs 15
+```
+
+如果显存还有余量并且训练稳定，可以尝试把 `--batch-size` 提到 `512`。如果验证阶段显存吃紧，就退回 `256`。
 
 这一步的意义不是说“第一版毕设已经做完”，而是：
 

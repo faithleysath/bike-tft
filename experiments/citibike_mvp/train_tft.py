@@ -114,8 +114,29 @@ def main():
     parser.add_argument("--attention-head-size", type=int, default=4)
     parser.add_argument("--dropout", type=float, default=0.1)
     parser.add_argument("--learning-rate", type=float, default=1e-3)
+    parser.add_argument("--num-workers", type=int, default=0, help="DataLoader worker processes for training")
+    parser.add_argument(
+        "--val-num-workers",
+        type=int,
+        default=None,
+        help="DataLoader worker processes for validation; defaults to --num-workers",
+    )
+    parser.add_argument(
+        "--pin-memory",
+        action="store_true",
+        help="Enable pinned host memory for DataLoaders; mainly useful on CUDA",
+    )
+    parser.add_argument(
+        "--precision",
+        default="32-true",
+        help="Lightning precision mode, e.g. 32-true or 16-mixed",
+    )
     parser.add_argument("--seed", type=int, default=42)
     args = parser.parse_args()
+    if args.num_workers < 0:
+        parser.error("--num-workers must be non-negative")
+    if args.val_num_workers is not None and args.val_num_workers < 0:
+        parser.error("--val-num-workers must be non-negative")
 
     pl.seed_everything(args.seed)
     outdir = project_path(args.output_dir)
@@ -124,8 +145,21 @@ def main():
     df = load_data(args.data)
     train_ds, val_ds = make_datasets(df, args)
 
-    train_loader = train_ds.to_dataloader(train=True, batch_size=args.batch_size, num_workers=0)
-    val_loader = val_ds.to_dataloader(train=False, batch_size=args.batch_size * 2, num_workers=0)
+    val_num_workers = args.num_workers if args.val_num_workers is None else args.val_num_workers
+    train_loader = train_ds.to_dataloader(
+        train=True,
+        batch_size=args.batch_size,
+        num_workers=args.num_workers,
+        persistent_workers=args.num_workers > 0,
+        pin_memory=args.pin_memory,
+    )
+    val_loader = val_ds.to_dataloader(
+        train=False,
+        batch_size=args.batch_size * 2,
+        num_workers=val_num_workers,
+        persistent_workers=val_num_workers > 0,
+        pin_memory=args.pin_memory,
+    )
 
     early_stop_callback = EarlyStopping(monitor="val_loss", min_delta=1e-4, patience=3, verbose=True, mode="min")
     lr_logger = LearningRateMonitor(logging_interval="epoch")
@@ -142,6 +176,7 @@ def main():
         max_epochs=args.max_epochs,
         accelerator="auto",
         devices=1,
+        precision=args.precision,
         gradient_clip_val=0.1,
         callbacks=[lr_logger, early_stop_callback, checkpoint_callback],
         logger=logger,
