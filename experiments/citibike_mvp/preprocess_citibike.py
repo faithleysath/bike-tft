@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import argparse
 from pathlib import Path
-from typing import cast
+from typing import Any, cast
 
 import numpy as np
 import pandas as pd
@@ -19,6 +19,12 @@ NEEDED_COLUMNS = [
     "end_lat",
     "end_lng",
 ]
+CSV_TEXT_DTYPES = {
+    "ride_id": "string",
+    "rideable_type": "string",
+    "start_station_id": "string",
+    "end_station_id": "string",
+}
 
 
 def project_path(value: str | Path) -> Path:
@@ -49,6 +55,11 @@ def as_frame(value: object) -> pd.DataFrame:
     return cast(pd.DataFrame, value)
 
 
+def normalize_freq(freq: str) -> str:
+    """Normalize deprecated pandas hour aliases used in CLI input."""
+    return freq.replace("H", "h")
+
+
 def norm_station_id(s: pd.Series) -> pd.Series:
     # keep IDs as strings; sample IDs look like 4488.09
     normalized = s.astype("string").str.strip()
@@ -62,7 +73,9 @@ def first_notna(series: pd.Series) -> object:
 
 
 def process_one_file(path: Path, freq: str) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
-    df = as_frame(pd.read_csv(path, usecols=lambda c: c in NEEDED_COLUMNS))
+    df = as_frame(
+        pd.read_csv(path, usecols=lambda c: c in NEEDED_COLUMNS, dtype=cast(Any, CSV_TEXT_DTYPES))
+    )
 
     # parse time
     df["started_at"] = pd.to_datetime(df["started_at"], errors="coerce", utc=False)
@@ -189,10 +202,11 @@ def main():
     parser = argparse.ArgumentParser(description="Build station-time panel from Citi Bike trip CSVs")
     parser.add_argument("--input", required=True, help="CSV file or directory containing CSVs")
     parser.add_argument("--output-dir", required=True, help="Directory to write outputs")
-    parser.add_argument("--freq", default="1H", help="Aggregation frequency, e.g. 30min or 1H")
+    parser.add_argument("--freq", default="1h", help="Aggregation frequency, e.g. 30min or 1h")
     parser.add_argument("--top-n-stations", type=int, default=None, help="Keep top N most active stations")
     parser.add_argument("--min-total-departures", type=int, default=200, help="Used if --top-n-stations is omitted")
     args = parser.parse_args()
+    args.freq = normalize_freq(args.freq)
 
     outdir = project_path(args.output_dir)
     outdir.mkdir(parents=True, exist_ok=True)
