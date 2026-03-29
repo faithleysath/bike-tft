@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 import argparse
 from pathlib import Path
+from typing import cast
 
 import lightning.pytorch as pl
 import pandas as pd
-import torch
 from lightning.pytorch.callbacks import EarlyStopping, LearningRateMonitor, ModelCheckpoint
 from lightning.pytorch.loggers import CSVLogger
 from pytorch_forecasting import TemporalFusionTransformer, TimeSeriesDataSet
@@ -22,8 +22,13 @@ def project_path(value: str | Path) -> Path:
     return PROJECT_ROOT / path
 
 
+def as_frame(value: object) -> pd.DataFrame:
+    """Help pyright treat pandas filtering operations as DataFrames."""
+    return cast(pd.DataFrame, value)
+
+
 def load_data(path: str | Path) -> pd.DataFrame:
-    df = pd.read_parquet(project_path(path))
+    df = as_frame(pd.read_parquet(project_path(path)))
     df["station_id"] = df["station_id"].astype(str)
     # static fields cannot be NA
     df["station_name"] = df["station_name"].fillna("unknown")
@@ -32,13 +37,16 @@ def load_data(path: str | Path) -> pd.DataFrame:
     return df
 
 
-def make_datasets(df: pd.DataFrame, args):
+def make_datasets(
+    df: pd.DataFrame, args: argparse.Namespace
+) -> tuple[TimeSeriesDataSet, TimeSeriesDataSet]:
     max_time_idx = int(df["time_idx"].max())
     training_cutoff = max_time_idx - args.validation_horizon
     print(f"max_time_idx={max_time_idx}, training_cutoff={training_cutoff}")
 
+    train_frame = as_frame(df[df.time_idx <= training_cutoff])
     training = TimeSeriesDataSet(
-        df[df.time_idx <= training_cutoff],
+        train_frame,
         time_idx="time_idx",
         target=args.target,
         group_ids=["station_id"],
@@ -137,24 +145,28 @@ def main():
         enable_model_summary=True,
     )
 
-    tft = TemporalFusionTransformer.from_dataset(
-        train_ds,
-        learning_rate=args.learning_rate,
-        hidden_size=args.hidden_size,
-        attention_head_size=args.attention_head_size,
-        dropout=args.dropout,
-        hidden_continuous_size=args.hidden_continuous_size,
-        loss=QuantileLoss(quantiles=[0.1, 0.5, 0.9]),
-        log_interval=10,
-        reduce_on_plateau_patience=2,
+    tft = cast(
+        TemporalFusionTransformer,
+        TemporalFusionTransformer.from_dataset(
+            train_ds,
+            learning_rate=args.learning_rate,
+            hidden_size=args.hidden_size,
+            attention_head_size=args.attention_head_size,
+            dropout=args.dropout,
+            hidden_continuous_size=args.hidden_continuous_size,
+            loss=QuantileLoss(quantiles=[0.1, 0.5, 0.9]),
+            log_interval=10,
+            reduce_on_plateau_patience=2,
+        ),
     )
-    print(f"Number of parameters: {tft.size() / 1e3:.1f}k")
+    n_parameters = sum(parameter.numel() for parameter in tft.parameters())
+    print(f"Number of parameters: {n_parameters / 1e3:.1f}k")
 
     trainer.fit(tft, train_dataloaders=train_loader, val_dataloaders=val_loader)
     print(f"Best checkpoint: {checkpoint_callback.best_model_path}")
 
     # Save dataset parameters so later data can reuse same schema
-    train_ds.save(outdir / "timeseries_dataset.pkl")
+    train_ds.save((outdir / "timeseries_dataset.pkl").as_posix())
 
 
 if __name__ == "__main__":

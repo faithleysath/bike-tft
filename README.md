@@ -207,6 +207,8 @@
   负责第一版最小实验，也就是“直接利用 Citi Bike 数据做最基本预测”的代码和说明。
 - `scripts/data/`
   负责和具体实验弱耦合的数据辅助脚本，比如下载公开数据、检查字段元数据。
+- `scripts/dev/`
+  负责项目级开发辅助脚本，比如统一的静态检查命令。
 
 如果你现在要看第一版 MVP 实验怎么跑，请直接看：
 
@@ -221,6 +223,10 @@
 
 - `scripts/data/download_kaggle_dataset.py`
 - `scripts/data/extract_csv_field_metadata.py`
+
+开发辅助脚本放在：
+
+- `scripts/dev/static_check.sh`
 
 这样以后你找“课题总方向”“实验主流程”“通用辅助脚本”时，就不会混在一起了。
 

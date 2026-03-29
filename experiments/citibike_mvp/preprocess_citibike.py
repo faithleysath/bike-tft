@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import argparse
 from pathlib import Path
+from typing import cast
 
 import numpy as np
 import pandas as pd
@@ -41,37 +42,45 @@ def list_csvs(path: str | Path) -> list[Path]:
     return csvs
 
 
+def as_series(value: object) -> pd.Series:
+    """Help pyright treat DataFrame column access as a Series."""
+    return cast(pd.Series, value)
+
+
+def as_frame(value: object) -> pd.DataFrame:
+    """Help pyright treat pandas chaining results as a DataFrame."""
+    return cast(pd.DataFrame, value)
+
+
 def norm_station_id(s: pd.Series) -> pd.Series:
     # keep IDs as strings; sample IDs look like 4488.09
-    return (
-        s.astype("string")
-        .str.strip()
-        .replace({"": pd.NA, "nan": pd.NA, "None": pd.NA, "<NA>": pd.NA})
-    )
+    normalized = s.astype("string").str.strip()
+    invalid_mask = normalized.isin(["", "nan", "None", "<NA>"])
+    return normalized.where(~invalid_mask)
 
 
-def first_notna(series: pd.Series):
+def first_notna(series: pd.Series) -> object:
     s = series.dropna()
     return s.iloc[0] if not s.empty else pd.NA
 
 
-def process_one_file(path: Path, freq: str):
-    df = pd.read_csv(path, usecols=lambda c: c in NEEDED_COLUMNS)
+def process_one_file(path: Path, freq: str) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+    df = as_frame(pd.read_csv(path, usecols=lambda c: c in NEEDED_COLUMNS))
 
     # parse time
     df["started_at"] = pd.to_datetime(df["started_at"], errors="coerce", utc=False)
     df["ended_at"] = pd.to_datetime(df["ended_at"], errors="coerce", utc=False)
 
     # station IDs as strings
-    df["start_station_id"] = norm_station_id(df["start_station_id"])
-    df["end_station_id"] = norm_station_id(df["end_station_id"])
+    df["start_station_id"] = norm_station_id(as_series(df["start_station_id"]))
+    df["end_station_id"] = norm_station_id(as_series(df["end_station_id"]))
 
     # numeric lat/lng
     for c in ["start_lat", "start_lng", "end_lat", "end_lng"]:
         if c in df.columns:
             df[c] = pd.to_numeric(df[c], errors="coerce")
 
-    dep = (
+    dep = as_frame(
         df.dropna(subset=["started_at", "start_station_id"])
         .assign(ts=lambda x: x["started_at"].dt.floor(freq))
         .groupby(["ts", "start_station_id"], as_index=False)
@@ -82,43 +91,33 @@ def process_one_file(path: Path, freq: str):
             dep_classic_count=("rideable_type", lambda s: (s == "classic_bike").sum()),
             dep_electric_count=("rideable_type", lambda s: (s == "electric_bike").sum()),
         )
-        .rename(columns={"start_station_id": "station_id"})
     )
+    dep.columns = [
+        "ts",
+        "station_id",
+        "dep_count",
+        "dep_member_count",
+        "dep_casual_count",
+        "dep_classic_count",
+        "dep_electric_count",
+    ]
 
-    arr = (
+    arr = as_frame(
         df.dropna(subset=["ended_at", "end_station_id"])
         .assign(ts=lambda x: x["ended_at"].dt.floor(freq))
         .groupby(["ts", "end_station_id"], as_index=False)
         .agg(arr_count=("ride_id", "size"))
-        .rename(columns={"end_station_id": "station_id"})
     )
+    arr.columns = ["ts", "station_id", "arr_count"]
 
-    start_meta = (
-        df[["start_station_id", "start_station_name", "start_lat", "start_lng"]]
-        .rename(
-            columns={
-                "start_station_id": "station_id",
-                "start_station_name": "station_name",
-                "start_lat": "station_lat",
-                "start_lng": "station_lng",
-            }
-        )
-        .dropna(subset=["station_id"])
-    )
-    end_meta = (
-        df[["end_station_id", "end_station_name", "end_lat", "end_lng"]]
-        .rename(
-            columns={
-                "end_station_id": "station_id",
-                "end_station_name": "station_name",
-                "end_lat": "station_lat",
-                "end_lng": "station_lng",
-            }
-        )
-        .dropna(subset=["station_id"])
-    )
-    meta = pd.concat([start_meta, end_meta], ignore_index=True)
-    meta = (
+    start_meta = as_frame(df[["start_station_id", "start_station_name", "start_lat", "start_lng"]].copy())
+    start_meta = as_frame(start_meta.dropna(subset=["start_station_id"]))
+    start_meta.columns = ["station_id", "station_name", "station_lat", "station_lng"]
+    end_meta = as_frame(df[["end_station_id", "end_station_name", "end_lat", "end_lng"]].copy())
+    end_meta = as_frame(end_meta.dropna(subset=["end_station_id"]))
+    end_meta.columns = ["station_id", "station_name", "station_lat", "station_lng"]
+    meta = as_frame(pd.concat([start_meta, end_meta], ignore_index=True))
+    meta = as_frame(
         meta.groupby("station_id", as_index=False)
         .agg(
             station_name=("station_name", first_notna),
@@ -130,29 +129,33 @@ def process_one_file(path: Path, freq: str):
     return dep, arr, meta
 
 
-def build_panel(dep: pd.DataFrame, arr: pd.DataFrame, meta: pd.DataFrame, args):
-    usage = dep.groupby("station_id", as_index=False)["dep_count"].sum()
-    usage = usage.sort_values("dep_count", ascending=False)
+def build_panel(
+    dep: pd.DataFrame, arr: pd.DataFrame, meta: pd.DataFrame, args: argparse.Namespace
+) -> tuple[pd.DataFrame, pd.DataFrame]:
+    usage = as_frame(dep.groupby("station_id", as_index=False)["dep_count"].sum())
+    usage = as_frame(usage.sort_values(by="dep_count", ascending=False))
 
     if args.top_n_stations is not None:
         keep = usage.head(args.top_n_stations)["station_id"]
     else:
         keep = usage.loc[usage["dep_count"] >= args.min_total_departures, "station_id"]
 
-    keep = set(keep.astype(str))
-    dep = dep[dep["station_id"].astype(str).isin(keep)].copy()
-    arr = arr[arr["station_id"].astype(str).isin(keep)].copy()
-    meta = meta[meta["station_id"].astype(str).isin(keep)].copy()
+    keep_values = list(as_series(keep).astype(str))
+    dep = as_frame(dep[dep["station_id"].astype(str).isin(keep_values)].copy())
+    arr = as_frame(arr[arr["station_id"].astype(str).isin(keep_values)].copy())
+    meta = as_frame(meta[meta["station_id"].astype(str).isin(keep_values)].copy())
 
     ts_min = min(dep["ts"].min(), arr["ts"].min())
     ts_max = max(dep["ts"].max(), arr["ts"].max())
     all_ts = pd.date_range(ts_min, ts_max, freq=args.freq)
     all_stations = sorted(meta["station_id"].astype(str).unique())
 
-    full = pd.MultiIndex.from_product([all_ts, all_stations], names=["ts", "station_id"]).to_frame(index=False)
-    panel = full.merge(dep, on=["ts", "station_id"], how="left")
-    panel = panel.merge(arr, on=["ts", "station_id"], how="left")
-    panel = panel.merge(meta, on="station_id", how="left")
+    full = as_frame(
+        pd.MultiIndex.from_product([all_ts, all_stations], names=["ts", "station_id"]).to_frame(index=False)
+    )
+    panel = as_frame(full.merge(dep, on=["ts", "station_id"], how="left"))
+    panel = as_frame(panel.merge(arr, on=["ts", "station_id"], how="left"))
+    panel = as_frame(panel.merge(meta, on="station_id", how="left"))
 
     fill_zero_cols = [
         "dep_count",
@@ -182,7 +185,7 @@ def build_panel(dep: pd.DataFrame, arr: pd.DataFrame, meta: pd.DataFrame, args):
     unit = pd.Timedelta(args.freq)
     panel["time_idx"] = ((panel["ts"] - ts0) / unit).round().astype("int32")
 
-    panel = panel.sort_values(["station_id", "ts"]).reset_index(drop=True)
+    panel = as_frame(panel.sort_values(["station_id", "ts"]).reset_index(drop=True))
     return panel, meta
 
 
@@ -208,9 +211,13 @@ def main():
         arrs.append(arr)
         metas.append(meta)
 
-    dep_all = pd.concat(deps, ignore_index=True).groupby(["ts", "station_id"], as_index=False).sum()
-    arr_all = pd.concat(arrs, ignore_index=True).groupby(["ts", "station_id"], as_index=False).sum()
-    meta_all = (
+    dep_all = as_frame(
+        pd.concat(deps, ignore_index=True).groupby(["ts", "station_id"], as_index=False).sum()
+    )
+    arr_all = as_frame(
+        pd.concat(arrs, ignore_index=True).groupby(["ts", "station_id"], as_index=False).sum()
+    )
+    meta_all = as_frame(
         pd.concat(metas, ignore_index=True)
         .groupby("station_id", as_index=False)
         .agg(
