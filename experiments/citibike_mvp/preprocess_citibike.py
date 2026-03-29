@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 import argparse
 from pathlib import Path
-from typing import Iterable, List
 
 import numpy as np
 import pandas as pd
 
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 NEEDED_COLUMNS = [
     "ride_id",
     "rideable_type",
@@ -23,8 +23,16 @@ NEEDED_COLUMNS = [
 ]
 
 
-def list_csvs(path: str) -> List[Path]:
-    p = Path(path)
+def project_path(value: str | Path) -> Path:
+    """Resolve repo-relative paths no matter where the script is launched from."""
+    path = Path(value).expanduser()
+    if path.is_absolute():
+        return path
+    return PROJECT_ROOT / path
+
+
+def list_csvs(path: str | Path) -> list[Path]:
+    p = project_path(path)
     if p.is_file():
         return [p]
     csvs = sorted(list(p.glob("*.csv")) + list(p.glob("*.csv.gz")))
@@ -187,7 +195,7 @@ def main():
     parser.add_argument("--min-total-departures", type=int, default=200, help="Used if --top-n-stations is omitted")
     args = parser.parse_args()
 
-    outdir = Path(args.output_dir)
+    outdir = project_path(args.output_dir)
     outdir.mkdir(parents=True, exist_ok=True)
 
     deps, arrs, metas = [], [], []

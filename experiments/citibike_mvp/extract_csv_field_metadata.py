@@ -14,9 +14,18 @@ from pathlib import Path
 from typing import Any, Iterable
 
 
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 NULL_MARKERS = {"", "na", "n/a", "nan", "null", "none"}
 INT_RE = re.compile(r"^[+-]?\d+$")
 FLOAT_RE = re.compile(r"^[+-]?(?:\d+\.\d*|\.\d+|\d+)(?:[eE][+-]?\d+)?$")
+
+
+def project_path(value: str | Path) -> Path:
+    """Resolve repo-relative paths no matter where the script is launched from."""
+    path = Path(value).expanduser()
+    if path.is_absolute():
+        return path
+    return PROJECT_ROOT / path
 
 
 @dataclass
@@ -255,8 +264,8 @@ def write_json(path: Path, payload: dict[str, Any]) -> None:
 def main() -> int:
     """Run the CSV metadata extraction workflow."""
     args = parse_args()
-    input_dir = Path(args.input_dir)
-    output_path = Path(args.output)
+    input_dir = project_path(args.input_dir)
+    output_path = project_path(args.output)
 
     files = list_csv_files(input_dir, args.pattern)
     canonical_header, schema_variants = build_schema_variants(files)

@@ -11,9 +11,19 @@ from pytorch_forecasting import TemporalFusionTransformer, TimeSeriesDataSet
 from pytorch_forecasting.data import GroupNormalizer
 from pytorch_forecasting.metrics import QuantileLoss
 
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
-def load_data(path: str) -> pd.DataFrame:
-    df = pd.read_parquet(path)
+
+def project_path(value: str | Path) -> Path:
+    """Resolve repo-relative paths no matter where the script is launched from."""
+    path = Path(value).expanduser()
+    if path.is_absolute():
+        return path
+    return PROJECT_ROOT / path
+
+
+def load_data(path: str | Path) -> pd.DataFrame:
+    df = pd.read_parquet(project_path(path))
     df["station_id"] = df["station_id"].astype(str)
     # static fields cannot be NA
     df["station_name"] = df["station_name"].fillna("unknown")
@@ -96,7 +106,7 @@ def main():
     args = parser.parse_args()
 
     pl.seed_everything(args.seed)
-    outdir = Path(args.output_dir)
+    outdir = project_path(args.output_dir)
     outdir.mkdir(parents=True, exist_ok=True)
 
     df = load_data(args.data)

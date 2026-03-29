@@ -13,6 +13,7 @@ from typing import Final
 from urllib.error import HTTPError, URLError
 from urllib.request import urlopen
 
+PROJECT_ROOT: Final[Path] = Path(__file__).resolve().parents[2]
 DEFAULT_OUTPUT_DIR: Final[Path] = Path("data/raw")
 KAGGLE_OWNER_SLUG_RE: Final[re.Pattern[str]] = re.compile(
     r"^(?P<owner>[A-Za-z0-9][A-Za-z0-9_-]*)/(?P<slug>[A-Za-z0-9][A-Za-z0-9_-]*)$"
@@ -23,6 +24,14 @@ KAGGLE_DATASET_URL_RE: Final[re.Pattern[str]] = re.compile(
 KAGGLE_JSON_LD_URL_RE: Final[re.Pattern[str]] = re.compile(
     r'"url":"https://www\.kaggle\.com/(?P<owner>[A-Za-z0-9][A-Za-z0-9_-]*)/(?P<slug>[A-Za-z0-9][A-Za-z0-9_-]*)"'
 )
+
+
+def project_path(value: str | Path) -> Path:
+    """Resolve repo-relative paths no matter where the script is launched from."""
+    path = Path(value).expanduser()
+    if path.is_absolute():
+        return path
+    return PROJECT_ROOT / path
 
 
 def parse_args() -> argparse.Namespace:
@@ -162,7 +171,7 @@ def main() -> int:
     try:
         args = parse_args()
         dataset_ref = resolve_dataset_ref(args.dataset)
-        output_root = Path(args.output_dir)
+        output_root = project_path(args.output_dir)
         target_dir = build_target_dir(output_root, dataset_ref)
 
         ensure_credentials_hint()
