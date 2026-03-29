@@ -190,14 +190,16 @@ def main():
     parser.add_argument("--input", required=True, help="CSV file or directory containing CSVs")
     parser.add_argument("--output-dir", required=True, help="Directory to write outputs")
     parser.add_argument("--freq", default="1H", help="Aggregation frequency, e.g. 30min or 1H")
-    parser.add_argument("--top-n-stations", type=int, default=200, help="Keep top N most active stations")
+    parser.add_argument("--top-n-stations", type=int, default=None, help="Keep top N most active stations")
     parser.add_argument("--min-total-departures", type=int, default=200, help="Used if --top-n-stations is omitted")
     args = parser.parse_args()
 
     outdir = project_path(args.output_dir)
     outdir.mkdir(parents=True, exist_ok=True)
 
-    deps, arrs, metas = [], [], []
+    deps: list[pd.DataFrame] = []
+    arrs: list[pd.DataFrame] = []
+    metas: list[pd.DataFrame] = []
     files = list_csvs(args.input)
     print(f"Found {len(files)} file(s)")
     for i, f in enumerate(files, start=1):

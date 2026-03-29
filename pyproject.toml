@@ -39,7 +39,7 @@ include = [
 exclude = [
     ".venv",
     "__pycache__",
-    "data",
+    "data", "**/node_modules", "**/.*",
 ]
 pythonVersion = "3.12"
 typeCheckingMode = "basic"
