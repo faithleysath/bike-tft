@@ -60,6 +60,33 @@ def normalize_freq(freq: str) -> str:
     return freq.replace("H", "h")
 
 
+def aggregate_station_counts(
+    df: pd.DataFrame, *, ts_col: str, station_col: str, prefix: str, freq: str
+) -> pd.DataFrame:
+    """Aggregate trips into station-time counts without Python-level groupby lambdas."""
+    valid = df[ts_col].notna() & df[station_col].notna()
+    base = as_frame(df.loc[valid, [ts_col, station_col, "rideable_type"]].copy())
+    base["ts"] = base[ts_col].dt.floor(freq)
+    base["classic_count"] = base["rideable_type"].eq("classic_bike").astype("int8")
+    base["electric_count"] = base["rideable_type"].eq("electric_bike").astype("int8")
+
+    aggregated = as_frame(
+        base.groupby(["ts", station_col], as_index=False, sort=False).agg(
+            trip_count=("rideable_type", "size"),
+            classic_count=("classic_count", "sum"),
+            electric_count=("electric_count", "sum"),
+        )
+    )
+    aggregated.columns = [
+        "ts",
+        "station_id",
+        f"{prefix}_count",
+        f"{prefix}_classic_count",
+        f"{prefix}_electric_count",
+    ]
+    return aggregated
+
+
 def norm_station_id(s: pd.Series) -> pd.Series:
     # keep IDs as strings; sample IDs look like 4488.09
     normalized = s.astype("string").str.strip()
@@ -90,35 +117,12 @@ def process_one_file(path: Path, freq: str) -> tuple[pd.DataFrame, pd.DataFrame,
         if c in df.columns:
             df[c] = pd.to_numeric(df[c], errors="coerce")
 
-    dep = as_frame(
-        df.dropna(subset=["started_at", "start_station_id"])
-        .assign(ts=lambda x: x["started_at"].dt.floor(freq))
-        .groupby(["ts", "start_station_id"], as_index=False)
-        .agg(
-            dep_count=("ride_id", "size"),
-            dep_classic_count=("rideable_type", lambda s: (s == "classic_bike").sum()),
-            dep_electric_count=("rideable_type", lambda s: (s == "electric_bike").sum()),
-        )
+    dep = aggregate_station_counts(
+        df, ts_col="started_at", station_col="start_station_id", prefix="dep", freq=freq
     )
-    dep.columns = [
-        "ts",
-        "station_id",
-        "dep_count",
-        "dep_classic_count",
-        "dep_electric_count",
-    ]
-
-    arr = as_frame(
-        df.dropna(subset=["ended_at", "end_station_id"])
-        .assign(ts=lambda x: x["ended_at"].dt.floor(freq))
-        .groupby(["ts", "end_station_id"], as_index=False)
-        .agg(
-            arr_count=("ride_id", "size"),
-            arr_classic_count=("rideable_type", lambda s: (s == "classic_bike").sum()),
-            arr_electric_count=("rideable_type", lambda s: (s == "electric_bike").sum()),
-        )
+    arr = aggregate_station_counts(
+        df, ts_col="ended_at", station_col="end_station_id", prefix="arr", freq=freq
     )
-    arr.columns = ["ts", "station_id", "arr_count", "arr_classic_count", "arr_electric_count"]
 
     start_meta = as_frame(df[["start_station_id", "start_lat", "start_lng"]].copy())
     start_meta = as_frame(start_meta.dropna(subset=["start_station_id"]))
