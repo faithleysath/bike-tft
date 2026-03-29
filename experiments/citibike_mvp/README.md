@@ -193,13 +193,13 @@ uv sync
 从仓库根目录运行：
 
 ```bash
-uv run python scripts/data/download_kaggle_dataset.py leonczarlinski/citi-bike-nyc
+uv run scripts/data/download_kaggle_dataset.py leonczarlinski/citi-bike-nyc
 ```
 
 如果传 Kaggle 页面链接也可以：
 
 ```bash
-uv run python scripts/data/download_kaggle_dataset.py \
+uv run scripts/data/download_kaggle_dataset.py \
   'https://www.kaggle.com/datasets/97d0e3dce5417b9e3a8f7c0d5272b79ced580b81dafea8413addc509a67a80fc'
 ```
 
@@ -212,7 +212,7 @@ data/raw/citi-bike-nyc/
 ## 可选：检查字段元数据
 
 ```bash
-uv run python scripts/data/extract_csv_field_metadata.py \
+uv run scripts/data/extract_csv_field_metadata.py \
   --input-dir data/raw/citi-bike-nyc \
   --output data/processed/citibike_csv_field_metadata.json
 ```
@@ -222,7 +222,7 @@ uv run python scripts/data/extract_csv_field_metadata.py \
 ## 第 1 步：生成站点小时级面板数据
 
 ```bash
-uv run python experiments/citibike_mvp/preprocess_citibike.py \
+uv run experiments/citibike_mvp/preprocess_citibike.py \
   --input data/raw/citi-bike-nyc \
   --output-dir data/processed \
   --freq 1H \
@@ -248,7 +248,7 @@ uv run python experiments/citibike_mvp/preprocess_citibike.py \
 ## 第 2 步：训练最小版 TFT
 
 ```bash
-uv run python experiments/citibike_mvp/train_tft.py \
+uv run experiments/citibike_mvp/train_tft.py \
   --data data/processed/station_hour_panel.parquet \
   --output-dir runs/citibike_tft \
   --target dep_count \
