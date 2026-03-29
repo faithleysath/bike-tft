@@ -31,14 +31,17 @@
 
 ## 这个 MVP 当前包含什么
 
-这里目前只包含 4 个脚本：
+这里目前主要包含 2 个核心脚本：
 
-- `download_kaggle_dataset.py`
-- `extract_csv_field_metadata.py`
 - `preprocess_citibike.py`
 - `train_tft.py`
 
-这些脚本虽然放在子目录里，但默认还是把数据和训练产物写回仓库根目录下的公共位置：
+另外两个偏辅助性质的脚本已经挪到仓库根目录下的通用工具位置：
+
+- `scripts/data/download_kaggle_dataset.py`
+- `scripts/data/extract_csv_field_metadata.py`
+
+这些脚本虽然分散在不同目录里，但默认还是把数据和训练产物写回仓库根目录下的公共位置：
 
 - 原始数据：`data/raw/`
 - 处理后数据：`data/processed/`
@@ -46,9 +49,9 @@
 
 这样做的目的，是让实验代码归到一个子目录里，同时不把数据目录也拆得太碎。
 
-## 这 4 个脚本分别干什么
+## 这几个脚本分别干什么
 
-### `download_kaggle_dataset.py`
+### `scripts/data/download_kaggle_dataset.py`
 
 作用：
 
@@ -60,7 +63,7 @@
 
 **把最小实验需要的原始数据拉到本地。**
 
-### `extract_csv_field_metadata.py`
+### `scripts/data/extract_csv_field_metadata.py`
 
 作用：
 
@@ -190,13 +193,13 @@ uv sync
 从仓库根目录运行：
 
 ```bash
-uv run python experiments/citibike_mvp/download_kaggle_dataset.py leonczarlinski/citi-bike-nyc
+uv run python scripts/data/download_kaggle_dataset.py leonczarlinski/citi-bike-nyc
 ```
 
 如果传 Kaggle 页面链接也可以：
 
 ```bash
-uv run python experiments/citibike_mvp/download_kaggle_dataset.py \
+uv run python scripts/data/download_kaggle_dataset.py \
   'https://www.kaggle.com/datasets/97d0e3dce5417b9e3a8f7c0d5272b79ced580b81dafea8413addc509a67a80fc'
 ```
 
@@ -209,7 +212,7 @@ data/raw/citi-bike-nyc/
 ## 可选：检查字段元数据
 
 ```bash
-uv run python experiments/citibike_mvp/extract_csv_field_metadata.py \
+uv run python scripts/data/extract_csv_field_metadata.py \
   --input-dir data/raw/citi-bike-nyc \
   --output data/processed/citibike_csv_field_metadata.json
 ```

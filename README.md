@@ -205,19 +205,24 @@
   负责解释整个毕设在做什么、为什么这样做、当前整体推进到哪一步。
 - `experiments/citibike_mvp/`
   负责第一版最小实验，也就是“直接利用 Citi Bike 数据做最基本预测”的代码和说明。
+- `scripts/data/`
+  负责和具体实验弱耦合的数据辅助脚本，比如下载公开数据、检查字段元数据。
 
 如果你现在要看第一版 MVP 实验怎么跑，请直接看：
 
 - [experiments/citibike_mvp/README.md](experiments/citibike_mvp/README.md)
 
-这个子目录里现在集中放着：
+`experiments/citibike_mvp/` 里现在主要放着：
 
-- `download_kaggle_dataset.py`
-- `extract_csv_field_metadata.py`
 - `preprocess_citibike.py`
 - `train_tft.py`
 
-这样以后你找“课题总方向”和“第一版实验操作步骤”时，就不会混在一起了。
+而通用辅助脚本放在：
+
+- `scripts/data/download_kaggle_dataset.py`
+- `scripts/data/extract_csv_field_metadata.py`
+
+这样以后你找“课题总方向”“实验主流程”“通用辅助脚本”时，就不会混在一起了。
 
 ## 当前阶段真正要做的事情
 
