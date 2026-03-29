@@ -31,7 +31,6 @@ def load_data(path: str | Path) -> pd.DataFrame:
     df = as_frame(pd.read_parquet(project_path(path)))
     df["station_id"] = df["station_id"].astype(str)
     # static fields cannot be NA
-    df["station_name"] = df["station_name"].fillna("unknown")
     df["station_lat"] = df["station_lat"].fillna(df["station_lat"].median())
     df["station_lng"] = df["station_lng"].fillna(df["station_lng"].median())
     return df
@@ -54,7 +53,7 @@ def make_datasets(
         max_encoder_length=args.max_encoder_length,
         min_prediction_length=1,
         max_prediction_length=args.max_prediction_length,
-        static_categoricals=["station_id", "station_name"],
+        static_categoricals=["station_id"],
         static_reals=["station_lat", "station_lng"],
         time_varying_known_reals=[
             "time_idx",
@@ -73,10 +72,10 @@ def make_datasets(
             "dep_count",
             "arr_count",
             "net_flow",
-            "dep_member_count",
-            "dep_casual_count",
             "dep_classic_count",
             "dep_electric_count",
+            "arr_classic_count",
+            "arr_electric_count",
         ],
         target_normalizer=GroupNormalizer(groups=["station_id"], transformation="softplus"),
         add_relative_time_idx=True,

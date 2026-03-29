@@ -238,7 +238,6 @@ uv run experiments/citibike_mvp/preprocess_citibike.py \
 输出文件包括：
 
 - `data/processed/station_hour_panel.parquet`
-- `data/processed/station_meta.parquet`
 - `data/processed/summary.csv`
 
 其中最关键的是：

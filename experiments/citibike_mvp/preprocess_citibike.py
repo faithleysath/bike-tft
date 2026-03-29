@@ -12,15 +12,12 @@ NEEDED_COLUMNS = [
     "rideable_type",
     "started_at",
     "ended_at",
-    "start_station_name",
     "start_station_id",
-    "end_station_name",
     "end_station_id",
     "start_lat",
     "start_lng",
     "end_lat",
     "end_lng",
-    "member_casual",
 ]
 
 
@@ -86,8 +83,6 @@ def process_one_file(path: Path, freq: str) -> tuple[pd.DataFrame, pd.DataFrame,
         .groupby(["ts", "start_station_id"], as_index=False)
         .agg(
             dep_count=("ride_id", "size"),
-            dep_member_count=("member_casual", lambda s: (s == "member").sum()),
-            dep_casual_count=("member_casual", lambda s: (s == "casual").sum()),
             dep_classic_count=("rideable_type", lambda s: (s == "classic_bike").sum()),
             dep_electric_count=("rideable_type", lambda s: (s == "electric_bike").sum()),
         )
@@ -96,8 +91,6 @@ def process_one_file(path: Path, freq: str) -> tuple[pd.DataFrame, pd.DataFrame,
         "ts",
         "station_id",
         "dep_count",
-        "dep_member_count",
-        "dep_casual_count",
         "dep_classic_count",
         "dep_electric_count",
     ]
@@ -106,21 +99,24 @@ def process_one_file(path: Path, freq: str) -> tuple[pd.DataFrame, pd.DataFrame,
         df.dropna(subset=["ended_at", "end_station_id"])
         .assign(ts=lambda x: x["ended_at"].dt.floor(freq))
         .groupby(["ts", "end_station_id"], as_index=False)
-        .agg(arr_count=("ride_id", "size"))
+        .agg(
+            arr_count=("ride_id", "size"),
+            arr_classic_count=("rideable_type", lambda s: (s == "classic_bike").sum()),
+            arr_electric_count=("rideable_type", lambda s: (s == "electric_bike").sum()),
+        )
     )
-    arr.columns = ["ts", "station_id", "arr_count"]
+    arr.columns = ["ts", "station_id", "arr_count", "arr_classic_count", "arr_electric_count"]
 
-    start_meta = as_frame(df[["start_station_id", "start_station_name", "start_lat", "start_lng"]].copy())
+    start_meta = as_frame(df[["start_station_id", "start_lat", "start_lng"]].copy())
     start_meta = as_frame(start_meta.dropna(subset=["start_station_id"]))
-    start_meta.columns = ["station_id", "station_name", "station_lat", "station_lng"]
-    end_meta = as_frame(df[["end_station_id", "end_station_name", "end_lat", "end_lng"]].copy())
+    start_meta.columns = ["station_id", "station_lat", "station_lng"]
+    end_meta = as_frame(df[["end_station_id", "end_lat", "end_lng"]].copy())
     end_meta = as_frame(end_meta.dropna(subset=["end_station_id"]))
-    end_meta.columns = ["station_id", "station_name", "station_lat", "station_lng"]
+    end_meta.columns = ["station_id", "station_lat", "station_lng"]
     meta = as_frame(pd.concat([start_meta, end_meta], ignore_index=True))
     meta = as_frame(
         meta.groupby("station_id", as_index=False)
         .agg(
-            station_name=("station_name", first_notna),
             station_lat=("station_lat", first_notna),
             station_lng=("station_lng", first_notna),
         )
@@ -159,11 +155,11 @@ def build_panel(
 
     fill_zero_cols = [
         "dep_count",
-        "dep_member_count",
-        "dep_casual_count",
         "dep_classic_count",
         "dep_electric_count",
         "arr_count",
+        "arr_classic_count",
+        "arr_electric_count",
     ]
     for c in fill_zero_cols:
         if c in panel.columns:
@@ -221,15 +217,13 @@ def main():
         pd.concat(metas, ignore_index=True)
         .groupby("station_id", as_index=False)
         .agg(
-            station_name=("station_name", first_notna),
             station_lat=("station_lat", first_notna),
             station_lng=("station_lng", first_notna),
         )
     )
 
-    panel, meta = build_panel(dep_all, arr_all, meta_all, args)
+    panel, _ = build_panel(dep_all, arr_all, meta_all, args)
     panel.to_parquet(outdir / "station_hour_panel.parquet", index=False)
-    meta.to_parquet(outdir / "station_meta.parquet", index=False)
 
     summary = pd.DataFrame(
         {
@@ -244,7 +238,6 @@ def main():
     summary.to_csv(outdir / "summary.csv", index=False)
     print("Wrote:")
     print(f"  {outdir / 'station_hour_panel.parquet'}")
-    print(f"  {outdir / 'station_meta.parquet'}")
     print(f"  {outdir / 'summary.csv'}")
 
 
