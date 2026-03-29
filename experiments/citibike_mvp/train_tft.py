@@ -12,6 +12,28 @@ from pytorch_forecasting.data import GroupNormalizer
 from pytorch_forecasting.metrics import QuantileLoss
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
+STATIC_REAL_COLUMNS = ["station_lat", "station_lng"]
+KNOWN_REAL_COLUMNS = [
+    "hour",
+    "day_of_week",
+    "day_of_month",
+    "month",
+    "week_of_year",
+    "is_weekend",
+    "hour_sin",
+    "hour_cos",
+    "dow_sin",
+    "dow_cos",
+]
+UNKNOWN_REAL_COLUMNS = [
+    "dep_count",
+    "arr_count",
+    "net_flow",
+    "dep_classic_count",
+    "dep_electric_count",
+    "arr_classic_count",
+    "arr_electric_count",
+]
 
 
 def project_path(value: str | Path) -> Path:
@@ -30,9 +52,12 @@ def as_frame(value: object) -> pd.DataFrame:
 def load_data(path: str | Path) -> pd.DataFrame:
     df = as_frame(pd.read_parquet(project_path(path)))
     df["station_id"] = df["station_id"].astype(str)
+    df["time_idx"] = df["time_idx"].astype("int32")
     # static fields cannot be NA
-    df["station_lat"] = df["station_lat"].fillna(df["station_lat"].median())
-    df["station_lng"] = df["station_lng"].fillna(df["station_lng"].median())
+    df["station_lat"] = df["station_lat"].fillna(df["station_lat"].median()).astype("float32")
+    df["station_lng"] = df["station_lng"].fillna(df["station_lng"].median()).astype("float32")
+    for column in KNOWN_REAL_COLUMNS + UNKNOWN_REAL_COLUMNS:
+        df[column] = df[column].astype("float32")
     return df
 
 
@@ -54,29 +79,9 @@ def make_datasets(
         min_prediction_length=1,
         max_prediction_length=args.max_prediction_length,
         static_categoricals=["station_id"],
-        static_reals=["station_lat", "station_lng"],
-        time_varying_known_reals=[
-            "time_idx",
-            "hour",
-            "day_of_week",
-            "day_of_month",
-            "month",
-            "week_of_year",
-            "is_weekend",
-            "hour_sin",
-            "hour_cos",
-            "dow_sin",
-            "dow_cos",
-        ],
-        time_varying_unknown_reals=[
-            "dep_count",
-            "arr_count",
-            "net_flow",
-            "dep_classic_count",
-            "dep_electric_count",
-            "arr_classic_count",
-            "arr_electric_count",
-        ],
+        static_reals=STATIC_REAL_COLUMNS,
+        time_varying_known_reals=KNOWN_REAL_COLUMNS,
+        time_varying_unknown_reals=UNKNOWN_REAL_COLUMNS,
         target_normalizer=GroupNormalizer(groups=["station_id"], transformation="softplus"),
         add_relative_time_idx=True,
         add_target_scales=True,
