@@ -226,7 +226,9 @@ uv run experiments/citibike_mvp/preprocess_citibike.py \
   --input data/raw/citi-bike-nyc \
   --output-dir data/processed \
   --freq 1H \
-  --top-n-stations 200
+  --top-n-stations 200 \
+  --workers 3
+
 ```
 
 建议第一次先从小规模开始：

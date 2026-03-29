@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 import argparse
+import os
+from concurrent.futures import ProcessPoolExecutor, as_completed
 from pathlib import Path
 from typing import Any, cast
 
@@ -25,6 +27,7 @@ CSV_TEXT_DTYPES = {
     "start_station_id": "string",
     "end_station_id": "string",
 }
+ProcessResult = tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]
 
 
 def project_path(value: str | Path) -> Path:
@@ -85,6 +88,45 @@ def aggregate_station_counts(
         f"{prefix}_electric_count",
     ]
     return aggregated
+
+
+def resolve_worker_count(requested: int, file_count: int) -> int:
+    cpu_count = os.cpu_count() or 1
+    return max(1, min(requested, file_count, cpu_count))
+
+
+def process_files(files: list[Path], freq: str, workers: int) -> tuple[list[pd.DataFrame], list[pd.DataFrame], list[pd.DataFrame]]:
+    if workers == 1:
+        deps: list[pd.DataFrame] = []
+        arrs: list[pd.DataFrame] = []
+        metas: list[pd.DataFrame] = []
+        for i, f in enumerate(files, start=1):
+            print(f"[{i}/{len(files)}] processing {f.name}")
+            dep, arr, meta = process_one_file(f, freq)
+            deps.append(dep)
+            arrs.append(arr)
+            metas.append(meta)
+        return deps, arrs, metas
+
+    print(f"Processing with {workers} worker(s)")
+    results: list[ProcessResult | None] = [None] * len(files)
+    with ProcessPoolExecutor(max_workers=workers) as executor:
+        future_to_index = {executor.submit(process_one_file, f, freq): i for i, f in enumerate(files)}
+        completed = 0
+        for future in as_completed(future_to_index):
+            idx = future_to_index[future]
+            results[idx] = future.result()
+            completed += 1
+            print(f"[{completed}/{len(files)}] processed {files[idx].name}")
+
+    if any(result is None for result in results):
+        raise RuntimeError("Missing file processing results")
+
+    completed_results = cast(list[ProcessResult], results)
+    deps = [dep for dep, _, _ in completed_results]
+    arrs = [arr for _, arr, _ in completed_results]
+    metas = [meta for _, _, meta in completed_results]
+    return deps, arrs, metas
 
 
 def norm_station_id(s: pd.Series) -> pd.Series:
@@ -209,23 +251,24 @@ def main():
     parser.add_argument("--freq", default="1h", help="Aggregation frequency, e.g. 30min or 1h")
     parser.add_argument("--top-n-stations", type=int, default=None, help="Keep top N most active stations")
     parser.add_argument("--min-total-departures", type=int, default=200, help="Used if --top-n-stations is omitted")
+    parser.add_argument(
+        "--workers",
+        type=int,
+        default=2,
+        help="Number of files to process in parallel; capped by file count and CPU count",
+    )
     args = parser.parse_args()
     args.freq = normalize_freq(args.freq)
+    if args.workers < 1:
+        parser.error("--workers must be at least 1")
 
     outdir = project_path(args.output_dir)
     outdir.mkdir(parents=True, exist_ok=True)
 
-    deps: list[pd.DataFrame] = []
-    arrs: list[pd.DataFrame] = []
-    metas: list[pd.DataFrame] = []
     files = list_csvs(args.input)
+    workers = resolve_worker_count(args.workers, len(files))
     print(f"Found {len(files)} file(s)")
-    for i, f in enumerate(files, start=1):
-        print(f"[{i}/{len(files)}] processing {f.name}")
-        dep, arr, meta = process_one_file(f, args.freq)
-        deps.append(dep)
-        arrs.append(arr)
-        metas.append(meta)
+    deps, arrs, metas = process_files(files, args.freq, workers)
 
     dep_all = as_frame(
         pd.concat(deps, ignore_index=True).groupby(["ts", "station_id"], as_index=False).sum()
