@@ -1,0 +1,543 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TFT 训练报告</title>
+  <style>
+    :root {
+      --bg: #07111f;
+      --panel: #101b2f;
+      --line: #24334d;
+      --text: #eef2ff;
+      --muted: #9fb0c8;
+      --accent: #f4a261;
+      --cool: #7fd1b9;
+      --danger: #e76f51;
+      --shadow: 0 28px 80px rgba(0, 0, 0, 0.28);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Hiragino Sans GB", "PingFang HK", "Songti SC", "Avenir Next", "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(244,162,97,0.16), transparent 28%),
+        radial-gradient(circle at top right, rgba(127,209,185,0.12), transparent 26%),
+        linear-gradient(180deg, #08101d 0%, #07111f 100%);
+    }
+    .shell {
+      width: min(1200px, calc(100vw - 40px));
+      margin: 0 auto;
+      padding: 32px 0 64px;
+    }
+    .hero {
+      padding: 28px 30px 24px;
+      border: 1px solid rgba(159,176,200,0.16);
+      background: linear-gradient(180deg, rgba(16,27,47,0.94), rgba(10,18,31,0.94));
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      position: relative;
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: auto -12% -35% auto;
+      width: 340px;
+      height: 340px;
+      background: radial-gradient(circle, rgba(244,162,97,0.22), transparent 68%);
+      pointer-events: none;
+    }
+    .eyebrow {
+      color: var(--cool);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-size: 12px;
+      margin-bottom: 14px;
+    }
+    h1 {
+      margin: 0;
+      font-size: clamp(34px, 5vw, 60px);
+      line-height: 0.95;
+      max-width: 10ch;
+    }
+    .lede {
+      margin: 18px 0 0;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.65;
+      max-width: 70ch;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 26px;
+    }
+    .stat {
+      padding: 14px 16px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(159,176,200,0.14);
+      min-height: 96px;
+    }
+    .stat .label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+    .stat .value {
+      font-size: 30px;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .stat .sub {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .section {
+      margin-top: 26px;
+      padding: 22px 24px 26px;
+      border: 1px solid rgba(159,176,200,0.12);
+      background: rgba(12, 21, 37, 0.86);
+      box-shadow: var(--shadow);
+    }
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: end;
+      margin-bottom: 18px;
+    }
+    h2 {
+      margin: 0;
+      font-size: 28px;
+    }
+    .section-copy {
+      color: var(--muted);
+      max-width: 68ch;
+      line-height: 1.65;
+      font-size: 15px;
+    }
+    .two-up {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 18px;
+      align-items: start;
+    }
+    .notes {
+      display: grid;
+      gap: 10px;
+    }
+    .note {
+      padding: 14px 16px;
+      border-left: 2px solid var(--accent);
+      background: rgba(255,255,255,0.03);
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .visual-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+    .visual-full {
+      margin-top: 18px;
+    }
+    .table-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 18px;
+    }
+    figure {
+      margin: 0;
+      padding: 0;
+    }
+    img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border: 1px solid rgba(159,176,200,0.12);
+      background: #0d1728;
+    }
+    figcaption {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+    .footer {
+      margin-top: 26px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    code {
+      font-family: "SFMono-Regular", "JetBrains Mono", monospace;
+      color: var(--cool);
+    }
+    .metric-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(159,176,200,0.12);
+    }
+    .metric-table th,
+    .metric-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(159,176,200,0.08);
+      text-align: left;
+    }
+    .metric-table th {
+      color: var(--cool);
+      font-weight: 600;
+      background: rgba(127,209,185,0.05);
+    }
+    .metric-table tr:last-child td {
+      border-bottom: 0;
+    }
+    @media (max-width: 900px) {
+      .stats, .visual-grid, .two-up, .table-grid {
+        grid-template-columns: 1fr;
+      }
+      .shell {
+        width: min(100vw - 24px, 1200px);
+      }
+      .hero, .section {
+        padding-left: 18px;
+        padding-right: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="hero">
+      <div class="eyebrow">Citi Bike TFT 训练报告</div>
+      <h1>citibike_tft_h64</h1>
+      <p class="lede">
+        这份报告总结了复制到本地的训练结果，最佳 checkpoint 为
+        <code>best-epoch=01-val_loss=0.7623.ckpt</code>。相较朴素的 <code>lag1</code> 基线，
+        模型把验证集 MAE 提升了 <strong>27.4%</strong>；同时这段验证窗口本身比较稀疏，
+        零值占比达到 <strong>46.1%</strong>。
+      </p>
+      <div class="stats">
+        <div class="stat">
+          <div class="label">最佳验证损失</div>
+          <div class="value">0.762</div>
+          <div class="sub">最佳点在 epoch 1 · 最后一轮为 0.778</div>
+        </div>
+        <div class="stat">
+          <div class="label">最佳验证 MAE</div>
+          <div class="value">1.191</div>
+          <div class="sub">RMSE 2.608 · SMAPE 1.285</div>
+        </div>
+        <div class="stat">
+          <div class="label">验证窗口</div>
+          <div class="value">33,600</div>
+          <div class="sub">200 个站点 · 平均借出量 2.68</div>
+        </div>
+        <div class="stat">
+          <div class="label">区间覆盖 / 宽度</div>
+          <div class="value">36.8%</div>
+          <div class="sub">P10-P90 平均宽度 2.02 · 切片起点 time_idx=8636</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>训练走势</h2>
+          <div class="section-copy">
+            训练 step loss 下降得很快，验证损失则较早找到最佳点，随后一直在较窄范围内波动。
+            这更像是“快速收敛后进入平台期”，而不是“越训越坏”。
+          </div>
+        </div>
+      </div>
+      <div class="two-up">
+        <figure>
+          <img src="assets/training_overview.png" alt="训练概览">
+          <figcaption>
+            左图是 step 级分位数损失及其平滑曲线，右图是按 epoch 聚合后的训练/验证损失，并标出了最终保存的最佳 checkpoint。
+          </figcaption>
+        </figure>
+        <div class="notes">
+          <div class="note">
+            验证损失在 epoch <strong>1</strong> 达到最低点，之后虽然没有继续刷新，但最后一轮也只比最佳点高
+            <strong>2.1%</strong>。
+          </div>
+          <div class="note">
+            这次训练不需要跑满所有设定 epoch 就已经给出足够稳定的信号，说明当前配置在这个数据切分上收敛很快。
+          </div>
+          <div class="note">
+            由于验证窗口零值很多，百分比误差会被严重扭曲，所以这份报告有意不把 MAPE 当成核心指标来展示。
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>验证指标</h2>
+          <div class="section-copy">
+            这里展示的是这次训练里最稳定、也最值得读的验证指标。对当前这个 holdout 来说，MAE 和 RMSE 的参考价值最高。
+          </div>
+        </div>
+      </div>
+      <div class="visual-grid">
+        <figure>
+          <img src="assets/validation_metrics.png" alt="验证指标趋势">
+          <figcaption>
+            MAE、RMSE 和 SMAPE 随 epoch 的变化。可以看到最佳 MAE 与按验证损失选出的 checkpoint 基本一致。
+          </figcaption>
+        </figure>
+        <figure>
+          <img src="assets/baseline_comparison.png" alt="基线对比">
+          <figcaption>
+            TFT 与几个简单 lag 基线的对比。即便是最强的简单延续型基线，在 MAE 和 RMSE 上也都落后于模型。
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>验证窗口特征</h2>
+          <div class="section-copy">
+            这段 holdout 周期比全量数据稀疏得多，所以必须结合分布背景来看误差。下面这组图展示了目标值的稀疏性，以及误差如何随预测步长变化。
+          </div>
+        </div>
+      </div>
+      <div class="visual-grid">
+        <figure>
+          <img src="assets/validation_distribution.png" alt="验证分布">
+          <figcaption>
+            验证期需求整体偏低，而且零值占比高，这也是为什么绝对误差类指标会比百分比误差更可信。
+          </figcaption>
+        </figure>
+        <figure>
+          <img src="assets/forecast_horizon.png" alt="步长误差">
+          <figcaption>
+            固定起点预测切片上的分步长误差。它能帮助我们判断模型是在第几步开始明显偏离，还是 6 小时内整体都比较稳。
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>校准与偏差</h2>
+          <div class="section-copy">
+            这一部分关注的不只是“平均来看准不准”，而是模型在站点层面能不能把幅度和偏差也一起对上。
+          </div>
+        </div>
+      </div>
+      <div class="visual-grid">
+        <figure>
+          <img src="assets/prediction_scatter.png" alt="预测散点与残差">
+          <figcaption>
+            左图是按预测步长着色的真实值/预测值散点，右图是按步长聚合的残差分布，可以直接看出模型是偏保守还是偏激进。
+          </figcaption>
+        </figure>
+        <figure>
+          <img src="assets/station_rankings.png" alt="站点排行">
+          <figcaption>
+            切片里最难预测的站点并不是随机冒出来的。有些站点即便整体 MAE 看着不错，依然会持续低估或高估。
+          </figcaption>
+        </figure>
+      </div>
+      <div class="table-grid">
+        <div>
+          <div class="section-copy">固定预测切片中 MAE 最大的站点</div>
+          <table class="dataframe metric-table">
+  <thead>
+    <tr style="text-align: left;">
+      <th>站点</th>
+      <th>MAE</th>
+      <th>偏差</th>
+      <th>验证周均值</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>6708.04</td>
+      <td>4.044782</td>
+      <td>-3.862027</td>
+      <td>2.053571</td>
+    </tr>
+    <tr>
+      <td>6382.05</td>
+      <td>2.900806</td>
+      <td>-2.765374</td>
+      <td>2.053571</td>
+    </tr>
+    <tr>
+      <td>6450.12</td>
+      <td>2.882439</td>
+      <td>-2.882439</td>
+      <td>4.744048</td>
+    </tr>
+    <tr>
+      <td>5905.14</td>
+      <td>2.544732</td>
+      <td>-2.382924</td>
+      <td>5.011905</td>
+    </tr>
+    <tr>
+      <td>7183.03</td>
+      <td>1.980429</td>
+      <td>-1.980426</td>
+      <td>2.130952</td>
+    </tr>
+    <tr>
+      <td>6747.07</td>
+      <td>1.801310</td>
+      <td>-1.054260</td>
+      <td>1.672619</td>
+    </tr>
+    <tr>
+      <td>6747.06</td>
+      <td>1.767325</td>
+      <td>-1.274658</td>
+      <td>3.071429</td>
+    </tr>
+    <tr>
+      <td>6122.09</td>
+      <td>1.721146</td>
+      <td>-1.196025</td>
+      <td>2.791667</td>
+    </tr>
+  </tbody>
+</table>
+        </div>
+        <div>
+          <div class="section-copy">平均偏差绝对值最大的站点</div>
+          <table class="dataframe metric-table">
+  <thead>
+    <tr style="text-align: left;">
+      <th>站点</th>
+      <th>偏差</th>
+      <th>MAE</th>
+      <th>覆盖率</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>6708.04</td>
+      <td>-3.862027</td>
+      <td>4.044782</td>
+      <td>0.333333</td>
+    </tr>
+    <tr>
+      <td>6450.12</td>
+      <td>-2.882439</td>
+      <td>2.882439</td>
+      <td>0.500000</td>
+    </tr>
+    <tr>
+      <td>6382.05</td>
+      <td>-2.765374</td>
+      <td>2.900806</td>
+      <td>0.166667</td>
+    </tr>
+    <tr>
+      <td>5905.14</td>
+      <td>-2.382924</td>
+      <td>2.544732</td>
+      <td>0.333333</td>
+    </tr>
+    <tr>
+      <td>7183.03</td>
+      <td>-1.980426</td>
+      <td>1.980429</td>
+      <td>0.333333</td>
+    </tr>
+    <tr>
+      <td>6173.08</td>
+      <td>-1.707018</td>
+      <td>1.707018</td>
+      <td>0.500000</td>
+    </tr>
+    <tr>
+      <td>7079.06</td>
+      <td>-1.664218</td>
+      <td>1.664218</td>
+      <td>0.166667</td>
+    </tr>
+    <tr>
+      <td>7014.12</td>
+      <td>-1.648491</td>
+      <td>1.648542</td>
+      <td>0.333333</td>
+    </tr>
+  </tbody>
+</table>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>空间视角</h2>
+          <div class="section-copy">
+            把站点放回地图后，能更容易区分两件事：哪些地方在验证周本来就更忙，以及哪些地方在这次固定预测切片里依然很难拟合。
+          </div>
+        </div>
+      </div>
+      <figure class="visual-full">
+        <img src="assets/station_maps.png" alt="站点地图">
+        <figcaption>
+          左图是验证周的站点平均借出量，右图是这次固定预测切片下的站点 MAE。当前切片里最难的站点是 <strong>6708.04</strong>，MAE 为 <strong>4.04</strong>。
+        </figcaption>
+      </figure>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>TFT 可解释性快照</h2>
+          <div class="section-copy">
+            这里用一页图浓缩了模型在固定验证切片上最依赖的信号：静态站点信息、encoder 侧历史特征、decoder 侧日历特征，以及最近一段历史上的注意力分布。
+          </div>
+        </div>
+      </div>
+      <figure class="visual-full">
+        <img src="assets/interpretation_overview.png" alt="解释性概览">
+        <figcaption>
+          变量重要性是在当前预测切片上聚合得到的，并分别展示了静态、encoder、decoder 三条路径；注意力面板为了更易读，只保留了最近 72 小时。
+        </figcaption>
+      </figure>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>站点预测示例</h2>
+          <div class="section-copy">
+            这些例子挑的是验证周里最活跃的站点，并固定使用 holdout 起点的那一条 6 小时预测序列来展示。
+          </div>
+        </div>
+      </div>
+      <figure class="visual-full">
+        <img src="assets/station_examples.png" alt="站点预测示例">
+        <figcaption>
+          示例站点：6948.10, 6839.10, 6140.05, 6822.09, 6331.01, 6364.07。
+          橙色半透明区域表示 P10-P90 区间，所以这组图不只是单线拟合对比，也能顺手看一下不确定性范围。
+        </figcaption>
+      </figure>
+    </section>
+
+    <div class="footer">
+      报告生成自 <code>/Users/laysath/proj/bike-tft/runs/citibike_tft_h64</code>。如果你想单独查看图片，可以直接打开 <code>assets/</code> 目录；如果想继续做分析，这个报告目录里还附带了站点级和步长级的 CSV 摘要。
+    </div>
+  </main>
+</body>
+</html>

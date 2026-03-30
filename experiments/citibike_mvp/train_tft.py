@@ -160,6 +160,22 @@ def make_datasets(
     return training, validation
 
 
+def save_dataset_artifacts(
+    dataset: TimeSeriesDataSet, outdir: Path, save_full_dataset: bool
+) -> None:
+    """Persist lightweight dataset parameters and optionally the full dataset snapshot."""
+    params_path = outdir / "timeseries_dataset_params.pt"
+    torch.save(dataset.get_parameters(), params_path.as_posix())
+    print(f"Saved dataset parameters: {params_path}")
+
+    if not save_full_dataset:
+        return
+
+    full_dataset_path = outdir / "timeseries_dataset.pkl"
+    dataset.save(full_dataset_path.as_posix())
+    print(f"Saved full TimeSeriesDataSet snapshot: {full_dataset_path}")
+
+
 def build_loggers(args: argparse.Namespace, outdir: Path) -> list[CSVLogger | LitLogger]:
     """Create local and optional Lightning.ai experiment loggers."""
     loggers: list[CSVLogger | LitLogger] = [CSVLogger(save_dir=outdir.as_posix(), name="logs")]
@@ -252,6 +268,16 @@ def main():
         "--ckpt-path",
         default=None,
         help="Resume training from a Lightning checkpoint path",
+    )
+    parser.add_argument(
+        "--save-full-dataset",
+        action=argparse.BooleanOptionalAction,
+        default=False,
+        help=(
+            "Save the full TimeSeriesDataSet snapshot in addition to lightweight "
+            "dataset parameters. This can be much larger because it includes "
+            "encoded training data."
+        ),
     )
     parser.add_argument(
         "--litlogger",
@@ -378,8 +404,8 @@ def main():
     )
     print(f"Best checkpoint: {checkpoint_callback.best_model_path}")
 
-    # Save dataset parameters so later data can reuse same schema
-    train_ds.save((outdir / "timeseries_dataset.pkl").as_posix())
+    # Save dataset configuration needed to rebuild compatible datasets later.
+    save_dataset_artifacts(train_ds, outdir, save_full_dataset=args.save_full_dataset)
 
 
 if __name__ == "__main__":

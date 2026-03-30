@@ -95,7 +95,7 @@
 - 读取站点小时级面板数据
 - 构造 `TimeSeriesDataSet`
 - 训练最小版 TFT
-- 输出日志、checkpoint 和数据集配置
+- 输出日志、checkpoint 和可复用的数据集配置
 
 一句人话理解：
 
@@ -459,6 +459,20 @@ uv run experiments/citibike_mvp/train_tft.py \
 
 - `runs/citibike_tft/logs`
 - `runs/citibike_tft/checkpoints`
+- `runs/citibike_tft/timeseries_dataset_params.pt`
+
+默认情况下，训练脚本只保存轻量版的数据集参数，里面包含重建 `TimeSeriesDataSet` 所需的 schema、encoder 和 scaler，不会把编码后的整份训练数据一并打包进去。
+
+如果你确实需要保存完整的 `TimeSeriesDataSet` 快照，可以额外加：
+
+```bash
+uv run experiments/citibike_mvp/train_tft.py \
+  ... \
+  --save-full-dataset
+```
+
+这时还会额外生成：
+
 - `runs/citibike_tft/timeseries_dataset.pkl`
 
 ## 什么时候算这个 MVP 成功
