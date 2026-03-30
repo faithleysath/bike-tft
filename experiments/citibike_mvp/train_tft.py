@@ -196,6 +196,8 @@ def main():
             loss=QuantileLoss(quantiles=[0.1, 0.5, 0.9]),
             log_interval=10,
             reduce_on_plateau_patience=2,
+            # PyTorch Forecasting defaults this to -1e9, which overflows in float16 AMP.
+            mask_bias=-float("inf"),
         ),
     )
     n_parameters = sum(parameter.numel() for parameter in tft.parameters())

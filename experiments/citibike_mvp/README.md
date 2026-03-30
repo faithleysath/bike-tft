@@ -304,6 +304,14 @@ uv run experiments/citibike_mvp/train_tft.py \
 
 如果显存还有余量并且训练稳定，可以尝试把 `--batch-size` 提到 `512`。如果验证阶段显存吃紧，就退回 `256`。
 
+如果你在较旧的代码或默认配置下看到：
+
+```text
+RuntimeError: value cannot be converted to type c10::Half without overflow
+```
+
+这通常是 `pytorch-forecasting` 的 TFT attention mask 默认 `mask_bias=-1e9` 在 `16-mixed` 下溢出造成的。本仓库训练脚本已经显式把它改成了 `-inf` 以兼容 AMP；如果你跑的是旧版本脚本，临时把 `--precision` 改成 `32-true` 也能先绕过去。
+
 这一步的意义不是说“第一版毕设已经做完”，而是：
 
 - 验证数据链路通了
