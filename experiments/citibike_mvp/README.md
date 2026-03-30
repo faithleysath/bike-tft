@@ -307,7 +307,95 @@ uv run experiments/citibike_mvp/train_tft.py \
   --max-epochs 15
 ```
 
-如果显存还有余量并且训练稳定，可以尝试把 `--batch-size` 提到 `512`。如果验证阶段显存吃紧，就退回 `256`。
+基于当前这份 Citi Bike 数据和仓库里的 TFT 配置，`batch_size=256`、`num_workers=4`、`val_num_workers=4` 是一个比较稳的速度甜点。实际短跑 benchmark 里，把 `batch_size` 提到 `512` 或 `1024` 并没有提升吞吐，反而会变慢，所以更建议把显存余量留给更大的模型。
+
+如果你想在 `RTX 4060 Ti 16GB` 上做正式训练，可以按下面三档来选：
+
+### 第 2.1 步：默认档（速度优先）
+
+适合先拿一个稳定 baseline。按当前 benchmark 粗估，每个 epoch 大约 `37` 到 `38` 分钟。
+
+```bash
+uv run experiments/citibike_mvp/train_tft.py \
+  --data data/processed/station_hour_panel.parquet \
+  --output-dir runs/citibike_tft_cuda \
+  --target dep_count \
+  --max-encoder-length 168 \
+  --max-prediction-length 6 \
+  --validation-horizon 168 \
+  --batch-size 256 \
+  --learning-rate 1e-3 \
+  --hidden-size 32 \
+  --hidden-continuous-size 16 \
+  --attention-head-size 4 \
+  --dropout 0.1 \
+  --num-workers 4 \
+  --val-num-workers 4 \
+  --pin-memory \
+  --precision 16-mixed \
+  --max-epochs 15
+```
+
+### 第 2.2 步：中档（效果优先，时长小幅增加）
+
+适合在默认档基础上尝试更好的效果。按当前 benchmark 粗估，每个 epoch 大约 `45` 分钟。
+
+```bash
+uv run experiments/citibike_mvp/train_tft.py \
+  --data data/processed/station_hour_panel.parquet \
+  --output-dir runs/citibike_tft_h64 \
+  --target dep_count \
+  --max-encoder-length 168 \
+  --max-prediction-length 6 \
+  --validation-horizon 168 \
+  --batch-size 256 \
+  --learning-rate 1e-3 \
+  --hidden-size 64 \
+  --hidden-continuous-size 32 \
+  --attention-head-size 4 \
+  --dropout 0.1 \
+  --num-workers 4 \
+  --val-num-workers 4 \
+  --pin-memory \
+  --precision 16-mixed \
+  --max-epochs 15
+```
+
+### 第 2.3 步：大档（进一步冲效果，时长明显增加）
+
+适合在你确认更大的模型确实能带来收益后再跑。按当前 benchmark 粗估，每个 epoch 大约 `56` 到 `57` 分钟。
+
+```bash
+uv run experiments/citibike_mvp/train_tft.py \
+  --data data/processed/station_hour_panel.parquet \
+  --output-dir runs/citibike_tft_h96 \
+  --target dep_count \
+  --max-encoder-length 168 \
+  --max-prediction-length 6 \
+  --validation-horizon 168 \
+  --batch-size 256 \
+  --learning-rate 1e-3 \
+  --hidden-size 96 \
+  --hidden-continuous-size 48 \
+  --attention-head-size 4 \
+  --dropout 0.1 \
+  --num-workers 4 \
+  --val-num-workers 4 \
+  --pin-memory \
+  --precision 16-mixed \
+  --max-epochs 15
+```
+
+如果你只是想快速比速度或看显存占用，而不是跑完整实验，可以再加：
+
+```bash
+--limit-train-batches 500 \
+--limit-val-batches 20 \
+--num-sanity-val-steps 0 \
+--no-litlogger
+```
+
+训练脚本会额外打印每个 epoch 的 `train loop` 和 `full loop (train+val)` 时间，方便直接对比吞吐。
 
 如果你在较旧的代码或默认配置下看到：
 
