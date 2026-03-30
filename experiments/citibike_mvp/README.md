@@ -282,6 +282,7 @@ uv run experiments/citibike_mvp/train_tft.py \
 - `--val-num-workers`：验证 DataLoader 的 worker 数，默认跟 `--num-workers` 一样
 - `--pin-memory`：在 CUDA 上通常有帮助；在 Mac MPS 上一般不用开
 - `--precision`：Lightning 精度模式；CUDA 上常用 `16-mixed`
+- `--ckpt-path`：从已有 Lightning checkpoint 继续训练
 - `--no-litlogger`：只保留本地 `CSVLogger`，不上传到 Lightning.ai
 - `--litlogger-name`：覆盖 Lightning.ai 上显示的实验名
 - `--litlogger-teamspace`：把 run 上传到指定 teamspace
@@ -337,6 +338,28 @@ uv run lightning login
 ```
 
 这个选项会让 `litlogger` 用一个 recorder 包裹训练进程来抓 stdout/stderr，所以第一次启动时看到它“接管”一下进程是正常的。
+
+训练脚本现在还会在每次 checkpoint 保存时维护一个 `last.ckpt`，方便断点恢复。常见的恢复方式是：
+
+```bash
+uv run experiments/citibike_mvp/train_tft.py \
+  --data data/processed/station_hour_panel.parquet \
+  --output-dir runs/citibike_tft_cuda \
+  --target dep_count \
+  --max-encoder-length 168 \
+  --max-prediction-length 6 \
+  --validation-horizon 168 \
+  --batch-size 256 \
+  --learning-rate 1e-3 \
+  --num-workers 4 \
+  --val-num-workers 4 \
+  --pin-memory \
+  --precision 16-mixed \
+  --max-epochs 15 \
+  --ckpt-path runs/citibike_tft_cuda/checkpoints/last.ckpt
+```
+
+用 `--ckpt-path` 恢复时，Lightning 会自动读取 checkpoint 里的 epoch、global step、optimizer 和 scheduler 状态，然后从对应进度继续训练。
 
 这一步的意义不是说“第一版毕设已经做完”，而是：
 

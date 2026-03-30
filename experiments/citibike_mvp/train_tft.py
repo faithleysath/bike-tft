@@ -165,6 +165,11 @@ def main():
         help="Lightning precision mode, e.g. 32-true or 16-mixed",
     )
     parser.add_argument(
+        "--ckpt-path",
+        default=None,
+        help="Resume training from a Lightning checkpoint path",
+    )
+    parser.add_argument(
         "--litlogger",
         action=argparse.BooleanOptionalAction,
         default=True,
@@ -198,6 +203,11 @@ def main():
         parser.error("--num-workers must be non-negative")
     if args.val_num_workers is not None and args.val_num_workers < 0:
         parser.error("--val-num-workers must be non-negative")
+    ckpt_path = None
+    if args.ckpt_path is not None:
+        ckpt_path = project_path(args.ckpt_path)
+        if not ckpt_path.exists():
+            parser.error(f"--ckpt-path does not exist: {ckpt_path}")
 
     pl.seed_everything(args.seed)
     # Better Tensor Core utilization on recent NVIDIA GPUs.
@@ -232,6 +242,7 @@ def main():
         monitor="val_loss",
         mode="min",
         save_top_k=1,
+        save_last=True,
     )
     loggers = build_loggers(args, outdir)
 
@@ -266,7 +277,14 @@ def main():
     n_parameters = sum(parameter.numel() for parameter in tft.parameters())
     print(f"Number of parameters: {n_parameters / 1e3:.1f}k")
 
-    trainer.fit(tft, train_dataloaders=train_loader, val_dataloaders=val_loader)
+    if ckpt_path is not None:
+        print(f"Resuming from checkpoint: {ckpt_path}")
+    trainer.fit(
+        tft,
+        train_dataloaders=train_loader,
+        val_dataloaders=val_loader,
+        ckpt_path=ckpt_path.as_posix() if ckpt_path is not None else None,
+    )
     print(f"Best checkpoint: {checkpoint_callback.best_model_path}")
 
     # Save dataset parameters so later data can reuse same schema
