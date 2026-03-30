@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 import argparse
 from pathlib import Path
-from typing import cast
+from typing import Any, cast
 
 import lightning.pytorch as pl
 import pandas as pd
+import torch
 from lightning.pytorch.callbacks import EarlyStopping, LearningRateMonitor, ModelCheckpoint
-from lightning.pytorch.loggers import CSVLogger
+from lightning.pytorch.loggers import CSVLogger, LitLogger
 from pytorch_forecasting import TemporalFusionTransformer, TimeSeriesDataSet
 from pytorch_forecasting.data import GroupNormalizer
 from pytorch_forecasting.metrics import QuantileLoss
@@ -99,6 +100,38 @@ def make_datasets(
     return training, validation
 
 
+def build_loggers(args: argparse.Namespace, outdir: Path) -> list[CSVLogger | LitLogger]:
+    """Create local and optional Lightning.ai experiment loggers."""
+    loggers: list[CSVLogger | LitLogger] = [CSVLogger(save_dir=outdir.as_posix(), name="logs")]
+    if not args.litlogger:
+        return loggers
+
+    try:
+        lit_logger = LitLogger(
+            root_dir=(outdir / "lightning_logs").as_posix(),
+            name=args.litlogger_name or outdir.name,
+            teamspace=args.litlogger_teamspace,
+            metadata={
+                "target": args.target,
+                "precision": args.precision,
+                "batch_size": str(args.batch_size),
+                "max_encoder_length": str(args.max_encoder_length),
+                "max_prediction_length": str(args.max_prediction_length),
+            },
+            log_model=args.litlogger_log_model,
+            save_logs=args.litlogger_save_logs,
+            checkpoint_name="best",
+        )
+        print(f"Lightning.ai experiment URL: {lit_logger.url}")
+        loggers.append(lit_logger)
+    except Exception as exc:
+        print(
+            "LitLogger unavailable; continuing with local CSV logs only. "
+            f"Reason: {exc}"
+        )
+    return loggers
+
+
 def main():
     parser = argparse.ArgumentParser(description="Train TFT on station-time panel")
     parser.add_argument("--data", required=True, help="Path to station_hour_panel.parquet")
@@ -131,6 +164,34 @@ def main():
         default="32-true",
         help="Lightning precision mode, e.g. 32-true or 16-mixed",
     )
+    parser.add_argument(
+        "--litlogger",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Enable Lightning.ai experiment tracking when credentials are available",
+    )
+    parser.add_argument(
+        "--litlogger-name",
+        default=None,
+        help="Experiment name shown in Lightning.ai; defaults to the output directory name",
+    )
+    parser.add_argument(
+        "--litlogger-teamspace",
+        default=None,
+        help="Lightning.ai teamspace to upload the run into",
+    )
+    parser.add_argument(
+        "--litlogger-log-model",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Upload saved checkpoints to Lightning.ai when LitLogger is enabled",
+    )
+    parser.add_argument(
+        "--litlogger-save-logs",
+        action=argparse.BooleanOptionalAction,
+        default=False,
+        help="Capture terminal stdout/stderr in Lightning.ai; may re-exec the process under a recorder",
+    )
     parser.add_argument("--seed", type=int, default=42)
     args = parser.parse_args()
     if args.num_workers < 0:
@@ -139,6 +200,8 @@ def main():
         parser.error("--val-num-workers must be non-negative")
 
     pl.seed_everything(args.seed)
+    # Better Tensor Core utilization on recent NVIDIA GPUs.
+    torch.set_float32_matmul_precision("high")
     outdir = project_path(args.output_dir)
     outdir.mkdir(parents=True, exist_ok=True)
 
@@ -170,7 +233,7 @@ def main():
         mode="min",
         save_top_k=1,
     )
-    logger = CSVLogger(save_dir=outdir.as_posix(), name="logs")
+    loggers = build_loggers(args, outdir)
 
     trainer = pl.Trainer(
         max_epochs=args.max_epochs,
@@ -179,7 +242,7 @@ def main():
         precision=args.precision,
         gradient_clip_val=0.1,
         callbacks=[lr_logger, early_stop_callback, checkpoint_callback],
-        logger=logger,
+        logger=cast(Any, loggers),
         log_every_n_steps=20,
         enable_model_summary=True,
     )

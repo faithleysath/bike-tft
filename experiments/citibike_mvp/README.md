@@ -282,6 +282,10 @@ uv run experiments/citibike_mvp/train_tft.py \
 - `--val-num-workers`：验证 DataLoader 的 worker 数，默认跟 `--num-workers` 一样
 - `--pin-memory`：在 CUDA 上通常有帮助；在 Mac MPS 上一般不用开
 - `--precision`：Lightning 精度模式；CUDA 上常用 `16-mixed`
+- `--no-litlogger`：只保留本地 `CSVLogger`，不上传到 Lightning.ai
+- `--litlogger-name`：覆盖 Lightning.ai 上显示的实验名
+- `--litlogger-teamspace`：把 run 上传到指定 teamspace
+- `--litlogger-save-logs`：把终端 stdout/stderr 也抓到 Lightning.ai
 
 如果你在一台带 `RTX 4060 Ti 16GB` 的机器上训练，推荐先从下面这组参数起步：
 
@@ -311,6 +315,28 @@ RuntimeError: value cannot be converted to type c10::Half without overflow
 ```
 
 这通常是 `pytorch-forecasting` 的 TFT attention mask 默认 `mask_bias=-1e9` 在 `16-mixed` 下溢出造成的。本仓库训练脚本已经显式把它改成了 `-inf` 以兼容 AMP；如果你跑的是旧版本脚本，临时把 `--precision` 改成 `32-true` 也能先绕过去。
+
+训练脚本现在会默认同时启用本地 `CSVLogger` 和 Lightning.ai `LitLogger`。启动训练后会打印一条 `Lightning.ai experiment URL: ...`，直接打开就能看网页端的曲线、参数和 checkpoint。若当前环境还没登录 Lightning.ai，`litlogger` 会自动以 guest 模式创建一个可访问链接；只有在 logger 初始化真正失败时，脚本才会自动回退到本地 CSV 日志。
+
+第一次在机器上启用 Lightning.ai 时，可以先运行：
+
+```bash
+uv run lightning login
+```
+
+如果你只想保留本地文件日志，不想上传网页平台，就在训练命令后面加上：
+
+```bash
+--no-litlogger
+```
+
+如果你还想把终端里的训练输出一并同步到 Lightning.ai，再额外加上：
+
+```bash
+--litlogger-save-logs
+```
+
+这个选项会让 `litlogger` 用一个 recorder 包裹训练进程来抓 stdout/stderr，所以第一次启动时看到它“接管”一下进程是正常的。
 
 这一步的意义不是说“第一版毕设已经做完”，而是：
 
