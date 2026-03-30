@@ -81,7 +81,7 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--input-dir",
-        default="data/raw/citi-bike-nyc",
+        default="data/raw/stage_01_citibike_mvp/citi-bike-nyc",
         help="Directory containing CSV files to inspect.",
     )
     parser.add_argument(
@@ -91,7 +91,7 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--output",
-        default="data/processed/citibike_csv_field_metadata.json",
+        default="data/processed/stage_01_citibike_mvp/citibike_csv_field_metadata.json",
         help="Path to the JSON metadata output file.",
     )
     parser.add_argument(

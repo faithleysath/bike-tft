@@ -16,8 +16,6 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from experiments.citibike_mvp.train_tft import load_data, make_datasets
-
 plt.style.use("dark_background")
 ACCENT = "#f4a261"
 ACCENT_COOL = "#7fd1b9"
@@ -27,6 +25,12 @@ PANEL = "#131f33"
 GRID = "#33415c"
 TEXT = "#eef2ff"
 MUTED = "#94a3b8"
+
+
+def load_training_helpers():
+    from stages.stage_01_citibike_mvp.train_tft import load_data, make_datasets
+
+    return load_data, make_datasets
 
 
 def project_path(value: str | Path) -> Path:
@@ -1133,6 +1137,7 @@ def build_html_report(
 def main() -> None:
     args = parse_args()
     configure_matplotlib()
+    load_stage_data, make_stage_datasets = load_training_helpers()
 
     run_dir = project_path(args.run_dir)
     output_dir = project_path(args.output_dir) if args.output_dir else run_dir / "report"
@@ -1143,7 +1148,7 @@ def main() -> None:
     checkpoint_path = load_best_checkpoint(run_dir)
     checkpoint = load_checkpoint_metadata(checkpoint_path)
 
-    df = load_data(args.data)
+    df = load_stage_data(args.data)
     val_df, validation_summary = compute_validation_summary(df, validation_horizon=args.validation_horizon)
     baselines = compute_baselines(df, validation_horizon=args.validation_horizon)
     station_metadata = compute_station_metadata(df, val_df)
@@ -1159,7 +1164,7 @@ def main() -> None:
     )
     plot_validation_distribution(val_df, assets_dir / "validation_distribution.png")
 
-    train_ds, val_ds = make_datasets(
+    train_ds, val_ds = make_stage_datasets(
         df,
         argparse.Namespace(
             target=checkpoint["dataset_parameters"]["target"],

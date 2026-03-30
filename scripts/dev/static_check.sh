@@ -6,5 +6,5 @@ PROJECT_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 
 cd "${PROJECT_ROOT}"
 
-uv run ruff check experiments scripts
+uv run ruff check stages scripts
 uv run pyright

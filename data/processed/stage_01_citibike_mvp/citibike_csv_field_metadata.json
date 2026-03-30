@@ -1,6 +1,6 @@
 {
   "generated_at": "2026-03-28T11:54:14.857331+00:00",
-  "input_dir": "data/raw/citi-bike-nyc",
+  "input_dir": "data/raw/stage_01_citibike_mvp/citi-bike-nyc",
   "pattern": "*.csv",
   "file_count": 12,
   "files": [

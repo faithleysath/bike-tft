@@ -34,7 +34,7 @@ extend-exclude = [
 
 [tool.pyright]
 include = [
-    "experiments",
+    "stages",
     "scripts",
 ]
 exclude = [
