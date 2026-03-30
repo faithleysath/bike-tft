@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 import argparse
 from pathlib import Path
+from time import perf_counter
 from typing import Any, cast
 
 import lightning.pytorch as pl
 import pandas as pd
 import torch
-from lightning.pytorch.callbacks import EarlyStopping, LearningRateMonitor, ModelCheckpoint
+from lightning.pytorch.callbacks import Callback, EarlyStopping, LearningRateMonitor, ModelCheckpoint
 from lightning.pytorch.loggers import CSVLogger, LitLogger
 from pytorch_forecasting import TemporalFusionTransformer, TimeSeriesDataSet
 from pytorch_forecasting.data import GroupNormalizer
@@ -48,6 +49,65 @@ def project_path(value: str | Path) -> Path:
 def as_frame(value: object) -> pd.DataFrame:
     """Help pyright treat pandas filtering operations as DataFrames."""
     return cast(pd.DataFrame, value)
+
+
+def parse_limit_batches(value: str) -> int | float:
+    """Parse Lightning limit_*_batches arguments as int or fraction."""
+    parsed = float(value)
+    if parsed <= 0:
+        raise argparse.ArgumentTypeError("batch limits must be positive")
+    if parsed.is_integer():
+        return int(parsed)
+    if parsed <= 1:
+        return parsed
+    raise argparse.ArgumentTypeError(
+        "batch limits must be a positive integer or a float fraction in (0, 1]"
+    )
+
+
+class EpochTimingCallback(Callback):
+    """Print lightweight epoch timing so short benchmark runs are easier to compare."""
+
+    def __init__(self, train_batch_size: int) -> None:
+        self.train_batch_size = train_batch_size
+        self._train_epoch_start: float | None = None
+        self._full_epoch_start: float | None = None
+        self._train_loop_reported = False
+
+    def on_train_epoch_start(self, trainer: pl.Trainer, pl_module: pl.LightningModule) -> None:
+        now = perf_counter()
+        self._train_epoch_start = now
+        self._full_epoch_start = now
+        self._train_loop_reported = False
+
+    def _print_train_loop_timing(self, trainer: pl.Trainer) -> None:
+        if self._train_epoch_start is None:
+            return
+        elapsed = perf_counter() - self._train_epoch_start
+        if elapsed <= 0:
+            return
+        batches = trainer.num_training_batches
+        samples_per_second = batches * self.train_batch_size / elapsed
+        print(
+            f"Epoch {trainer.current_epoch} train loop: {elapsed:.1f}s, "
+            f"{batches} batches, ~{samples_per_second:.1f} window samples/s"
+        )
+        self._train_loop_reported = True
+
+    def on_validation_epoch_start(self, trainer: pl.Trainer, pl_module: pl.LightningModule) -> None:
+        if trainer.sanity_checking:
+            return
+        self._print_train_loop_timing(trainer)
+
+    def on_validation_epoch_end(self, trainer: pl.Trainer, pl_module: pl.LightningModule) -> None:
+        if trainer.sanity_checking or self._full_epoch_start is None:
+            return
+        elapsed = perf_counter() - self._full_epoch_start
+        print(f"Epoch {trainer.current_epoch} full loop (train+val): {elapsed:.1f}s")
+
+    def on_train_epoch_end(self, trainer: pl.Trainer, pl_module: pl.LightningModule) -> None:
+        if not self._train_loop_reported:
+            self._print_train_loop_timing(trainer)
 
 
 def load_data(path: str | Path) -> pd.DataFrame:
@@ -165,6 +225,30 @@ def main():
         help="Lightning precision mode, e.g. 32-true or 16-mixed",
     )
     parser.add_argument(
+        "--limit-train-batches",
+        type=parse_limit_batches,
+        default=1.0,
+        help="Lightning limit_train_batches value; integer batches or fraction of an epoch",
+    )
+    parser.add_argument(
+        "--limit-val-batches",
+        type=parse_limit_batches,
+        default=1.0,
+        help="Lightning limit_val_batches value; integer batches or fraction of validation",
+    )
+    parser.add_argument(
+        "--num-sanity-val-steps",
+        type=int,
+        default=2,
+        help="Lightning num_sanity_val_steps; set to 0 for cleaner throughput benchmarks",
+    )
+    parser.add_argument(
+        "--profiler",
+        choices=["simple", "advanced"],
+        default=None,
+        help="Optional Lightning profiler for debugging throughput bottlenecks",
+    )
+    parser.add_argument(
         "--ckpt-path",
         default=None,
         help="Resume training from a Lightning checkpoint path",
@@ -203,6 +287,8 @@ def main():
         parser.error("--num-workers must be non-negative")
     if args.val_num_workers is not None and args.val_num_workers < 0:
         parser.error("--val-num-workers must be non-negative")
+    if args.num_sanity_val_steps < 0:
+        parser.error("--num-sanity-val-steps must be non-negative")
     ckpt_path = None
     if args.ckpt_path is not None:
         ckpt_path = project_path(args.ckpt_path)
@@ -236,6 +322,7 @@ def main():
 
     early_stop_callback = EarlyStopping(monitor="val_loss", min_delta=1e-4, patience=3, verbose=True, mode="min")
     lr_logger = LearningRateMonitor(logging_interval="epoch")
+    epoch_timing_callback = EpochTimingCallback(train_batch_size=args.batch_size)
     checkpoint_callback = ModelCheckpoint(
         dirpath=outdir / "checkpoints",
         filename="best-{epoch:02d}-{val_loss:.4f}",
@@ -252,10 +339,14 @@ def main():
         devices=1,
         precision=args.precision,
         gradient_clip_val=0.1,
-        callbacks=[lr_logger, early_stop_callback, checkpoint_callback],
+        callbacks=[lr_logger, early_stop_callback, checkpoint_callback, epoch_timing_callback],
         logger=cast(Any, loggers),
         log_every_n_steps=20,
+        limit_train_batches=args.limit_train_batches,
+        limit_val_batches=args.limit_val_batches,
+        num_sanity_val_steps=args.num_sanity_val_steps,
         enable_model_summary=True,
+        profiler=args.profiler,
     )
 
     tft = cast(
