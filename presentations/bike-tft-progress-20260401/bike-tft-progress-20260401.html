@@ -1,0 +1,2448 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="projection">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>共享单车需求预测与智能调度｜组会进展汇报</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&amp;family=Sora:wght@400;600;700;800&amp;display=swap"
+    >
+    <style>
+        :root {
+            --bg-primary: #f6f0e6;
+            --bg-secondary: #efe5d5;
+            --bg-card: rgba(255, 252, 246, 0.78);
+            --bg-strong: #15263a;
+            --paper-shadow: 0 30px 80px rgba(21, 38, 58, 0.14);
+            --text-primary: #182330;
+            --text-secondary: #2e3d4f;
+            --text-muted: #675f56;
+            --accent: #c65c33;
+            --accent-soft: #efc5b1;
+            --accent-2: #246a73;
+            --accent-2-soft: #bdd7d9;
+            --line: rgba(24, 35, 48, 0.1);
+            --line-strong: rgba(24, 35, 48, 0.18);
+            --success: #40644a;
+            --warning: #8d5b21;
+            --danger: #8f3d36;
+            --font-display: "Noto Sans SC", sans-serif;
+            --font-body: "Noto Sans SC", sans-serif;
+            --font-display-en: "Sora", sans-serif;
+            --font-body-en: "Sora", sans-serif;
+            --line-height-zh: 1.8;
+            --letter-spacing-zh: 0.02em;
+            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+            --title-size: clamp(1.5rem, 5vw, 4rem);
+            --h2-size: clamp(1.25rem, 3.5vw, 2.5rem);
+            --h3-size: clamp(1rem, 2.5vw, 1.75rem);
+            --body-size: clamp(0.75rem, 1.5vw, 1.125rem);
+            --small-size: clamp(0.65rem, 1vw, 0.875rem);
+            --slide-padding: clamp(1rem, 4vw, 4rem);
+            --content-gap: clamp(0.5rem, 2vw, 2rem);
+            --element-gap: clamp(0.25rem, 1vw, 1rem);
+            --big-number: clamp(2.4rem, 7vw, 4.5rem);
+        }
+
+        .projection:root {
+            --title-size: clamp(2.8rem, 6.5vw, 5rem);
+            --h2-size: clamp(1.8rem, 4.2vw, 3rem);
+            --h3-size: clamp(1.3rem, 2.8vw, 1.9rem);
+            --body-size: clamp(1.05rem, 1.8vw, 1.35rem);
+            --small-size: clamp(0.88rem, 1.3vw, 1.1rem);
+            --slide-padding: clamp(2.5rem, 6vw, 6rem);
+            --content-gap: clamp(1.2rem, 3vw, 2.5rem);
+            --element-gap: clamp(0.3rem, 1vw, 0.8rem);
+            --big-number: clamp(3rem, 7vw, 5rem);
+        }
+
+        html, body {
+            height: 100%;
+            overflow-x: hidden;
+        }
+
+        html {
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+            background: var(--bg-primary);
+        }
+
+        body {
+            margin: 0;
+            color: var(--text-primary);
+            font-family: var(--font-body-en), var(--font-body);
+            line-height: var(--line-height-zh);
+            letter-spacing: var(--letter-spacing-zh);
+            font-feature-settings: "halt";
+            text-align: justify;
+            overflow-wrap: break-word;
+            background:
+                radial-gradient(circle at 12% 14%, rgba(198, 92, 51, 0.16), transparent 28%),
+                radial-gradient(circle at 86% 14%, rgba(36, 106, 115, 0.12), transparent 24%),
+                linear-gradient(180deg, #f8f3eb 0%, #f4ede1 100%);
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background-image:
+                linear-gradient(to right, rgba(24, 35, 48, 0.045) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(24, 35, 48, 0.045) 1px, transparent 1px);
+            background-size: 48px 48px;
+            opacity: 0.45;
+            mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.55), transparent 90%);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            margin: 0;
+            text-align: left;
+            letter-spacing: 0.04em;
+            line-height: 1.4;
+            color: var(--text-primary);
+        }
+
+        p {
+            margin: 0;
+        }
+
+        code {
+            font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+            font-size: 0.92em;
+            padding: 0.12em 0.4em;
+            border-radius: 8px;
+            background: rgba(21, 38, 58, 0.08);
+            color: var(--text-primary);
+        }
+
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            width: 100%;
+            background: rgba(24, 35, 48, 0.08);
+            z-index: 30;
+        }
+
+        .progress-bar::after {
+            content: "";
+            display: block;
+            width: var(--progress, 0%);
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--accent-2));
+            transition: width 0.5s var(--ease-out-expo);
+        }
+
+        .nav-dots {
+            position: fixed;
+            right: clamp(0.8rem, 2vw, 1.5rem);
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 25;
+            display: flex;
+            flex-direction: column;
+            gap: 0.65rem;
+        }
+
+        .nav-dot {
+            width: 0.8rem;
+            height: 0.8rem;
+            border-radius: 999px;
+            border: 1px solid rgba(24, 35, 48, 0.24);
+            background: rgba(255, 255, 255, 0.55);
+            cursor: pointer;
+            transition: transform 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .nav-dot.active {
+            transform: scale(1.18);
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .slide {
+            width: 100vw;
+            height: 100vh;
+            height: 100dvh;
+            overflow: hidden;
+            scroll-snap-align: start;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            isolation: isolate;
+        }
+
+        .slide::before {
+            content: "";
+            position: absolute;
+            inset: clamp(1rem, 3vw, 2rem);
+            border: 1px solid rgba(24, 35, 48, 0.08);
+            border-radius: 28px;
+            pointer-events: none;
+        }
+
+        .slide-content {
+            flex: 1;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            max-width: min(100%, 1200px);
+            padding: var(--slide-padding);
+            gap: var(--content-gap);
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .slide-number {
+            position: absolute;
+            top: clamp(1.2rem, 3vw, 2.2rem);
+            right: clamp(1.8rem, 5vw, 4rem);
+            font-family: var(--font-display-en);
+            font-size: clamp(0.85rem, 1.4vw, 1.1rem);
+            font-weight: 700;
+            color: var(--text-muted);
+            letter-spacing: 0.16em;
+        }
+
+        .tag {
+            display: inline-block;
+            align-self: flex-start;
+            font-size: var(--body-size);
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            font-weight: 700;
+            margin-bottom: clamp(0.4rem, 1.3vw, 0.9rem);
+            font-family: var(--font-body-en), var(--font-body);
+        }
+
+        .eyebrow {
+            font-size: var(--small-size);
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+        }
+
+        .lede {
+            max-width: min(100%, 820px);
+            font-size: clamp(1.05rem, 2.1vw, 1.45rem);
+            color: var(--text-secondary);
+        }
+
+        .muted {
+            color: var(--text-muted);
+        }
+
+        .panel {
+            background: var(--bg-card);
+            border: 1px solid var(--line);
+            border-radius: 24px;
+            box-shadow: var(--paper-shadow);
+            backdrop-filter: blur(10px);
+        }
+
+        .title-slide {
+            background:
+                radial-gradient(circle at 18% 22%, rgba(198, 92, 51, 0.2), transparent 28%),
+                radial-gradient(circle at 82% 22%, rgba(36, 106, 115, 0.15), transparent 26%),
+                linear-gradient(135deg, #fbf8f1 0%, #efe6d7 100%);
+        }
+
+        .title-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(19rem, 23rem);
+            grid-template-areas:
+                "main main"
+                "status note";
+            column-gap: clamp(1.2rem, 2.6vw, 2.6rem);
+            row-gap: clamp(1.1rem, 2.2vw, 2rem);
+            align-items: end;
+        }
+
+        .title-main {
+            grid-area: main;
+            max-width: 100%;
+        }
+
+        .title-main h1 {
+            font-size: clamp(3.3rem, 5.5vw, 5.1rem);
+            line-height: 1.04;
+            letter-spacing: 0.012em;
+            max-width: 12em;
+        }
+
+        .title-main h1 span {
+            display: block;
+            white-space: nowrap;
+        }
+
+        .title-main h1 .title-line-tight {
+            letter-spacing: 0.01em;
+        }
+
+        .title-sub {
+            margin-top: clamp(0.9rem, 1.8vw, 1.3rem);
+            max-width: 46rem;
+            font-size: clamp(1.08rem, 1.9vw, 1.42rem);
+            color: var(--text-secondary);
+        }
+
+        .status-strip {
+            grid-area: status;
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0.9rem;
+            max-width: 52rem;
+        }
+
+        .status-pill {
+            padding: 1rem 1.15rem;
+            border-radius: 18px;
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.72);
+        }
+
+        .status-pill strong,
+        .status-pill span {
+            display: block;
+            text-align: left;
+        }
+
+        .status-pill strong {
+            font-family: var(--font-display-en);
+            font-size: clamp(0.95rem, 1.8vw, 1.2rem);
+            color: var(--text-primary);
+        }
+
+        .status-pill span {
+            margin-top: 0.25rem;
+            font-size: var(--small-size);
+            color: var(--text-muted);
+        }
+
+        .meeting-note {
+            grid-area: note;
+            padding: clamp(1.2rem, 2vw, 1.5rem);
+            border-radius: 24px;
+            background: linear-gradient(180deg, rgba(21, 38, 58, 0.98), rgba(24, 45, 68, 0.95));
+            color: #f5efe8;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 24px 60px rgba(21, 38, 58, 0.22);
+            max-width: 24rem;
+            justify-self: end;
+            align-self: end;
+        }
+
+        .meeting-note .eyebrow {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .meeting-note h3 {
+            margin-top: 0.5rem;
+            font-size: clamp(1.25rem, 2.6vw, 1.8rem);
+            color: #fffaf3;
+        }
+
+        .meeting-note p {
+            margin-top: 0.8rem;
+            color: rgba(255, 250, 243, 0.86);
+            font-size: var(--body-size);
+        }
+
+        .roadmap-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 1rem;
+        }
+
+        .stage-card {
+            padding: 1.2rem;
+            border-radius: 22px;
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.74);
+            display: flex;
+            flex-direction: column;
+            gap: 0.7rem;
+            min-height: 18rem;
+        }
+
+        .stage-card.current {
+            background: linear-gradient(180deg, rgba(198, 92, 51, 0.12), rgba(255, 255, 255, 0.82));
+            border-color: rgba(198, 92, 51, 0.3);
+            transform: translateY(calc(-1 * clamp(0.2rem, 0.7vw, 0.5rem)));
+        }
+
+        .stage-card.complete {
+            background: linear-gradient(180deg, rgba(36, 106, 115, 0.11), rgba(255, 255, 255, 0.82));
+            border-color: rgba(36, 106, 115, 0.28);
+        }
+
+        .stage-card .stage-code {
+            font-family: var(--font-display-en);
+            font-size: var(--small-size);
+            letter-spacing: 0.18em;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .stage-card h3 {
+            font-size: clamp(1.05rem, 2vw, 1.4rem);
+        }
+
+        .stage-card p {
+            font-size: var(--small-size);
+            color: var(--text-secondary);
+        }
+
+        .stage-status {
+            margin-top: auto;
+            display: inline-flex;
+            align-self: flex-start;
+            padding: 0.35rem 0.7rem;
+            border-radius: 999px;
+            font-size: var(--small-size);
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .stage-status.complete {
+            background: rgba(64, 100, 74, 0.12);
+            color: var(--success);
+        }
+
+        .stage-status.current {
+            background: rgba(198, 92, 51, 0.12);
+            color: var(--accent);
+        }
+
+        .stage-status.pending {
+            background: rgba(24, 35, 48, 0.08);
+            color: var(--text-secondary);
+        }
+
+        .flow {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            align-items: stretch;
+        }
+
+        .flow-step {
+            padding: 1.2rem;
+            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid var(--line);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            min-height: 13rem;
+        }
+
+        .flow-step::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            right: -0.8rem;
+            width: 1.6rem;
+            height: 1px;
+            background: var(--line-strong);
+        }
+
+        .flow-step:last-child::after {
+            display: none;
+        }
+
+        .flow-step .step-index {
+            font-family: var(--font-display-en);
+            font-size: clamp(0.95rem, 1.5vw, 1.1rem);
+            letter-spacing: 0.16em;
+            color: var(--accent);
+        }
+
+        .flow-step h3 {
+            font-size: clamp(1.1rem, 2vw, 1.45rem);
+        }
+
+        .flow-step p {
+            font-size: var(--small-size);
+            color: var(--text-secondary);
+        }
+
+        .architecture-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1.02fr) 3rem minmax(0, 1.12fr) 3rem minmax(0, 0.76fr);
+            gap: 0.9rem;
+            align-items: stretch;
+        }
+
+        .input-stack {
+            display: grid;
+            grid-template-rows: repeat(3, minmax(0, 1fr));
+            gap: 0.85rem;
+        }
+
+        .arch-card {
+            padding: 1.05rem 1.1rem;
+            border-radius: 24px;
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.8);
+            display: flex;
+            flex-direction: column;
+            gap: 0.7rem;
+            min-height: 0;
+        }
+
+        .arch-card h3 {
+            font-size: clamp(1.12rem, 2vw, 1.45rem);
+            line-height: 1.35;
+        }
+
+        .arch-kicker {
+            font-family: var(--font-display-en);
+            font-size: clamp(0.82rem, 1.2vw, 0.95rem);
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--accent);
+        }
+
+        .arch-arrow {
+            position: relative;
+            align-self: center;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, rgba(198, 92, 51, 0.2), rgba(36, 106, 115, 0.42));
+            border-radius: 99px;
+        }
+
+        .arch-arrow::after {
+            content: "";
+            position: absolute;
+            right: -0.05rem;
+            top: 50%;
+            transform: translateY(-50%);
+            border-top: 0.45rem solid transparent;
+            border-bottom: 0.45rem solid transparent;
+            border-left: 0.7rem solid var(--accent-2);
+        }
+
+        .arch-core {
+            background: linear-gradient(180deg, rgba(36, 106, 115, 0.08), rgba(255, 255, 255, 0.86));
+            border-color: rgba(36, 106, 115, 0.2);
+        }
+
+        .module-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0.7rem;
+        }
+
+        .module-chip {
+            padding: 0.75rem 0.8rem;
+            border-radius: 18px;
+            border: 1px solid rgba(24, 35, 48, 0.1);
+            background: rgba(255, 255, 255, 0.72);
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+            min-height: 5rem;
+        }
+
+        .module-chip strong {
+            font-size: var(--small-size);
+            color: var(--text-primary);
+        }
+
+        .module-chip span {
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .arch-output {
+            background: linear-gradient(180deg, rgba(21, 38, 58, 0.98), rgba(24, 45, 68, 0.95));
+            border-color: rgba(255, 255, 255, 0.08);
+            color: #f7f1ea;
+            box-shadow: 0 24px 60px rgba(21, 38, 58, 0.18);
+        }
+
+        .arch-output h3,
+        .arch-output p,
+        .arch-output strong,
+        .arch-output .arch-kicker {
+            color: #fffaf3;
+        }
+
+        .horizon-strip {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0.45rem;
+        }
+
+        .horizon-strip span {
+            padding: 0.45rem 0.2rem;
+            border-radius: 999px;
+            text-align: center;
+            font-family: var(--font-display-en);
+            font-size: 0.82rem;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .quantile-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .quant-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.55rem 0.75rem;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .quant-row strong {
+            font-family: var(--font-display-en);
+            font-size: 0.88rem;
+            letter-spacing: 0.08em;
+        }
+
+        .quant-row span {
+            font-size: 0.82rem;
+            color: rgba(255, 250, 243, 0.82);
+        }
+
+        .architecture-slide .slide-content {
+            justify-content: flex-start;
+            gap: clamp(0.75rem, 1.6vw, 1.15rem);
+            padding-top: clamp(2.2rem, 4.2vw, 3.4rem);
+        }
+
+        .architecture-slide h2 {
+            font-size: clamp(1.85rem, 3.4vw, 2.7rem);
+        }
+
+        .architecture-slide .lede {
+            max-width: 66rem;
+            font-size: clamp(0.98rem, 1.55vw, 1.18rem);
+        }
+
+        .architecture-slide .architecture-layout {
+            gap: 0.75rem;
+        }
+
+        .architecture-slide .arch-card {
+            padding: 0.85rem 0.9rem;
+            gap: 0.5rem;
+        }
+
+        .architecture-slide .arch-card h3 {
+            font-size: clamp(1rem, 1.7vw, 1.24rem);
+        }
+
+        .architecture-slide .bullet-list {
+            gap: 0.38rem;
+        }
+
+        .architecture-slide .bullet-list li {
+            font-size: 0.8rem;
+        }
+
+        .architecture-slide .module-grid {
+            gap: 0.55rem;
+        }
+
+        .architecture-slide .module-chip {
+            min-height: 4.25rem;
+            padding: 0.58rem 0.62rem;
+        }
+
+        .architecture-slide .module-chip strong {
+            font-size: 0.78rem;
+        }
+
+        .architecture-slide .module-chip span {
+            font-size: 0.74rem;
+            line-height: 1.45;
+        }
+
+        .architecture-slide .horizon-strip {
+            gap: 0.36rem;
+        }
+
+        .architecture-slide .horizon-strip span {
+            font-size: 0.76rem;
+            padding: 0.36rem 0.18rem;
+        }
+
+        .architecture-slide .quantile-stack {
+            gap: 0.38rem;
+        }
+
+        .architecture-slide .quant-row {
+            padding: 0.45rem 0.6rem;
+        }
+
+        .architecture-slide .quant-row strong {
+            font-size: 0.78rem;
+        }
+
+        .architecture-slide .quant-row span {
+            font-size: 0.72rem;
+        }
+
+        .architecture-slide .callout {
+            padding: 0.75rem 0.9rem;
+            font-size: 0.92rem;
+        }
+
+        .chip-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.7rem;
+        }
+
+        .chip {
+            padding: 0.55rem 0.8rem;
+            border-radius: 999px;
+            background: rgba(36, 106, 115, 0.08);
+            color: var(--accent-2);
+            border: 1px solid rgba(36, 106, 115, 0.14);
+            font-size: var(--small-size);
+        }
+
+        .evidence-layout {
+            display: grid;
+            grid-template-columns: 1.05fr 0.95fr;
+            gap: var(--content-gap);
+            align-items: stretch;
+        }
+
+        .data-cards {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1rem;
+        }
+
+        .data-card {
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid var(--line);
+            border-radius: 24px;
+            padding: 1.25rem 1.3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 11rem;
+        }
+
+        .data-card .number {
+            font-family: var(--font-display-en);
+            font-size: var(--big-number);
+            font-weight: 800;
+            line-height: 1;
+            color: var(--accent);
+        }
+
+        .data-card .label {
+            margin-top: 0.6rem;
+            font-size: var(--body-size);
+            color: var(--text-secondary);
+        }
+
+        .artifact-list {
+            padding: 1.4rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 0.9rem;
+        }
+
+        .artifact-list h3 {
+            font-size: clamp(1.2rem, 2.4vw, 1.6rem);
+        }
+
+        .artifact-list .artifact {
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .artifact-list .artifact:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .artifact-list strong {
+            display: block;
+            font-size: var(--body-size);
+            color: var(--text-primary);
+        }
+
+        .artifact-list span {
+            display: block;
+            margin-top: 0.2rem;
+            font-size: var(--small-size);
+            color: var(--text-muted);
+        }
+
+        .results-layout {
+            display: grid;
+            grid-template-columns: 0.95fr 1.05fr;
+            gap: var(--content-gap);
+            align-items: stretch;
+        }
+
+        .css-bar-chart {
+            display: flex;
+            flex-direction: column;
+            gap: 0.9rem;
+        }
+
+        .bar-row {
+            display: grid;
+            grid-template-columns: minmax(110px, 24%) 1fr auto;
+            align-items: center;
+            gap: 0.9rem;
+        }
+
+        .bar-label {
+            display: flex;
+            flex-direction: column;
+            gap: 0.18rem;
+        }
+
+        .bar-cat {
+            font-weight: 700;
+            font-size: var(--body-size);
+            display: block;
+            color: var(--text-primary);
+        }
+
+        .bar-brands {
+            font-size: var(--small-size);
+            color: var(--text-muted);
+            display: block;
+        }
+
+        .bar-track {
+            height: clamp(0.6rem, 1.2vw, 0.9rem);
+            background: rgba(24, 35, 48, 0.08);
+            border-radius: 99px;
+            overflow: hidden;
+        }
+
+        .bar-value {
+            height: 100%;
+            width: 0;
+            background: linear-gradient(90deg, var(--accent), #da8b68);
+            border-radius: 99px;
+            transition: width 1s var(--ease-out-expo);
+            transition-delay: var(--delay, 0s);
+        }
+
+        .slide.visible .bar-value {
+            width: var(--w);
+        }
+
+        .bar-num {
+            font-family: var(--font-display-en);
+            font-weight: 700;
+            font-size: var(--h3-size);
+            color: var(--text-secondary);
+            min-width: 3.4em;
+            text-align: right;
+        }
+
+        .chart-card {
+            padding: 1.3rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .chart-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: var(--small-size);
+            color: var(--text-muted);
+        }
+
+        .line-chart {
+            width: 100%;
+            min-height: 18rem;
+            border-radius: 20px;
+            background: linear-gradient(180deg, rgba(36, 106, 115, 0.06), rgba(255, 255, 255, 0.6));
+            border: 1px solid var(--line);
+            overflow: hidden;
+        }
+
+        .line-chart svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .legend {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            font-size: var(--small-size);
+            color: var(--text-secondary);
+        }
+
+        .legend span {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+        }
+
+        .legend i {
+            display: inline-block;
+            width: 1rem;
+            height: 0.4rem;
+            border-radius: 99px;
+        }
+
+        .callout {
+            padding: 1rem 1.15rem;
+            border-radius: 20px;
+            background: rgba(198, 92, 51, 0.08);
+            border: 1px solid rgba(198, 92, 51, 0.15);
+            font-size: var(--body-size);
+            color: var(--text-secondary);
+        }
+
+        .importance-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+
+        .importance-card {
+            padding: 1.15rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+        }
+
+        .importance-card h3 {
+            font-size: clamp(1.1rem, 2vw, 1.45rem);
+        }
+
+        .mini-bars {
+            display: flex;
+            flex-direction: column;
+            gap: 0.7rem;
+        }
+
+        .mini-row {
+            display: grid;
+            grid-template-columns: minmax(110px, 42%) 1fr auto;
+            gap: 0.6rem;
+            align-items: center;
+        }
+
+        .mini-row strong {
+            font-size: var(--small-size);
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .mini-track {
+            height: 0.58rem;
+            border-radius: 99px;
+            background: rgba(24, 35, 48, 0.08);
+            overflow: hidden;
+        }
+
+        .mini-track span {
+            display: block;
+            height: 100%;
+            width: 0;
+            border-radius: 99px;
+            background: linear-gradient(90deg, var(--accent-2), #4d949b);
+            transition: width 1s var(--ease-out-expo);
+            transition-delay: var(--delay, 0s);
+        }
+
+        .slide.visible .mini-track span {
+            width: var(--w);
+        }
+
+        .mini-row em {
+            font-style: normal;
+            font-family: var(--font-display-en);
+            font-size: var(--small-size);
+            color: var(--text-muted);
+        }
+
+        .current-layout {
+            display: grid;
+            grid-template-columns: 1fr 0.95fr;
+            gap: var(--content-gap);
+        }
+
+        .logic-panel,
+        .status-panel {
+            padding: 1.2rem;
+        }
+
+        .logic-flow {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .logic-step {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 0.8rem;
+            align-items: start;
+            padding: 0.85rem 0;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .logic-step:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .logic-step .logic-index {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 999px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(198, 92, 51, 0.12);
+            color: var(--accent);
+            font-family: var(--font-display-en);
+            font-size: var(--small-size);
+            font-weight: 700;
+        }
+
+        .logic-step strong,
+        .logic-step span {
+            display: block;
+        }
+
+        .logic-step strong {
+            font-size: var(--body-size);
+            color: var(--text-primary);
+        }
+
+        .logic-step span {
+            font-size: var(--small-size);
+            color: var(--text-muted);
+            margin-top: 0.15rem;
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0.9rem;
+        }
+
+        .status-box {
+            padding: 1rem;
+            border-radius: 20px;
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.8);
+            min-height: 10rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .status-box .status-title {
+            font-size: var(--small-size);
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+        }
+
+        .status-box strong {
+            font-size: clamp(1.15rem, 2.2vw, 1.55rem);
+            line-height: 1.5;
+            color: var(--text-primary);
+        }
+
+        .status-box p {
+            font-size: var(--small-size);
+            color: var(--text-secondary);
+        }
+
+        .status-box.good {
+            background: rgba(36, 106, 115, 0.08);
+            border-color: rgba(36, 106, 115, 0.18);
+        }
+
+        .status-box.warn {
+            background: rgba(141, 91, 33, 0.08);
+            border-color: rgba(141, 91, 33, 0.18);
+        }
+
+        .status-box.alert {
+            background: rgba(143, 61, 54, 0.08);
+            border-color: rgba(143, 61, 54, 0.18);
+        }
+
+        .plan-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+
+        .plan-card {
+            padding: 1.2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+        }
+
+        .plan-card .plan-window {
+            font-size: var(--small-size);
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--accent);
+            font-family: var(--font-display-en);
+        }
+
+        .plan-card h3 {
+            font-size: clamp(1.15rem, 2.1vw, 1.5rem);
+        }
+
+        .plan-card ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.55rem;
+        }
+
+        .plan-card li {
+            position: relative;
+            padding-left: 1rem;
+            color: var(--text-secondary);
+            font-size: var(--small-size);
+            text-align: left;
+        }
+
+        .plan-card li::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0.72em;
+            width: 0.35rem;
+            height: 0.35rem;
+            border-radius: 999px;
+            background: var(--accent-2);
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--content-gap);
+            align-items: stretch;
+        }
+
+        .panel-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .detail-card {
+            padding: 1.2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .detail-card h3 {
+            font-size: clamp(1.15rem, 2.1vw, 1.5rem);
+        }
+
+        .meta-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0.9rem;
+        }
+
+        .meta-box {
+            padding: 1rem;
+            border-radius: 20px;
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.8);
+            min-height: 8.2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .meta-box .meta-label {
+            font-size: var(--small-size);
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+        }
+
+        .meta-box strong {
+            font-size: clamp(1.05rem, 2vw, 1.45rem);
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+
+        .meta-box p {
+            font-size: var(--small-size);
+            color: var(--text-secondary);
+        }
+
+        .bullet-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.55rem;
+        }
+
+        .bullet-list li {
+            position: relative;
+            padding-left: 1rem;
+            font-size: var(--small-size);
+            color: var(--text-secondary);
+            text-align: left;
+        }
+
+        .bullet-list li::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0.72em;
+            width: 0.35rem;
+            height: 0.35rem;
+            border-radius: 999px;
+            background: var(--accent);
+        }
+
+        .formula-card {
+            padding: 1.15rem 1.2rem;
+            border-radius: 24px;
+            background: linear-gradient(180deg, rgba(36, 106, 115, 0.08), rgba(255, 255, 255, 0.8));
+            border: 1px solid rgba(36, 106, 115, 0.18);
+        }
+
+        .formula-card h3 {
+            font-size: clamp(1.1rem, 2vw, 1.45rem);
+            margin-bottom: 0.6rem;
+        }
+
+        .formula-line {
+            font-family: var(--font-display-en), ui-monospace, monospace;
+            font-size: var(--small-size);
+            line-height: 1.8;
+            color: var(--text-primary);
+            letter-spacing: 0.03em;
+            text-align: left;
+        }
+
+        .soft-note {
+            font-size: var(--small-size);
+            color: var(--text-muted);
+        }
+
+        .end-slide {
+            background:
+                radial-gradient(circle at 15% 20%, rgba(198, 92, 51, 0.22), transparent 24%),
+                radial-gradient(circle at 84% 15%, rgba(36, 106, 115, 0.18), transparent 22%),
+                linear-gradient(180deg, #f8f2e8 0%, #efe4d2 100%);
+            justify-content: center;
+        }
+
+        .end-slide .slide-content {
+            max-width: min(90%, 900px);
+            text-align: center;
+            align-items: center;
+        }
+
+        .end-rule {
+            width: clamp(2rem, 5vw, 4rem);
+            height: 2px;
+            background: var(--accent);
+            margin: 0 auto clamp(1.5rem, 4vw, 3rem);
+        }
+
+        .end-slide h2 {
+            font-size: var(--h2-size);
+            font-weight: 700;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            text-align: center;
+        }
+
+        .end-slide h2 span {
+            display: block;
+        }
+
+        .end-note {
+            margin-top: 1rem;
+            font-size: var(--body-size);
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        .reveal,
+        .reveal-up,
+        .reveal-blur {
+            opacity: 0;
+            will-change: transform, opacity, filter;
+            transition:
+                transform 0.75s var(--ease-out-expo),
+                opacity 0.75s var(--ease-out-expo),
+                filter 0.75s var(--ease-out-expo);
+        }
+
+        .reveal {
+            transform: translateY(22px);
+        }
+
+        .reveal-up {
+            transform: translateY(28px);
+        }
+
+        .reveal-blur {
+            transform: translateY(16px);
+            filter: blur(8px);
+        }
+
+        .slide.visible .reveal,
+        .slide.visible .reveal-up,
+        .slide.visible .reveal-blur {
+            opacity: 1;
+            transform: translateY(0);
+            filter: blur(0);
+        }
+
+        .delay-1 {
+            transition-delay: 0.08s;
+        }
+
+        .delay-2 {
+            transition-delay: 0.16s;
+        }
+
+        .delay-3 {
+            transition-delay: 0.24s;
+        }
+
+        .delay-4 {
+            transition-delay: 0.32s;
+        }
+
+        .delay-5 {
+            transition-delay: 0.4s;
+        }
+
+        .keyboard-hint {
+            position: fixed;
+            left: clamp(1rem, 3vw, 2rem);
+            bottom: clamp(0.8rem, 2vw, 1.4rem);
+            z-index: 20;
+            font-size: var(--small-size);
+            color: var(--text-muted);
+            background: rgba(255, 255, 255, 0.68);
+            border: 1px solid rgba(24, 35, 48, 0.1);
+            border-radius: 999px;
+            padding: 0.45rem 0.75rem;
+            backdrop-filter: blur(8px);
+        }
+
+        @media (max-height: 700px) {
+            :root {
+                --slide-padding: clamp(0.75rem, 3vw, 2rem);
+                --content-gap: clamp(0.4rem, 1.5vw, 1rem);
+                --title-size: clamp(1.25rem, 4.5vw, 2.5rem);
+                --h2-size: clamp(1rem, 3vw, 1.75rem);
+            }
+
+            .stage-card {
+                min-height: 14rem;
+            }
+
+            .flow-step {
+                min-height: 10.5rem;
+            }
+        }
+
+        @media (max-height: 600px) {
+            :root {
+                --slide-padding: clamp(0.5rem, 2.5vw, 1.5rem);
+                --content-gap: clamp(0.3rem, 1vw, 0.75rem);
+                --title-size: clamp(1.1rem, 4vw, 2rem);
+                --body-size: clamp(0.7rem, 1.2vw, 0.95rem);
+            }
+
+            .nav-dots,
+            .keyboard-hint {
+                display: none;
+            }
+        }
+
+        @media (max-width: 1100px) {
+            .detail-grid,
+            .evidence-layout,
+            .results-layout,
+            .current-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .architecture-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .arch-arrow {
+                display: none;
+            }
+
+            .input-stack,
+            .module-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .input-stack {
+                grid-template-rows: none;
+            }
+
+            .title-grid {
+                grid-template-columns: 1fr;
+                grid-template-areas:
+                    "main"
+                    "note"
+                    "status";
+            }
+
+            .title-main h1 {
+                max-width: 100%;
+                font-size: clamp(2.9rem, 7vw, 4.6rem);
+            }
+
+            .status-strip {
+                max-width: none;
+            }
+
+            .meeting-note {
+                max-width: none;
+                justify-self: stretch;
+            }
+
+            .roadmap-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .roadmap-grid .stage-card:last-child {
+                grid-column: span 2;
+            }
+
+            .flow,
+            .importance-grid,
+            .plan-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 700px) {
+            .status-strip,
+            .meta-grid,
+            .data-cards,
+            .status-grid,
+            .flow,
+            .importance-grid,
+            .plan-grid,
+            .roadmap-grid,
+            .module-grid,
+            .input-stack,
+            .horizon-strip {
+                grid-template-columns: 1fr;
+            }
+
+            .roadmap-grid .stage-card:last-child {
+                grid-column: auto;
+            }
+
+            .title-main h1 {
+                font-size: clamp(2.4rem, 9.6vw, 3.7rem);
+                max-width: 100%;
+            }
+
+            .title-main h1 span {
+                white-space: normal;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.2s !important;
+            }
+
+            html {
+                scroll-behavior: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar" aria-hidden="true"></div>
+    <nav class="nav-dots" aria-label="Slides navigation"></nav>
+
+    <section class="slide title-slide" id="slide-1">
+        <div class="slide-content">
+            <span class="slide-number">01</span>
+            <div class="title-grid">
+                <div class="title-main">
+                    <div class="tag reveal">Group Meeting / 2026.04.01</div>
+                    <h1 class="reveal-blur delay-1">
+                        <span>共享单车需求预测与</span>
+                        <span class="title-line-tight">智能调度毕设进展汇报</span>
+                    </h1>
+                    <p class="title-sub reveal-up delay-2">
+                        当前重点是说明基线链路已经跑通，并且正式进入特征增强阶段。
+                    </p>
+                </div>
+                <div class="status-strip reveal-up delay-3">
+                    <div class="status-pill">
+                        <strong>Stage 01</strong>
+                        <span>基线实验已完成并可复现</span>
+                    </div>
+                    <div class="status-pill">
+                        <strong>Stage 02</strong>
+                        <span>特征增强开始起步</span>
+                    </div>
+                    <div class="status-pill">
+                        <strong>Tonight</strong>
+                        <span>同步进展与未来 2 到 3 周计划</span>
+                    </div>
+                </div>
+                <aside class="meeting-note reveal-up delay-4">
+                    <div class="eyebrow">Meeting Focus</div>
+                    <h3>今晚重点讲 4 个层次</h3>
+                    <p>数据集、预处理、训练脚本、阶段 2 增强思路。</p>
+                </aside>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide" id="slide-2">
+        <div class="slide-content">
+            <span class="slide-number">02</span>
+            <div class="tag reveal">Research Roadmap</div>
+            <h2 class="reveal-blur delay-1">研究主线已经被拆成 5 个可交付阶段</h2>
+            <p class="lede reveal-up delay-2">
+                这样做的好处是，每个阶段都能沉淀目标、方法、结果和交接关系，最后写论文时不需要重新倒推整个实验过程。
+            </p>
+            <div class="roadmap-grid reveal-up delay-3">
+                <article class="stage-card complete">
+                    <div class="stage-code">stage 01</div>
+                    <h3>Citi Bike MVP 基线</h3>
+                    <p>用公开订单数据跑通站点小时级面板、TFT 训练和结果报告。</p>
+                    <span class="stage-status complete">已完成</span>
+                </article>
+                <article class="stage-card current">
+                    <div class="stage-code">stage 02</div>
+                    <h3>特征增强</h3>
+                    <p>补天气、日历、容量近似、库存近似、POI 等外生信息。</p>
+                    <span class="stage-status current">正在起步</span>
+                </article>
+                <article class="stage-card">
+                    <div class="stage-code">stage 03</div>
+                    <h3>基线对比与消融</h3>
+                    <p>验证 TFT 是否优于常见基线，并判断哪些特征真正有效。</p>
+                    <span class="stage-status pending">待开展</span>
+                </article>
+                <article class="stage-card">
+                    <div class="stage-code">stage 04</div>
+                    <h3>库存与调度</h3>
+                    <p>从需求预测过渡到缺车、溢车识别和调度建议生成。</p>
+                    <span class="stage-status pending">待开展</span>
+                </article>
+                <article class="stage-card">
+                    <div class="stage-code">stage 05</div>
+                    <h3>校园迁移与演示</h3>
+                    <p>迁移到校园场景并形成最终展示页面或 Notebook 原型。</p>
+                    <span class="stage-status pending">待开展</span>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide" id="slide-3">
+        <div class="slide-content">
+            <span class="slide-number">03</span>
+            <div class="tag reveal">Dataset</div>
+            <h2 class="reveal-blur delay-1">我使用的 Citi Bike 数据集是什么</h2>
+            <p class="lede reveal-up delay-2">
+                当前阶段使用的是 NYC Citi Bike 的 trip-level 公开数据。
+            </p>
+            <div class="detail-grid reveal-up delay-3">
+                <div class="data-cards">
+                    <div class="data-card">
+                        <div class="number">12</div>
+                        <div class="label">2022 年按月拆分的 CSV</div>
+                    </div>
+                    <div class="data-card">
+                        <div class="number">13</div>
+                        <div class="label">canonical header 字段</div>
+                    </div>
+                    <div class="data-card">
+                        <div class="number">Trip</div>
+                        <div class="label">每行对应一次骑行订单</div>
+                    </div>
+                    <div class="data-card">
+                        <div class="number">NYC</div>
+                        <div class="label">公开城市级运营数据</div>
+                    </div>
+                </div>
+                <article class="detail-card panel">
+                    <h3>关键字段</h3>
+                    <ul class="bullet-list">
+                        <li><code>started_at</code> / <code>ended_at</code>：确定借还车小时。</li>
+                        <li><code>start_station_id</code> / <code>end_station_id</code>：确定起终点站点。</li>
+                        <li><code>start_lat/lng</code>、<code>end_lat/lng</code>：沉淀站点静态位置。</li>
+                        <li><code>rideable_type</code>：区分 classic 和 electric。</li>
+                    </ul>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide" id="slide-4">
+        <div class="slide-content">
+            <span class="slide-number">04</span>
+            <div class="tag reveal">Dataset Fit</div>
+            <h2 class="reveal-blur delay-1">为什么这个数据集适合做需求预测基线</h2>
+            <p class="lede reveal-up delay-2">
+                它天然有“起点需求 + 终点回流”的时空结构，也覆盖全年周期，但同时缺天气、容量和实时库存，这刚好决定了后续阶段的增强方向。
+            </p>
+            <div class="detail-grid reveal-up delay-3">
+                <article class="detail-card panel">
+                    <h3>它能支持的问题</h3>
+                    <ul class="bullet-list">
+                        <li>从起点订单直接定义站点借车需求。</li>
+                        <li>从终点订单恢复站点回流压力。</li>
+                        <li>从全年数据学习日内、周内、季节周期。</li>
+                        <li>从经纬度学习站点空间差异。</li>
+                    </ul>
+                </article>
+                <article class="detail-card panel">
+                    <h3>它当前缺失的信息</h3>
+                    <ul class="bullet-list">
+                        <li>没有直接给天气和节假日特征。</li>
+                        <li>没有站点容量表和实时库存。</li>
+                        <li>没有 POI 或周边功能区信息。</li>
+                        <li>因此阶段 1 更适合作“基线”，不是最终论文版。</li>
+                    </ul>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide" id="slide-5">
+        <div class="slide-content">
+            <span class="slide-number">05</span>
+            <div class="tag reveal">Preprocessing</div>
+            <h2 class="reveal-blur delay-1">预处理原理一：把事件流清洗成可聚合的站点记录</h2>
+            <p class="lede reveal-up delay-2">
+                原始数据是不规则的逐单事件，第一步要做的是只保留关键列、统一类型，并把“借出”和“归还”分别投影到站点时间轴上。
+            </p>
+            <div class="flow reveal-up delay-3">
+                <article class="flow-step">
+                    <div class="step-index">01</div>
+                    <h3>筛列</h3>
+                    <p>只读取时间、站点 ID、经纬度和车辆类型等主线字段。</p>
+                </article>
+                <article class="flow-step">
+                    <div class="step-index">02</div>
+                    <h3>时间解析</h3>
+                    <p>把 <code>started_at</code> 和 <code>ended_at</code> 统一转成时间戳。</p>
+                </article>
+                <article class="flow-step">
+                    <div class="step-index">03</div>
+                    <h3>ID 清洗</h3>
+                    <p>站点 ID 统一按字符串处理，避免类似 <code>4488.09</code> 被数值化。</p>
+                </article>
+                <article class="flow-step">
+                    <div class="step-index">04</div>
+                    <h3>双视角聚合</h3>
+                    <p>分别按起点和终点聚合出离站需求与到站回流。</p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide" id="slide-6">
+        <div class="slide-content">
+            <span class="slide-number">06</span>
+            <div class="tag reveal">Preprocessing</div>
+            <h2 class="reveal-blur delay-1">预处理原理二：把聚合结果补成规则的站点小时面板</h2>
+            <p class="lede reveal-up delay-2">
+                有了离站和到站统计后，还要把它们补成完整网格，并生成时序模型能直接消费的基础特征。
+            </p>
+            <div class="detail-grid reveal-up delay-3">
+                <article class="detail-card panel">
+                    <h3>面板化怎么做</h3>
+                    <ul class="bullet-list">
+                        <li>先按总离站量筛出 top 200 活跃站点。</li>
+                        <li>构造完整的 <code>all_ts × all_stations</code> 网格。</li>
+                        <li>把没有观测订单的格子填成 0，而不是留空。</li>
+                        <li>合并站点经纬度，形成每个站点的静态属性。</li>
+                    </ul>
+                </article>
+                <article class="detail-card panel">
+                    <h3>派生了哪些基础特征</h3>
+                    <ul class="bullet-list">
+                        <li><code>dep_count</code>、<code>arr_count</code>、<code>net_flow</code>。</li>
+                        <li>小时、周几、月、week of year、是否周末。</li>
+                        <li>周期编码：<code>hour_sin/cos</code>、<code>dow_sin/cos</code>。</li>
+                        <li>连续时间索引 <code>time_idx</code>，方便后续切窗口。</li>
+                    </ul>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide" id="slide-7">
+        <div class="slide-content">
+            <span class="slide-number">07</span>
+            <div class="tag reveal">Dataset Build</div>
+            <h2 class="reveal-blur delay-1">训练脚本原理一：样本数据集怎么构建</h2>
+            <p class="lede reveal-up delay-2">
+                训练脚本不会直接把整张表丢给模型，而是先把面板转成 <code>TimeSeriesDataSet</code>，这样每个站点都能被切成 encoder / decoder 窗口。
+            </p>
+            <div class="detail-grid reveal-up delay-3">
+                <article class="detail-card panel">
+                    <h3>字段如何分组</h3>
+                    <ul class="bullet-list">
+                        <li><code>static_categoricals</code>：<code>station_id</code>。</li>
+                        <li><code>static_reals</code>：<code>station_lat</code>、<code>station_lng</code>。</li>
+                        <li><code>known_reals</code>：小时、周几、月份、周期编码。</li>
+                        <li><code>unknown_reals</code>：<code>dep_count</code>、<code>arr_count</code>、<code>net_flow</code> 等历史统计。</li>
+                    </ul>
+                </article>
+                <article class="detail-card panel">
+                    <h3>窗口如何切</h3>
+                    <ul class="bullet-list">
+                        <li>目标列是 <code>dep_count</code>，分组键是 <code>station_id</code>。</li>
+                        <li><code>max_encoder_length = 168</code>，看过去 7 天。</li>
+                        <li><code>max_prediction_length = 6</code>，预测未来 6 小时。</li>
+                        <li>最后 <code>168</code> 小时作为验证区间。</li>
+                    </ul>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide" id="slide-8">
+        <div class="slide-content">
+            <span class="slide-number">08</span>
+            <div class="tag reveal">Training Script</div>
+            <h2 class="reveal-blur delay-1">训练脚本原理二：模型如何构建并跑起来</h2>
+            <p class="lede reveal-up delay-2">
+                这部分脚本把数据集定义接到 <code>TFT + Lightning Trainer</code> 上，负责训练、验证、checkpoint 和实验日志留档。
+            </p>
+            <div class="detail-grid reveal-up delay-3">
+                <article class="detail-card panel">
+                    <h3>模型构建</h3>
+                    <ul class="bullet-list">
+                        <li>调用 <code>TemporalFusionTransformer.from_dataset(train_ds)</code> 自动对齐维度。</li>
+                        <li>代表性 run 用了 <code>hidden_size=64</code>、<code>head=4</code>、<code>dropout=0.1</code>。</li>
+                        <li>损失函数是 <code>QuantileLoss(0.1, 0.5, 0.9)</code>。</li>
+                        <li>支持 mixed precision，显式把 <code>mask_bias</code> 设为 <code>-inf</code>。</li>
+                    </ul>
+                </article>
+                <article class="detail-card panel">
+                    <h3>训练机制</h3>
+                    <ul class="bullet-list">
+                        <li>训练 / 验证各自构造 dataloader，验证 batch size 更大。</li>
+                        <li>启用 <code>EarlyStopping</code>、<code>ModelCheckpoint</code>、<code>LR monitor</code>。</li>
+                        <li>训练结束保存 best / last checkpoint。</li>
+                        <li>额外保存 <code>timeseries_dataset_params.pt</code> 便于复现实验。</li>
+                    </ul>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide architecture-slide" id="slide-8a">
+        <div class="slide-content">
+            <span class="slide-number">09</span>
+            <div class="tag reveal">Model Architecture</div>
+            <h2 class="reveal-blur delay-1">模型架构图：TFT 如何把历史窗口变成未来 6 小时预测</h2>
+            <p class="lede reveal-up delay-2">
+                三路输入汇到 TFT：encoder 读历史，decoder 接未来已知特征，static 提供站点上下文，最后输出未来 6 小时的分位数预测。
+            </p>
+            <div class="architecture-layout reveal-up delay-3">
+                <div class="input-stack">
+                    <article class="arch-card">
+                        <div class="arch-kicker">Encoder Input</div>
+                        <h3>历史窗口</h3>
+                        <ul class="bullet-list">
+                            <li>看过去 <code>168</code> 小时。</li>
+                            <li><code>dep_count</code>、<code>arr_count</code>、<code>net_flow</code> 等历史统计。</li>
+                            <li>也包含历史时刻对应的时间特征。</li>
+                        </ul>
+                    </article>
+                    <article class="arch-card">
+                        <div class="arch-kicker">Decoder Input</div>
+                        <h3>未来已知特征</h3>
+                        <ul class="bullet-list">
+                            <li>预测未来 <code>6</code> 小时。</li>
+                            <li><code>hour</code>、<code>is_weekend</code>、月份、周期编码。</li>
+                            <li>阶段 2 会继续补天气和节假日。</li>
+                        </ul>
+                    </article>
+                    <article class="arch-card">
+                        <div class="arch-kicker">Static Context</div>
+                        <h3>站点固定画像</h3>
+                        <ul class="bullet-list">
+                            <li><code>station_id</code>、经纬度等静态属性。</li>
+                            <li>还带目标尺度信息和站点基线强弱。</li>
+                            <li>提供“这个站本来就更忙还是更闲”的上下文。</li>
+                        </ul>
+                    </article>
+                </div>
+                <div class="arch-arrow" aria-hidden="true"></div>
+                <article class="arch-card arch-core">
+                    <div class="arch-kicker">TFT Core</div>
+                    <h3>先选特征，再做时序建模，最后用注意力融合</h3>
+                    <div class="module-grid">
+                        <div class="module-chip">
+                            <strong>Variable Selection</strong>
+                            <span>先给不同变量分配权重。</span>
+                        </div>
+                        <div class="module-chip">
+                            <strong>Static Gating</strong>
+                            <span>把站点画像注入时序路径。</span>
+                        </div>
+                        <div class="module-chip">
+                            <strong>LSTM Enc / Dec</strong>
+                            <span>编码历史窗口和未来特征序列。</span>
+                        </div>
+                        <div class="module-chip">
+                            <strong>Temporal Attention</strong>
+                            <span>从历史里抓关键时刻。</span>
+                        </div>
+                    </div>
+                </article>
+                <div class="arch-arrow" aria-hidden="true"></div>
+                <article class="arch-card arch-output">
+                    <div class="arch-kicker">Output Head</div>
+                    <h3>未来 6 小时借车需求</h3>
+                    <div class="horizon-strip">
+                        <span>t+1</span>
+                        <span>t+2</span>
+                        <span>t+3</span>
+                        <span>t+4</span>
+                        <span>t+5</span>
+                        <span>t+6</span>
+                    </div>
+                    <div class="quantile-stack">
+                        <div class="quant-row">
+                            <strong>P10</strong>
+                            <span>偏保守下界</span>
+                        </div>
+                        <div class="quant-row">
+                            <strong>P50</strong>
+                            <span>中位数主预测</span>
+                        </div>
+                        <div class="quant-row">
+                            <strong>P90</strong>
+                            <span>偏乐观上界</span>
+                        </div>
+                    </div>
+                    <p>当前目标列是 <code>dep_count</code>，所以输出的是各站点未来借车需求区间。</p>
+                </article>
+            </div>
+            <div class="callout reveal-up delay-4">
+                一句话讲法：Encoder 读历史，Decoder 接未来已知信息，Static 给站点画像，最后输出未来 6 小时的 <code>dep_count</code> 分位数预测。
+            </div>
+        </div>
+    </section>
+
+    <section class="slide" id="slide-9">
+        <div class="slide-content">
+            <span class="slide-number">10</span>
+            <div class="tag reveal">Outputs</div>
+            <h2 class="reveal-blur delay-1">当前已经沉淀出哪些可直接汇报的产物</h2>
+            <div class="evidence-layout reveal-up delay-2">
+                <div class="data-cards">
+                    <div class="data-card">
+                        <div class="number">12</div>
+                        <div class="label">个月原始 Citi Bike CSV</div>
+                    </div>
+                    <div class="data-card">
+                        <div class="number">200</div>
+                        <div class="label">活跃站点纳入基线面板</div>
+                    </div>
+                    <div class="data-card">
+                        <div class="number">1.76M</div>
+                        <div class="label">站点小时级面板记录</div>
+                    </div>
+                    <div class="data-card">
+                        <div class="number">6h</div>
+                        <div class="label">多步预测 horizon 已成功输出</div>
+                    </div>
+                </div>
+                <aside class="artifact-list panel">
+                    <h3>代表性产物</h3>
+                    <div class="artifact">
+                        <strong>数据摘要</strong>
+                        <span><code>summary.csv</code> 固化了面板规模和时间范围。</span>
+                    </div>
+                    <div class="artifact">
+                        <strong>代表性 run</strong>
+                        <span><code>runs/stage_01_citibike_mvp/tft_h64/</code> 已保留日志和 checkpoint。</span>
+                    </div>
+                    <div class="artifact">
+                        <strong>中文报告</strong>
+                        <span>已经输出训练概览、验证结果和解释性图表。</span>
+                    </div>
+                    <div class="artifact">
+                        <strong>结论定位</strong>
+                        <span>阶段 1 已经是后续增强实验的统一起点。</span>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide" id="slide-13">
+        <div class="slide-content">
+            <span class="slide-number">11</span>
+            <div class="tag reveal">Model Result</div>
+            <h2 class="reveal-blur delay-1">结果页一：模型已经能稳定输出多步预测</h2>
+            <p class="lede reveal-up delay-2">
+                阶段 1 的关键目标不是最优精度，而是确认链路可跑、模型可训、预测可出。
+            </p>
+            <div class="data-cards reveal-up delay-3">
+                <div class="data-card">
+                    <div class="number">1.09</div>
+                    <div class="label">Horizon 1 MAE</div>
+                </div>
+                <div class="data-card">
+                    <div class="number">0.96</div>
+                    <div class="label">Horizon 3 MAE</div>
+                </div>
+                <div class="data-card">
+                    <div class="number">0.28</div>
+                    <div class="label">Horizon 6 MAE</div>
+                </div>
+                <div class="data-card">
+                    <div class="number">0.045</div>
+                    <div class="label">Horizon 6 Coverage</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide" id="slide-11">
+        <div class="slide-content">
+            <span class="slide-number">12</span>
+            <div class="tag reveal">Model Result</div>
+            <h2 class="reveal-blur delay-1">结果页二：越往后预测，模型越容易向小值收缩</h2>
+            <div class="results-layout reveal-up delay-2">
+                <article class="panel chart-card">
+                    <h3>预测均值收缩现象</h3>
+                    <div class="legend">
+                        <span><i style="background:var(--accent-2)"></i>真实均值</span>
+                        <span><i style="background:var(--accent)"></i>预测均值</span>
+                    </div>
+                    <div class="line-chart" aria-label="Mean actual versus predicted by horizon">
+                        <svg viewBox="0 0 620 320" role="img">
+                            <g stroke="rgba(24,35,48,0.12)" stroke-width="1">
+                                <line x1="60" y1="40" x2="60" y2="260"></line>
+                                <line x1="60" y1="260" x2="560" y2="260"></line>
+                                <line x1="60" y1="205" x2="560" y2="205"></line>
+                                <line x1="60" y1="150" x2="560" y2="150"></line>
+                                <line x1="60" y1="95" x2="560" y2="95"></line>
+                            </g>
+                            <g fill="none" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="60,40 160,55 260,88 360,129 460,177 560,217" stroke="var(--accent-2)"></polyline>
+                                <polyline points="60,124 160,157 260,178 360,212 460,258 560,259.5" stroke="var(--accent)"></polyline>
+                            </g>
+                            <g fill="var(--accent-2)">
+                                <circle cx="60" cy="40" r="5"></circle>
+                                <circle cx="160" cy="55" r="5"></circle>
+                                <circle cx="260" cy="88" r="5"></circle>
+                                <circle cx="360" cy="129" r="5"></circle>
+                                <circle cx="460" cy="177" r="5"></circle>
+                                <circle cx="560" cy="217" r="5"></circle>
+                            </g>
+                            <g fill="var(--accent)">
+                                <circle cx="60" cy="124" r="5"></circle>
+                                <circle cx="160" cy="157" r="5"></circle>
+                                <circle cx="260" cy="178" r="5"></circle>
+                                <circle cx="360" cy="212" r="5"></circle>
+                                <circle cx="460" cy="258" r="5"></circle>
+                                <circle cx="560" cy="259.5" r="5"></circle>
+                            </g>
+                            <g fill="var(--text-muted)" font-family="Sora, sans-serif" font-size="14">
+                                <text x="48" y="44" text-anchor="end">1.6</text>
+                                <text x="48" y="99" text-anchor="end">1.2</text>
+                                <text x="48" y="154" text-anchor="end">0.8</text>
+                                <text x="48" y="209" text-anchor="end">0.4</text>
+                                <text x="60" y="285" text-anchor="middle">H1</text>
+                                <text x="160" y="285" text-anchor="middle">H2</text>
+                                <text x="260" y="285" text-anchor="middle">H3</text>
+                                <text x="360" y="285" text-anchor="middle">H4</text>
+                                <text x="460" y="285" text-anchor="middle">H5</text>
+                                <text x="560" y="285" text-anchor="middle">H6</text>
+                            </g>
+                        </svg>
+                    </div>
+                </article>
+                <article class="detail-card panel">
+                    <h3>怎么理解这个现象</h3>
+                    <ul class="bullet-list">
+                        <li>近一步预测还能借助最近历史值维持表现。</li>
+                        <li>远一步预测时，模型更容易回到保守小值。</li>
+                        <li>这说明当前未来可见信息还不够强。</li>
+                        <li>也正是阶段 2 要补天气、容量和库存代理的原因。</li>
+                    </ul>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide" id="slide-12">
+        <div class="slide-content">
+            <span class="slide-number">13</span>
+            <div class="tag reveal">Interpretation</div>
+            <h2 class="reveal-blur delay-1">解释性结果说明模型主要学到了时间周期与站点差异</h2>
+            <div class="importance-grid reveal-up delay-2">
+                <article class="importance-card panel">
+                    <h3>Decoder 侧</h3>
+                    <div class="mini-bars">
+                        <div class="mini-row">
+                            <strong>hour_cos</strong>
+                            <div class="mini-track"><span style="--w:100%;--delay:0.08s"></span></div>
+                            <em>71.2</em>
+                        </div>
+                        <div class="mini-row">
+                            <strong>hour</strong>
+                            <div class="mini-track"><span style="--w:37.0%;--delay:0.14s"></span></div>
+                            <em>26.4</em>
+                        </div>
+                        <div class="mini-row">
+                            <strong>is_weekend</strong>
+                            <div class="mini-track"><span style="--w:28.7%;--delay:0.2s"></span></div>
+                            <em>20.4</em>
+                        </div>
+                        <div class="mini-row">
+                            <strong>hour_sin</strong>
+                            <div class="mini-track"><span style="--w:28.2%;--delay:0.26s"></span></div>
+                            <em>20.1</em>
+                        </div>
+                    </div>
+                </article>
+                <article class="importance-card panel">
+                    <h3>Encoder 侧</h3>
+                    <div class="mini-bars">
+                        <div class="mini-row">
+                            <strong>dep_count</strong>
+                            <div class="mini-track"><span style="--w:100%;--delay:0.1s"></span></div>
+                            <em>28.2</em>
+                        </div>
+                        <div class="mini-row">
+                            <strong>week_of_year</strong>
+                            <div class="mini-track"><span style="--w:90.8%;--delay:0.16s"></span></div>
+                            <em>25.6</em>
+                        </div>
+                        <div class="mini-row">
+                            <strong>day_of_month</strong>
+                            <div class="mini-track"><span style="--w:69.4%;--delay:0.22s"></span></div>
+                            <em>19.5</em>
+                        </div>
+                        <div class="mini-row">
+                            <strong>hour_cos</strong>
+                            <div class="mini-track"><span style="--w:67.2%;--delay:0.28s"></span></div>
+                            <em>18.9</em>
+                        </div>
+                    </div>
+                </article>
+                <article class="importance-card panel">
+                    <h3>Static 侧</h3>
+                    <div class="mini-bars">
+                        <div class="mini-row">
+                            <strong>station_id</strong>
+                            <div class="mini-track"><span style="--w:100%;--delay:0.12s"></span></div>
+                            <em>67.5</em>
+                        </div>
+                        <div class="mini-row">
+                            <strong>dep_count_center</strong>
+                            <div class="mini-track"><span style="--w:68.2%;--delay:0.18s"></span></div>
+                            <em>46.0</em>
+                        </div>
+                        <div class="mini-row">
+                            <strong>station_lat</strong>
+                            <div class="mini-track"><span style="--w:50.1%;--delay:0.24s"></span></div>
+                            <em>33.8</em>
+                        </div>
+                        <div class="mini-row">
+                            <strong>station_lng</strong>
+                            <div class="mini-track"><span style="--w:32.8%;--delay:0.3s"></span></div>
+                            <em>22.1</em>
+                        </div>
+                    </div>
+                </article>
+            </div>
+            <div class="callout reveal-up delay-4">
+                当前基线更像“信息不足的保守模型”：它已经学到了时间模式和站点差异，但还没有天气、节假日、容量或库存近似这些更强的未来可见外生信号。
+            </div>
+        </div>
+    </section>
+
+    <section class="slide" id="slide-10">
+        <div class="slide-content">
+            <span class="slide-number">14</span>
+            <div class="tag reveal">Stage 02 Principle</div>
+            <h2 class="reveal-blur delay-1">增强思路一：先把天气和日历补进面板</h2>
+            <p class="lede reveal-up delay-2">
+                先把城市级逐小时天气序列和节假日标签对齐到现有面板，这是补强未来可见信息最直接的一步。
+            </p>
+            <div class="detail-grid reveal-up delay-3">
+                <article class="detail-card panel">
+                    <h3>怎么补天气 / 日历</h3>
+                    <ul class="bullet-list">
+                        <li>接入 NYC 区域逐小时历史天气序列。</li>
+                        <li>补温度、降雨、风速、湿度等变量。</li>
+                        <li>按本地时区和小时粒度对齐到现有面板。</li>
+                        <li>同步补节假日、工作日 / 周末等标签。</li>
+                    </ul>
+                </article>
+                <article class="detail-card panel">
+                    <h3>为什么这一块优先级高</h3>
+                    <ul class="bullet-list">
+                        <li>天气是共享单车需求最常见的外生冲击源。</li>
+                        <li>当前基线 decoder 侧主要只有日历类特征。</li>
+                        <li>补进天气后，远步长预测更有机会摆脱保守收缩。</li>
+                        <li>第一版即使采用城市级天气，也比完全缺失更合理。</li>
+                    </ul>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide" id="slide-14">
+        <div class="slide-content">
+            <span class="slide-number">15</span>
+            <div class="tag reveal">Stage 02 Principle</div>
+            <h2 class="reveal-blur delay-1">增强思路二：用 trip 事件估计容量和库存代理</h2>
+            <div class="detail-grid reveal-up delay-2">
+                <article class="detail-card panel">
+                    <h3>容量怎么估</h3>
+                    <ul class="bullet-list">
+                        <li>先统计每个站点每个时间点的 <code>arrivals - departures</code>。</li>
+                        <li>构造累计净流量曲线 <code>S_t</code>。</li>
+                        <li>利用 <code>max(S_t) - min(S_t)</code> 求容量下界。</li>
+                        <li>这给了站点物理约束的一个闭式近似。</li>
+                    </ul>
+                </article>
+                <article class="detail-card panel">
+                    <h3>库存代理怎么估</h3>
+                    <ul class="bullet-list">
+                        <li>给一个最小可行初始库存。</li>
+                        <li>按 <code>inventory_t = inventory_(t-1) + arr_t - dep_t</code> 递推。</li>
+                        <li>再裁剪到 <code>[0, capacity_hat]</code> 范围。</li>
+                        <li>得到“接近空桩 / 满桩”的状态代理。</li>
+                    </ul>
+                </article>
+            </div>
+            <div class="detail-grid reveal-up delay-3">
+                <article class="formula-card">
+                    <h3>容量下界的闭式思路</h3>
+                    <div class="formula-line">net_t = arrivals_t - departures_t</div>
+                    <div class="formula-line">S_t = cumsum(net_t)</div>
+                    <div class="formula-line">capacity_hat = max(S_t) - min(S_t)</div>
+                </article>
+                <article class="formula-card">
+                    <h3>库存代理的递推思路</h3>
+                    <div class="formula-line">inventory_t = clip(inventory_{t-1} + arr_t - dep_t, 0, capacity_hat)</div>
+                    <p class="soft-note">它不是真实库存，但能把“站点接近空桩 / 满桩”的状态近似出来。</p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide" id="slide-15">
+        <div class="slide-content">
+            <span class="slide-number">16</span>
+            <div class="tag reveal">Stage 02 In Motion</div>
+            <h2 class="reveal-blur delay-1">阶段 2 当前已经做到哪一步</h2>
+            <div class="current-layout reveal-up delay-2">
+                <article class="logic-panel panel">
+                    <h3>已经开始动手的部分</h3>
+                    <div class="logic-flow">
+                        <div class="logic-step">
+                            <span class="logic-index">1</span>
+                            <div>
+                                <strong>容量近似脚本已经写出</strong>
+                                <span><code>infer_station_capacity_closed_form.py</code> 已落到 stage 02。</span>
+                            </div>
+                        </div>
+                        <div class="logic-step">
+                            <span class="logic-index">2</span>
+                            <div>
+                                <strong>逻辑上已能按站点累计净流量</strong>
+                                <span>下一步是把输出产物正式落档到 processed 目录。</span>
+                            </div>
+                        </div>
+                        <div class="logic-step">
+                            <span class="logic-index">3</span>
+                            <div>
+                                <strong>天气 / 日历仍待接入</strong>
+                                <span>这一块会决定增强版数据集能否尽快成型。</span>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+                <aside class="status-panel panel">
+                    <h3>当前状态判断</h3>
+                    <div class="status-grid">
+                        <div class="status-box good">
+                            <div class="status-title">Code</div>
+                            <strong>阶段 2 已启动</strong>
+                            <p>不是停留在文档层，已经开始写增强脚本。</p>
+                        </div>
+                        <div class="status-box good">
+                            <div class="status-title">Lint</div>
+                            <strong><code>ruff</code> 已通过</strong>
+                            <p>说明新增脚本的基本规范是对的。</p>
+                        </div>
+                        <div class="status-box warn">
+                            <div class="status-title">Type Check</div>
+                            <strong><code>pyright</code> 还没清</strong>
+                            <p>新脚本有 1 个类型问题，仓库里也有历史类型错误。</p>
+                        </div>
+                        <div class="status-box alert">
+                            <div class="status-title">Result</div>
+                            <strong>增强版 run 还没产出</strong>
+                            <p>当前更准确的表述是“实现已起步，结果待生成”。</p>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide" id="slide-16">
+        <div class="slide-content">
+            <span class="slide-number">17</span>
+            <div class="tag reveal">Next Plan</div>
+            <h2 class="reveal-blur delay-1">接下来 2 到 3 周的推进策略</h2>
+            <p class="lede reveal-up delay-2">
+                目标是尽快产出第一版“增强数据 + 增强 run + 初步对比”。
+            </p>
+            <div class="plan-grid reveal-up delay-3">
+                <article class="plan-card panel">
+                    <div class="plan-window">This Week</div>
+                    <h3>先把阶段 2 跑出第一批可用特征</h3>
+                    <ul>
+                        <li>跑通容量近似脚本并生成 <code>station_capacity_closed_form.csv</code>。</li>
+                        <li>补天气和日历对齐脚本，形成第一版增强面板。</li>
+                        <li>把阶段 2 文档状态从“未开始”更新为“进行中”。</li>
+                    </ul>
+                </article>
+                <article class="plan-card panel">
+                    <div class="plan-window">Next Step</div>
+                    <h3>训练增强版 TFT 并和基线对比</h3>
+                    <ul>
+                        <li>基于增强版面板训练一版可复现的 TFT run。</li>
+                        <li>与阶段 1 的 <code>tft_h64</code> 做初步指标对比和现象解释。</li>
+                        <li>把关键结果沉淀到 <code>RESULTS.md</code> 和图表里。</li>
+                    </ul>
+                </article>
+                <article class="plan-card panel">
+                    <div class="plan-window">Mid Term</div>
+                    <h3>把论文主体实验逐步搭起来</h3>
+                    <ul>
+                        <li>进入阶段 3，补统计 / 机器学习基线和消融实验。</li>
+                        <li>进入阶段 4，做库存近似与调度建议的闭环。</li>
+                        <li>最后再做校园迁移和展示收口，形成完整毕设原型。</li>
+                    </ul>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide end-slide" id="slide-17">
+        <div class="slide-content">
+            <span class="slide-number">18</span>
+            <div class="end-rule reveal"></div>
+            <h2 class="reveal-blur delay-1">
+                <span>现在不是从零开始。</span>
+                <span>是已经有了可复现的基线，</span>
+                <span>接下来开始把模型做强。</span>
+            </h2>
+            <p class="end-note reveal-up delay-2">组会希望同步的问题：阶段 2 的特征优先级、评估方式，以及后续实验节奏是否需要调整。</p>
+        </div>
+    </section>
+
+    <script>
+        class SlidePresentation {
+            constructor() {
+                this.slides = Array.from(document.querySelectorAll('.slide'));
+                this.nav = document.querySelector('.nav-dots');
+                this.currentIndex = 0;
+                this.isScrolling = false;
+                this.touchStartY = 0;
+                this.touchDeltaY = 0;
+                this.buildNav();
+                this.setupObserver();
+                this.setupKeyboard();
+                this.setupWheel();
+                this.setupTouch();
+                this.updateProgress();
+                this.updateActiveNav();
+            }
+
+            buildNav() {
+                this.slides.forEach((slide, index) => {
+                    const dot = document.createElement('button');
+                    dot.type = 'button';
+                    dot.className = 'nav-dot';
+                    dot.setAttribute('aria-label', `Go to slide ${index + 1}`);
+                    dot.addEventListener('click', () => this.goTo(index));
+                    this.nav.appendChild(dot);
+                });
+            }
+
+            setupObserver() {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('visible');
+                            this.currentIndex = this.slides.indexOf(entry.target);
+                            this.updateProgress();
+                            this.updateActiveNav();
+                        }
+                    });
+                }, { threshold: 0.55 });
+
+                this.slides.forEach((slide) => observer.observe(slide));
+            }
+
+            setupKeyboard() {
+                document.addEventListener('keydown', (e) => {
+                    if (['ArrowDown', 'ArrowRight', ' ', 'PageDown'].includes(e.key)) {
+                        e.preventDefault();
+                        this.next();
+                    }
+                    if (['ArrowUp', 'ArrowLeft', 'PageUp'].includes(e.key)) {
+                        e.preventDefault();
+                        this.prev();
+                    }
+                    if (e.key === 'Home') {
+                        e.preventDefault();
+                        this.goTo(0);
+                    }
+                    if (e.key === 'End') {
+                        e.preventDefault();
+                        this.goTo(this.slides.length - 1);
+                    }
+                    if (e.key.toLowerCase() === 'f') {
+                        if (!document.fullscreenElement) {
+                            document.documentElement.requestFullscreen().catch(() => {});
+                        } else {
+                            document.exitFullscreen().catch(() => {});
+                        }
+                    }
+                });
+            }
+
+            setupWheel() {
+                window.addEventListener('wheel', (e) => {
+                    if (this.isScrolling) {
+                        return;
+                    }
+                    if (Math.abs(e.deltaY) < 25) {
+                        return;
+                    }
+                    this.isScrolling = true;
+                    if (e.deltaY > 0) {
+                        this.next();
+                    } else {
+                        this.prev();
+                    }
+                    window.setTimeout(() => {
+                        this.isScrolling = false;
+                    }, 700);
+                }, { passive: true });
+            }
+
+            setupTouch() {
+                window.addEventListener('touchstart', (e) => {
+                    this.touchStartY = e.changedTouches[0].clientY;
+                }, { passive: true });
+
+                window.addEventListener('touchend', (e) => {
+                    this.touchDeltaY = e.changedTouches[0].clientY - this.touchStartY;
+                    if (Math.abs(this.touchDeltaY) < 50) {
+                        return;
+                    }
+                    if (this.touchDeltaY < 0) {
+                        this.next();
+                    } else {
+                        this.prev();
+                    }
+                }, { passive: true });
+            }
+
+            next() {
+                this.goTo(Math.min(this.currentIndex + 1, this.slides.length - 1));
+            }
+
+            prev() {
+                this.goTo(Math.max(this.currentIndex - 1, 0));
+            }
+
+            goTo(index) {
+                this.slides[index].scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+
+            updateProgress() {
+                const progress = ((this.currentIndex + 1) / this.slides.length) * 100;
+                document.documentElement.style.setProperty('--progress', `${progress}%`);
+            }
+
+            updateActiveNav() {
+                const dots = Array.from(document.querySelectorAll('.nav-dot'));
+                dots.forEach((dot, index) => {
+                    dot.classList.toggle('active', index === this.currentIndex);
+                });
+            }
+        }
+
+        new SlidePresentation();
+    </script>
+</body>
+</html>
