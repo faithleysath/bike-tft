@@ -14,9 +14,9 @@
 | --- | --- | --- | --- |
 | `stage_01_citibike_mvp` | 已完成 | 跑通 Citi Bike 订单到站点级 TFT 基线的最小链路 | `stages/stage_01_citibike_mvp/README.md` |
 | `stage_02_feature_enrichment` | 计划中 | 补天气、日历、容量/库存近似、POI 等特征 | `stages/stage_02_feature_enrichment/README.md` |
-| `stage_03_baselines_and_ablation` | 计划中 | 做基线模型、对比实验和消融实验 | `stages/stage_03_baselines_and_ablation/README.md` |
-| `stage_04_inventory_and_rebalancing` | 计划中 | 引入库存近似并做调度优化 | `stages/stage_04_inventory_and_rebalancing/README.md` |
-| `stage_05_campus_transfer_and_demo` | 计划中 | 做校园迁移、展示与收口 | `stages/stage_05_campus_transfer_and_demo/README.md` |
+| `stage_03_baselines_and_ablation` | 计划中 | 训练 AGCRN 主模型，并在此基础上完成对比实验与模型级消融 | `stages/stage_03_baselines_and_ablation/README.md` |
+| `stage_04_inventory_and_rebalancing` | 计划中 | 基于 AGCRN 预测结果引入库存近似并做调度优化 | `stages/stage_04_inventory_and_rebalancing/README.md` |
+| `stage_05_campus_transfer_and_demo` | 计划中 | 迁移 AGCRN 预测链路到校园场景，并完成展示与收口 | `stages/stage_05_campus_transfer_and_demo/README.md` |
 
 ## 目录约定
 
