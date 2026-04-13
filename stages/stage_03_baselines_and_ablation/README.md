@@ -40,6 +40,15 @@
 - 一组 AGCRN 模型级消融结果
 - 一份可以直接进入论文实验章节的结论摘要
 
+## 当前已准备的参考实现
+
+为了减少从零搭主模型的工作量，阶段 3 目录里已经放入一份 AGCRN 官方开源实现的裁剪副本：
+
+- 上游代码目录：`stages/stage_03_baselines_and_ablation/agcrn_upstream/`
+- 来源说明：`stages/stage_03_baselines_and_ablation/agcrn_upstream/SOURCE.md`
+
+这份代码当前主要用于阅读、迁移和二次改造，后续共享单车版本的训练入口仍建议在本仓库内单独整理，而不是直接沿用上游交通数据配置。
+
 ## 阶段文档
 
 - 计划：`stages/stage_03_baselines_and_ablation/PLAN.md`

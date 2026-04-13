@@ -32,3 +32,4 @@
 
 - 计划：`stages/stage_02_feature_enrichment/PLAN.md`
 - 成果：`stages/stage_02_feature_enrichment/RESULTS.md`
+- 数据说明：`stages/stage_02_feature_enrichment/DATASET.md`
