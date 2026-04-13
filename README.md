@@ -49,6 +49,7 @@
 
 - 阶段总览：`stages/README.md`
 - 论文写作流程：`docs/thesis_workflow.md`
+- 模型文献备忘：`docs/model_literature_notes.md`
 - 当前阶段总说明：`stages/stage_01_citibike_mvp/README.md`
 - 当前阶段计划：`stages/stage_01_citibike_mvp/PLAN.md`
 - 当前阶段成果：`stages/stage_01_citibike_mvp/RESULTS.md`
