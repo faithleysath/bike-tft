@@ -11,9 +11,10 @@
 
 ## 当前状态
 
-- 当前所在阶段：`stage_01_citibike_mvp`
-- 当前阶段状态：`已完成 MVP 基线`
-- 下一阶段：`stage_02_feature_enrichment`
+- 当前所在阶段：`stage_04_inventory_and_rebalancing`
+- 当前阶段状态：`阶段 2 数据交付已完成，阶段 3 AGCRN 已可训练，阶段 4 oracle 调度基线已跑通`
+- 上一阶段：`stage_02_feature_enrichment`
+- 下一阶段：`stage_05_campus_transfer_and_demo`
 
 ## 研究主线
 
@@ -24,7 +25,7 @@
 3. `stage_03_baselines_and_ablation`
    不再继续把 TFT 作为后续主模型，而是在增强版站点级数据上训练 AGCRN，固定一个足够强的主模型，并在此基础上做对比与模型级消融。
 4. `stage_04_inventory_and_rebalancing`
-   基于 AGCRN 的多步预测结果，引入库存近似与缺车/溢车识别，开始做调度优化。
+   基于未来流量输入，引入库存近似与缺车/溢车识别，做确定性调度优化；当前已先跑通 `oracle` 基线。
 5. `stage_05_campus_transfer_and_demo`
    把前面阶段沉淀出的 AGCRN 预测链路和调度逻辑迁移到校园场景，做展示页或 Notebook，收口成完整毕设原型。
 
@@ -50,9 +51,9 @@
 - 阶段总览：`stages/README.md`
 - 论文写作流程：`docs/thesis_workflow.md`
 - 模型文献备忘：`docs/model_literature_notes.md`
-- 当前阶段总说明：`stages/stage_01_citibike_mvp/README.md`
-- 当前阶段计划：`stages/stage_01_citibike_mvp/PLAN.md`
-- 当前阶段成果：`stages/stage_01_citibike_mvp/RESULTS.md`
+- 当前阶段总说明：`stages/stage_04_inventory_and_rebalancing/README.md`
+- 当前阶段计划：`stages/stage_04_inventory_and_rebalancing/PLAN.md`
+- 最新已交付成果：`stages/stage_04_inventory_and_rebalancing/RESULTS.md`
 
 ## 数据与结果保留规则
 
@@ -73,20 +74,19 @@
 
 ## 当前最推荐的推进方式
 
-现在最合理的节奏不是继续在阶段 1 里无限加复杂度，而是：
+现在最合理的节奏不是回头继续扩阶段 1 或阶段 2，而是：
 
 1. 把阶段 1 作为“已完成的基线实验”固定下来
-2. 进入阶段 2，优先补天气和日历特征
-3. 再补容量、库存近似和 POI，形成阶段 3 可直接消费的增强版站点级数据
-4. 在阶段 3 里先把 AGCRN 跑通并固定成主模型，再补基线对比和模型级消融
-5. 最后再做基于 AGCRN 预测结果的调度与校园迁移
+2. 把阶段 2 作为“已完成的数据交付阶段”固定下来
+3. 在阶段 3 里先基于 `agcrn_stage3_bundle.npz` 跑通 AGCRN 主模型
+4. 把阶段 4 先用 `oracle` 未来值跑通调度器，再接阶段 3 预测
+5. 最后补阶段 3 对比 / 消融和阶段 5 校园迁移
 
 如果时间紧，优先级建议是：
 
-1. 阶段 2 做天气 + 日历
-2. 阶段 3 先做 AGCRN 主模型 + 一版代表性 run
+1. 阶段 3 固定一版代表性 AGCRN run，并补预测导出
+2. 阶段 4 把 `oracle` 调度切到 `forecast-driven` 调度
 3. 阶段 3 再补最基本的对比实验和模型级消融
-4. 阶段 4 做一个能跑的调度模块
 4. 阶段 5 做演示页和校园迁移
 
 ## 一句话记住这套结构

@@ -1,0 +1,13 @@
+{
+  "timestamp_mode": "departure-first",
+  "station_count": 200,
+  "capacity_min": 63.0,
+  "capacity_max": 3787.0,
+  "capacity_mean": 588.04,
+  "capacity_median": 342.5,
+  "protocol": "strict_no_leakage",
+  "train_start": "2022-01-01T00:00:00",
+  "train_end_inclusive": "2022-09-14T17:00:00",
+  "train_end_exclusive_for_events": "2022-09-14T18:00:00",
+  "station_filter_count": 200
+}

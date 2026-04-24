@@ -1,0 +1,36 @@
+{
+  "decision_split": "test",
+  "forecast_mode": "oracle",
+  "forecast_file": null,
+  "node_count": 200,
+  "decision_count": 1716,
+  "max_horizon": 12,
+  "min_inventory_ratio": 0.2,
+  "max_inventory_ratio": 0.8,
+  "decision_start": "2022-10-21 11:00:00",
+  "decision_end": "2022-12-31 23:00:00",
+  "total_transfer_actions": 3506,
+  "total_matched_bikes": 15975,
+  "total_bike_km": 35494.86640447378,
+  "avg_matched_bikes_per_decision": 9.30944055944056,
+  "avg_transfer_actions_per_decision": 2.043123543123543,
+  "avg_infeasible_stations_per_decision": 0.0,
+  "rebalanced_boundary_hours": {
+    "empty": 548,
+    "full": 0,
+    "below_lower_band": 25272,
+    "above_upper_band": 0
+  },
+  "baseline_boundary_hours": {
+    "empty": 3544,
+    "full": 6311,
+    "below_lower_band": 110374,
+    "above_upper_band": 139964
+  },
+  "improvement_vs_baseline": {
+    "empty_hours_reduction": 2996,
+    "full_hours_reduction": 6311,
+    "below_lower_band_reduction": 85102,
+    "above_upper_band_reduction": 139964
+  }
+}

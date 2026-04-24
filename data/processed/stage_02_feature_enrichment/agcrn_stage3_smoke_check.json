@@ -1,0 +1,41 @@
+{
+  "bundle": "/Users/laysath/proj/bike-tft/data/processed/stage_02_feature_enrichment/agcrn_stage3_bundle.npz",
+  "lag": 12,
+  "horizon": 12,
+  "timestamps": 8760,
+  "nodes": 200,
+  "feature_dim": 35,
+  "sample_count": 8737,
+  "expected_x_shape": [
+    8737,
+    12,
+    200,
+    35
+  ],
+  "expected_y_shape": [
+    8737,
+    12,
+    200,
+    1
+  ],
+  "preview_x_shape": [
+    3,
+    12,
+    200,
+    35
+  ],
+  "preview_y_dep_shape": [
+    3,
+    12,
+    200,
+    1
+  ],
+  "preview_y_arr_shape": [
+    3,
+    12,
+    200,
+    1
+  ],
+  "first_timestamp": "2022-01-01T00:00:00.000000000",
+  "last_timestamp": "2022-12-31T23:00:00.000000000"
+}

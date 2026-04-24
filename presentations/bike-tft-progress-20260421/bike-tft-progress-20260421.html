@@ -1,0 +1,1649 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="projection">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>共享单车需求预测与智能调度｜组会进度汇报</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&amp;family=Sora:wght@400;600;700;800&amp;display=swap"
+    >
+    <style>
+        :root {
+            --bg-primary: #f6f0e6;
+            --bg-secondary: #efe5d5;
+            --bg-card: rgba(255, 252, 246, 0.8);
+            --bg-strong: #15263a;
+            --paper-shadow: 0 30px 80px rgba(21, 38, 58, 0.14);
+            --text-primary: #182330;
+            --text-secondary: #2e3d4f;
+            --text-muted: #6d675f;
+            --accent: #c65c33;
+            --accent-soft: #efc5b1;
+            --accent-2: #246a73;
+            --accent-2-soft: #bdd7d9;
+            --line: rgba(24, 35, 48, 0.1);
+            --line-strong: rgba(24, 35, 48, 0.18);
+            --success: #40644a;
+            --warning: #8d5b21;
+            --danger: #8f3d36;
+            --font-display: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+            --font-body: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+            --font-display-en: "Sora", "Avenir Next", "Segoe UI", sans-serif;
+            --font-body-en: "Sora", "Avenir Next", "Segoe UI", sans-serif;
+            --line-height-zh: 1.8;
+            --letter-spacing-zh: 0.02em;
+            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+            --title-size: clamp(1.6rem, 5vw, 4rem);
+            --h2-size: clamp(1.25rem, 3.6vw, 2.5rem);
+            --h3-size: clamp(1rem, 2.3vw, 1.55rem);
+            --body-size: clamp(0.76rem, 1.4vw, 1.08rem);
+            --small-size: clamp(0.64rem, 0.95vw, 0.86rem);
+            --slide-padding: clamp(1rem, 4vw, 4rem);
+            --content-gap: clamp(0.6rem, 2vw, 1.9rem);
+            --element-gap: clamp(0.35rem, 1vw, 0.9rem);
+            --big-number: clamp(2.3rem, 6vw, 4rem);
+        }
+
+        .projection:root {
+            --title-size: clamp(3rem, 6.8vw, 5.15rem);
+            --h2-size: clamp(1.9rem, 4vw, 3rem);
+            --h3-size: clamp(1.18rem, 2.3vw, 1.75rem);
+            --body-size: clamp(1rem, 1.65vw, 1.26rem);
+            --small-size: clamp(0.85rem, 1.1vw, 1rem);
+            --slide-padding: clamp(2rem, 5vw, 5rem);
+            --content-gap: clamp(1rem, 2.5vw, 2rem);
+            --element-gap: clamp(0.35rem, 1vw, 0.8rem);
+            --big-number: clamp(3.2rem, 7vw, 5rem);
+        }
+
+        html, body {
+            height: 100%;
+            overflow-x: hidden;
+        }
+
+        html {
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+            background: var(--bg-primary);
+        }
+
+        body {
+            margin: 0;
+            color: var(--text-primary);
+            font-family: var(--font-body-en), var(--font-body);
+            line-height: var(--line-height-zh);
+            letter-spacing: var(--letter-spacing-zh);
+            font-feature-settings: "halt";
+            text-align: justify;
+            overflow-wrap: break-word;
+            background:
+                radial-gradient(circle at 12% 14%, rgba(198, 92, 51, 0.16), transparent 28%),
+                radial-gradient(circle at 86% 14%, rgba(36, 106, 115, 0.12), transparent 24%),
+                linear-gradient(180deg, #f8f3eb 0%, #f4ede1 100%);
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background-image:
+                linear-gradient(to right, rgba(24, 35, 48, 0.045) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(24, 35, 48, 0.045) 1px, transparent 1px);
+            background-size: 48px 48px;
+            opacity: 0.45;
+            mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.55), transparent 90%);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        h1, h2, h3, h4 {
+            margin: 0;
+            text-align: left;
+            letter-spacing: 0.04em;
+            line-height: 1.4;
+            color: var(--text-primary);
+        }
+
+        p {
+            margin: 0;
+        }
+
+        code {
+            font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+            font-size: 0.92em;
+            padding: 0.12em 0.4em;
+            border-radius: 8px;
+            background: rgba(21, 38, 58, 0.08);
+            color: var(--text-primary);
+        }
+
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            width: 100%;
+            background: rgba(24, 35, 48, 0.08);
+            z-index: 30;
+        }
+
+        .progress-bar::after {
+            content: "";
+            display: block;
+            width: var(--progress, 0%);
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--accent-2));
+            transition: width 0.5s var(--ease-out-expo);
+        }
+
+        .nav-dots {
+            position: fixed;
+            right: clamp(0.8rem, 2vw, 1.5rem);
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 25;
+            display: flex;
+            flex-direction: column;
+            gap: 0.65rem;
+        }
+
+        .nav-dot {
+            width: 0.82rem;
+            height: 0.82rem;
+            border-radius: 999px;
+            border: 1px solid rgba(24, 35, 48, 0.24);
+            background: rgba(255, 255, 255, 0.58);
+            cursor: pointer;
+            transition: transform 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .nav-dot.active {
+            transform: scale(1.18);
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .slide {
+            width: 100vw;
+            height: 100vh;
+            height: 100dvh;
+            overflow: hidden;
+            scroll-snap-align: start;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            isolation: isolate;
+        }
+
+        .slide::before {
+            content: "";
+            position: absolute;
+            inset: clamp(1rem, 3vw, 2rem);
+            border: 1px solid rgba(24, 35, 48, 0.08);
+            border-radius: 28px;
+            pointer-events: none;
+        }
+
+        .slide-content {
+            flex: 1;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            max-width: min(100%, 1240px);
+            padding: var(--slide-padding);
+            gap: var(--content-gap);
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .slide-number {
+            position: absolute;
+            top: clamp(1.2rem, 3vw, 2.2rem);
+            right: clamp(1.8rem, 5vw, 4rem);
+            font-family: var(--font-display-en);
+            font-size: clamp(0.85rem, 1.4vw, 1.1rem);
+            font-weight: 700;
+            color: var(--text-muted);
+            letter-spacing: 0.16em;
+        }
+
+        .tag {
+            display: inline-block;
+            align-self: flex-start;
+            font-size: var(--body-size);
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            font-weight: 700;
+            font-family: var(--font-body-en), var(--font-body);
+        }
+
+        .eyebrow {
+            font-size: var(--small-size);
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+        }
+
+        .lede {
+            max-width: min(100%, 900px);
+            font-size: clamp(1.02rem, 1.9vw, 1.35rem);
+            color: var(--text-secondary);
+        }
+
+        .muted {
+            color: var(--text-muted);
+        }
+
+        .panel {
+            background: var(--bg-card);
+            border: 1px solid var(--line);
+            border-radius: 24px;
+            box-shadow: var(--paper-shadow);
+            backdrop-filter: blur(10px);
+        }
+
+        .title-slide {
+            background:
+                radial-gradient(circle at 18% 22%, rgba(198, 92, 51, 0.2), transparent 28%),
+                radial-gradient(circle at 82% 22%, rgba(36, 106, 115, 0.15), transparent 26%),
+                linear-gradient(135deg, #fbf8f1 0%, #efe6d7 100%);
+        }
+
+        .title-grid {
+            display: grid;
+            gap: var(--content-gap);
+            grid-template-columns: 1.3fr 0.9fr;
+            grid-template-areas:
+                "main status"
+                "main note";
+            align-items: start;
+        }
+
+        .title-main {
+            grid-area: main;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .title-main h1 {
+            font-family: var(--font-display), var(--font-body);
+            font-size: var(--title-size);
+            font-weight: 900;
+            line-height: 1.12;
+            max-width: 12ch;
+        }
+
+        .title-main h1 span {
+            display: block;
+        }
+
+        .title-sub {
+            max-width: 48rem;
+            font-size: clamp(1.1rem, 2vw, 1.45rem);
+            color: var(--text-secondary);
+        }
+
+        .status-strip,
+        .meeting-note {
+            padding: 1.25rem 1.35rem;
+        }
+
+        .status-strip {
+            grid-area: status;
+            display: grid;
+            gap: 0.9rem;
+        }
+
+        .status-pill {
+            display: grid;
+            gap: 0.16rem;
+            padding: 0.95rem 1rem;
+            border-radius: 18px;
+            border: 1px solid rgba(24, 35, 48, 0.08);
+            background: rgba(255, 255, 255, 0.6);
+        }
+
+        .status-pill strong {
+            font-size: var(--small-size);
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        .status-pill span {
+            font-size: var(--body-size);
+            color: var(--text-primary);
+        }
+
+        .meeting-note {
+            grid-area: note;
+            align-self: end;
+        }
+
+        .meeting-note h3 {
+            font-size: var(--h3-size);
+            margin-bottom: 0.55rem;
+        }
+
+        .meeting-note p {
+            color: var(--text-secondary);
+            font-size: var(--body-size);
+        }
+
+        .roadmap-grid,
+        .summary-grid,
+        .data-cards,
+        .outputs-grid,
+        .flow-grid,
+        .risk-grid,
+        .plan-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .roadmap-grid {
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+        }
+
+        .stage-card {
+            padding: 1rem 1rem 1.1rem;
+            border-radius: 22px;
+            min-height: 13.4rem;
+            background: rgba(255, 253, 248, 0.8);
+            border: 1px solid rgba(24, 35, 48, 0.08);
+            display: flex;
+            flex-direction: column;
+            gap: 0.65rem;
+            box-shadow: 0 20px 50px rgba(21, 38, 58, 0.08);
+        }
+
+        .stage-card.current {
+            background: linear-gradient(180deg, rgba(36, 106, 115, 0.12), rgba(255, 255, 255, 0.82));
+            border-color: rgba(36, 106, 115, 0.28);
+        }
+
+        .stage-card.complete {
+            background: linear-gradient(180deg, rgba(64, 100, 74, 0.12), rgba(255, 255, 255, 0.82));
+            border-color: rgba(64, 100, 74, 0.24);
+        }
+
+        .stage-code {
+            font-size: var(--small-size);
+            color: var(--text-muted);
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+        }
+
+        .stage-card h3 {
+            font-size: clamp(1rem, 1.8vw, 1.25rem);
+        }
+
+        .stage-card p {
+            font-size: var(--small-size);
+            color: var(--text-secondary);
+            flex: 1;
+        }
+
+        .stage-status {
+            display: inline-flex;
+            align-self: flex-start;
+            padding: 0.32rem 0.72rem;
+            border-radius: 999px;
+            font-size: var(--small-size);
+            font-weight: 700;
+        }
+
+        .stage-status.complete {
+            color: var(--success);
+            background: rgba(64, 100, 74, 0.12);
+        }
+
+        .stage-status.current {
+            color: var(--accent-2);
+            background: rgba(36, 106, 115, 0.12);
+        }
+
+        .stage-status.pending {
+            color: var(--warning);
+            background: rgba(141, 91, 33, 0.1);
+        }
+
+        .location-chip {
+            align-self: flex-start;
+            padding: 0.45rem 0.9rem;
+            border-radius: 999px;
+            background: rgba(198, 92, 51, 0.12);
+            color: var(--accent);
+            font-size: var(--small-size);
+            font-weight: 700;
+            letter-spacing: 0.08em;
+        }
+
+        .summary-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .summary-card {
+            padding: 1.3rem 1.3rem 1.2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .summary-card .summary-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            gap: 1rem;
+        }
+
+        .summary-card .summary-head strong {
+            font-size: var(--small-size);
+            color: var(--text-muted);
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+        }
+
+        .summary-card h3 {
+            font-size: var(--h3-size);
+        }
+
+        .metric-pair {
+            display: grid;
+            gap: 0.35rem;
+        }
+
+        .metric-pair .metric-line {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            align-items: baseline;
+            padding-bottom: 0.35rem;
+            border-bottom: 1px solid rgba(24, 35, 48, 0.08);
+        }
+
+        .metric-line span {
+            font-size: var(--small-size);
+            color: var(--text-muted);
+        }
+
+        .metric-line strong {
+            font-family: var(--font-display-en), ui-sans-serif, sans-serif;
+            font-size: clamp(1.1rem, 1.9vw, 1.55rem);
+            color: var(--text-primary);
+        }
+
+        .summary-card p {
+            font-size: var(--body-size);
+            color: var(--text-secondary);
+        }
+
+        .data-cards {
+            grid-template-columns: repeat(6, minmax(0, 1fr));
+        }
+
+        .outputs-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .data-card {
+            padding: 1rem 0.95rem;
+            border-radius: 22px;
+            background: rgba(255, 255, 255, 0.62);
+            border: 1px solid rgba(24, 35, 48, 0.08);
+            box-shadow: 0 18px 50px rgba(21, 38, 58, 0.08);
+        }
+
+        .data-card .number {
+            font-family: var(--font-display-en), ui-sans-serif, sans-serif;
+            font-size: clamp(1.35rem, 2.5vw, 2.2rem);
+            font-weight: 800;
+            line-height: 1.08;
+            color: var(--text-primary);
+        }
+
+        .data-card .label {
+            margin-top: 0.35rem;
+            font-size: var(--small-size);
+            color: var(--text-secondary);
+            text-align: left;
+        }
+
+        .split-layout {
+            display: grid;
+            gap: 1rem;
+            grid-template-columns: 1.15fr 0.85fr;
+        }
+
+        .artifact-list,
+        .dataset-panel,
+        .stage3-panel,
+        .risk-panel,
+        .plan-card {
+            padding: 1.2rem 1.25rem;
+        }
+
+        .artifact-list h3,
+        .dataset-panel h3,
+        .stage3-panel h3,
+        .risk-panel h3,
+        .plan-card h3 {
+            margin-bottom: 0.7rem;
+            font-size: var(--h3-size);
+        }
+
+        .artifact {
+            display: grid;
+            gap: 0.15rem;
+            padding: 0.65rem 0;
+            border-top: 1px solid rgba(24, 35, 48, 0.08);
+        }
+
+        .artifact:first-of-type {
+            border-top: 0;
+            padding-top: 0;
+        }
+
+        .artifact strong {
+            font-size: var(--body-size);
+            color: var(--text-primary);
+        }
+
+        .artifact span {
+            font-size: var(--small-size);
+            color: var(--text-secondary);
+        }
+
+        .bullet-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.55rem;
+        }
+
+        .bullet-list li {
+            position: relative;
+            padding-left: 1rem;
+            font-size: var(--small-size);
+            color: var(--text-secondary);
+            text-align: left;
+        }
+
+        .bullet-list li::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0.72em;
+            width: 0.35rem;
+            height: 0.35rem;
+            border-radius: 999px;
+            background: var(--accent);
+        }
+
+        .stage3-layout {
+            display: grid;
+            gap: 1rem;
+            grid-template-columns: 1fr 1fr;
+            align-items: stretch;
+        }
+
+        .stage3-panel .metric-stack {
+            display: grid;
+            gap: 0.8rem;
+        }
+
+        .metric-chip-grid {
+            display: grid;
+            gap: 0.7rem;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .metric-chip {
+            padding: 0.9rem 1rem;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.58);
+            border: 1px solid rgba(24, 35, 48, 0.08);
+        }
+
+        .metric-chip strong {
+            display: block;
+            font-family: var(--font-display-en), ui-sans-serif, sans-serif;
+            font-size: clamp(1.2rem, 2vw, 1.75rem);
+            color: var(--text-primary);
+        }
+
+        .metric-chip span {
+            display: block;
+            font-size: var(--small-size);
+            color: var(--text-secondary);
+        }
+
+        .warning-strip,
+        .oracle-note {
+            align-self: flex-start;
+            padding: 0.55rem 0.95rem;
+            border-radius: 16px;
+            font-size: var(--small-size);
+            font-weight: 700;
+        }
+
+        .warning-strip {
+            background: rgba(141, 91, 33, 0.1);
+            color: var(--warning);
+            border: 1px solid rgba(141, 91, 33, 0.14);
+        }
+
+        .flow-grid {
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+        }
+
+        .flow-step {
+            padding: 1rem 1rem 1.15rem;
+            border-radius: 22px;
+            background: rgba(255, 255, 255, 0.62);
+            border: 1px solid rgba(24, 35, 48, 0.08);
+            box-shadow: 0 18px 50px rgba(21, 38, 58, 0.08);
+            min-height: 12rem;
+        }
+
+        .step-index {
+            font-family: var(--font-display-en), ui-sans-serif, sans-serif;
+            font-size: clamp(1.2rem, 2vw, 1.7rem);
+            color: var(--accent);
+            font-weight: 800;
+            margin-bottom: 0.45rem;
+        }
+
+        .flow-step h3 {
+            font-size: clamp(1rem, 1.6vw, 1.2rem);
+            margin-bottom: 0.35rem;
+        }
+
+        .flow-step p {
+            font-size: var(--small-size);
+            color: var(--text-secondary);
+        }
+
+        .callout {
+            padding: 1rem 1.15rem;
+            border-radius: 20px;
+            background: linear-gradient(90deg, rgba(36, 106, 115, 0.12), rgba(198, 92, 51, 0.08));
+            border: 1px solid rgba(36, 106, 115, 0.16);
+            font-size: var(--body-size);
+            color: var(--text-primary);
+        }
+
+        .results-layout {
+            display: grid;
+            gap: 1rem;
+            grid-template-columns: 1.12fr 0.88fr;
+        }
+
+        .compare-panel,
+        .ops-panel {
+            padding: 1.2rem 1.25rem;
+        }
+
+        .compare-table {
+            display: grid;
+            gap: 0.7rem;
+        }
+
+        .compare-row {
+            display: grid;
+            grid-template-columns: 1.4fr 0.9fr 0.9fr;
+            gap: 0.8rem;
+            align-items: center;
+            padding: 0.82rem 0.9rem;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.62);
+            border: 1px solid rgba(24, 35, 48, 0.08);
+        }
+
+        .compare-row strong {
+            font-size: var(--body-size);
+        }
+
+        .compare-row span {
+            font-family: var(--font-display-en), ui-sans-serif, sans-serif;
+            font-size: clamp(1rem, 1.7vw, 1.45rem);
+            text-align: center;
+        }
+
+        .compare-row .before {
+            color: var(--danger);
+        }
+
+        .compare-row .after {
+            color: var(--success);
+        }
+
+        .ops-grid {
+            display: grid;
+            gap: 0.75rem;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .ops-card {
+            padding: 0.95rem 1rem;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.58);
+            border: 1px solid rgba(24, 35, 48, 0.08);
+        }
+
+        .ops-card strong {
+            display: block;
+            font-family: var(--font-display-en), ui-sans-serif, sans-serif;
+            font-size: clamp(1.1rem, 1.9vw, 1.7rem);
+        }
+
+        .ops-card span {
+            display: block;
+            font-size: var(--small-size);
+            color: var(--text-secondary);
+        }
+
+        .oracle-note {
+            background: rgba(143, 61, 54, 0.12);
+            color: var(--danger);
+            border: 1px solid rgba(143, 61, 54, 0.16);
+        }
+
+        .risk-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .risk-panel {
+            display: grid;
+            gap: 0.8rem;
+        }
+
+        .risk-state {
+            display: inline-flex;
+            align-self: flex-start;
+            padding: 0.35rem 0.75rem;
+            border-radius: 999px;
+            background: rgba(198, 92, 51, 0.12);
+            color: var(--accent);
+            font-size: var(--small-size);
+            font-weight: 700;
+        }
+
+        .risk-panel p {
+            color: var(--text-secondary);
+            font-size: var(--body-size);
+        }
+
+        .truth-bar {
+            padding: 0.9rem 1rem;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.58);
+            border: 1px solid rgba(24, 35, 48, 0.08);
+            font-size: var(--small-size);
+            color: var(--text-secondary);
+        }
+
+        .plan-grid {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+
+        .plan-card {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            min-height: 14.2rem;
+        }
+
+        .plan-window {
+            display: inline-flex;
+            align-self: flex-start;
+            padding: 0.34rem 0.75rem;
+            border-radius: 999px;
+            background: rgba(36, 106, 115, 0.12);
+            color: var(--accent-2);
+            font-size: var(--small-size);
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .plan-card ul {
+            margin: 0;
+            padding-left: 1.05rem;
+            display: grid;
+            gap: 0.4rem;
+            color: var(--text-secondary);
+            font-size: var(--small-size);
+            text-align: left;
+        }
+
+        .end-slide {
+            background:
+                radial-gradient(circle at 15% 20%, rgba(198, 92, 51, 0.22), transparent 24%),
+                radial-gradient(circle at 84% 15%, rgba(36, 106, 115, 0.18), transparent 22%),
+                linear-gradient(180deg, #f8f2e8 0%, #efe4d2 100%);
+        }
+
+        .end-slide .slide-content {
+            max-width: min(92%, 1120px);
+        }
+
+        .qna-grid {
+            display: grid;
+            gap: 1rem;
+            grid-template-columns: 1.1fr 0.9fr;
+            align-items: end;
+        }
+
+        .qna-main {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .end-rule {
+            width: clamp(2rem, 5vw, 4rem);
+            height: 2px;
+            background: var(--accent);
+        }
+
+        .qna-main h2 {
+            font-size: var(--h2-size);
+            font-weight: 800;
+            line-height: 1.35;
+        }
+
+        .qna-main p {
+            font-size: var(--body-size);
+            color: var(--text-secondary);
+            max-width: 42rem;
+        }
+
+        .qna-card {
+            padding: 1.2rem 1.25rem;
+            display: grid;
+            gap: 0.7rem;
+        }
+
+        .qna-card strong {
+            font-size: clamp(1.1rem, 1.8vw, 1.55rem);
+        }
+
+        .qna-card p {
+            color: var(--text-secondary);
+            font-size: var(--body-size);
+        }
+
+        .reveal,
+        .reveal-up,
+        .reveal-blur {
+            opacity: 0;
+            will-change: transform, opacity, filter;
+            transition:
+                transform 0.75s var(--ease-out-expo),
+                opacity 0.75s var(--ease-out-expo),
+                filter 0.75s var(--ease-out-expo);
+        }
+
+        .reveal {
+            transform: translateY(22px);
+        }
+
+        .reveal-up {
+            transform: translateY(28px);
+        }
+
+        .reveal-blur {
+            transform: translateY(16px);
+            filter: blur(8px);
+        }
+
+        .slide.visible .reveal,
+        .slide.visible .reveal-up,
+        .slide.visible .reveal-blur {
+            opacity: 1;
+            transform: translateY(0);
+            filter: blur(0);
+        }
+
+        .delay-1 {
+            transition-delay: 0.08s;
+        }
+
+        .delay-2 {
+            transition-delay: 0.16s;
+        }
+
+        .delay-3 {
+            transition-delay: 0.24s;
+        }
+
+        .delay-4 {
+            transition-delay: 0.32s;
+        }
+
+        .keyboard-hint {
+            position: fixed;
+            left: clamp(1rem, 3vw, 2rem);
+            bottom: clamp(0.8rem, 2vw, 1.4rem);
+            z-index: 20;
+            font-size: var(--small-size);
+            color: var(--text-muted);
+            background: rgba(255, 255, 255, 0.68);
+            border: 1px solid rgba(24, 35, 48, 0.1);
+            border-radius: 999px;
+            padding: 0.45rem 0.75rem;
+            backdrop-filter: blur(8px);
+        }
+
+        @media (max-width: 1200px) {
+            .roadmap-grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+
+            .roadmap-grid .stage-card:last-child,
+            .roadmap-grid .stage-card:nth-last-child(2) {
+                grid-column: span 1;
+            }
+
+            .data-cards {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+
+            .flow-grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+
+            .plan-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 980px) {
+            .title-grid,
+            .split-layout,
+            .stage3-layout,
+            .results-layout,
+            .qna-grid {
+                grid-template-columns: 1fr;
+                grid-template-areas:
+                    "main"
+                    "status"
+                    "note";
+            }
+
+            .summary-grid,
+            .risk-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .roadmap-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .roadmap-grid .stage-card:last-child {
+                grid-column: span 2;
+            }
+
+            .flow-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 700px) {
+            .nav-dots,
+            .keyboard-hint {
+                display: none;
+            }
+
+            .roadmap-grid,
+            .data-cards,
+            .outputs-grid,
+            .metric-chip-grid,
+            .ops-grid,
+            .flow-grid,
+            .plan-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .roadmap-grid .stage-card:last-child {
+                grid-column: auto;
+            }
+
+            .title-main h1 {
+                max-width: 100%;
+                font-size: clamp(2.45rem, 9.2vw, 3.75rem);
+            }
+
+            .compare-row {
+                grid-template-columns: 1fr;
+                justify-items: start;
+            }
+        }
+
+        @media (max-height: 760px) {
+            :root {
+                --slide-padding: clamp(1rem, 3vw, 2rem);
+                --content-gap: clamp(0.6rem, 1.6vw, 1rem);
+                --body-size: clamp(0.74rem, 1.2vw, 0.96rem);
+                --small-size: clamp(0.6rem, 0.85vw, 0.8rem);
+            }
+
+            .stage-card {
+                min-height: 11.8rem;
+            }
+
+            .flow-step,
+            .plan-card {
+                min-height: 10.8rem;
+            }
+        }
+
+        @media (max-height: 640px) {
+            :root {
+                --slide-padding: clamp(0.75rem, 2.5vw, 1.5rem);
+                --content-gap: clamp(0.35rem, 1vw, 0.8rem);
+                --title-size: clamp(1.5rem, 4.5vw, 2.6rem);
+                --h2-size: clamp(1rem, 3vw, 1.8rem);
+                --body-size: clamp(0.68rem, 1vw, 0.86rem);
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.2s !important;
+            }
+
+            html {
+                scroll-behavior: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar" aria-hidden="true"></div>
+    <nav class="nav-dots" aria-label="Slides navigation"></nav>
+
+    <section class="slide title-slide" id="slide-1">
+        <div class="slide-content">
+            <span class="slide-number">01</span>
+            <div class="title-grid">
+                <div class="title-main">
+                    <div class="tag reveal">Group Meeting / 2026.04.21</div>
+                    <h1 class="reveal-blur delay-1">
+                        <span>共享单车需求预测与</span>
+                        <span>智能调度组会进度汇报</span>
+                    </h1>
+                    <p class="title-sub reveal-up delay-2">
+                        今天只汇报一个结论：核心流程已经贯通，剩余工作主要收敛到效果优化、可视化平台和论文收口。
+                    </p>
+                </div>
+                <div class="status-strip panel reveal-up delay-3">
+                    <div class="status-pill">
+                        <strong>Stage 02</strong>
+                        <span>增强数据集与 AGCRN handoff bundle 已固定</span>
+                    </div>
+                    <div class="status-pill">
+                        <strong>Stage 03</strong>
+                        <span>AGCRN 主模型训练闭环已完成，checkpoint 和指标已稳定落盘</span>
+                    </div>
+                    <div class="status-pill">
+                        <strong>Stage 04</strong>
+                        <span>调度算法闭环已成立，oracle 基线和 forecast_file 合同都已跑通</span>
+                    </div>
+                </div>
+                <aside class="meeting-note panel reveal-up delay-4">
+                    <div class="eyebrow">Meeting Focus</div>
+                    <h3>这次重点是已完成工作量和剩余收口项</h3>
+                    <p>讲清楚主流程已经跑通，后面更多是把结果做强、把系统讲清楚。</p>
+                </aside>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide" id="slide-2">
+        <div class="slide-content">
+            <span class="slide-number">02</span>
+            <div class="tag reveal">Research Roadmap</div>
+            <h2 class="reveal-blur delay-1">前四个阶段的核心工程流程已经基本贯通</h2>
+            <p class="lede reveal-up delay-2">
+                现在更像是在做“结果增强和展示收口”，而不是还在搭主链。阶段 5 的可视化平台和迁移展示还没开始，但上游接口已经就位。
+            </p>
+            <div class="location-chip reveal-up delay-2">当前定位：core pipeline already end-to-end</div>
+            <div class="roadmap-grid reveal-up delay-3">
+                <article class="stage-card complete">
+                    <div class="stage-code">stage 01</div>
+                    <h3>Citi Bike MVP 基线</h3>
+                    <p>站点小时面板、TFT 基线、结果报告已沉淀成统一起点。</p>
+                    <span class="stage-status complete">已完成</span>
+                </article>
+                <article class="stage-card complete">
+                    <div class="stage-code">stage 02</div>
+                    <h3>特征增强与数据交付</h3>
+                    <p>天气、日历、容量近似、库存近似和 AGCRN bundle 已固定。</p>
+                    <span class="stage-status complete">已完成数据交付</span>
+                </article>
+                <article class="stage-card complete">
+                    <div class="stage-code">stage 03</div>
+                    <h3>AGCRN 主模型</h3>
+                    <p>共享单车版训练入口、quick run、checkpoint 和指标文件都已跑通，主模型闭环已形成。</p>
+                    <span class="stage-status complete">已完成主模型闭环</span>
+                </article>
+                <article class="stage-card current">
+                    <div class="stage-code">stage 04</div>
+                    <h3>库存与调度</h3>
+                    <p>调度入口、库存递推、任务表和仿真输出都已成立，剩下主要是接正式预测值继续做效果优化。</p>
+                    <span class="stage-status current">已跑通 oracle 基线</span>
+                </article>
+                <article class="stage-card">
+                    <div class="stage-code">stage 05</div>
+                    <h3>校园迁移与演示</h3>
+                    <p>剩余更偏平台化展示、可视化交互和最终演示包装。</p>
+                    <span class="stage-status pending">待做展示平台</span>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide" id="slide-3">
+        <div class="slide-content">
+            <span class="slide-number">03</span>
+            <div class="tag reveal">Progress Snapshot</div>
+            <h2 class="reveal-blur delay-1">这次组会想强调的不只是进展，而是主链已经跑通</h2>
+            <div class="summary-grid reveal-up delay-2">
+                <article class="summary-card panel">
+                    <div class="summary-head">
+                        <strong>Stage 02</strong>
+                        <span class="muted">data handoff</span>
+                    </div>
+                    <h3>增强数据集已经交付完成</h3>
+                    <div class="metric-pair">
+                        <div class="metric-line">
+                            <span>面板规模</span>
+                            <strong>1,752,000</strong>
+                        </div>
+                        <div class="metric-line">
+                            <span>bundle 维度</span>
+                            <strong>35 ch</strong>
+                        </div>
+                    </div>
+                    <p>阶段 2 已经把后面训练和调度共用的数据协议全部固定下来。</p>
+                </article>
+                <article class="summary-card panel">
+                    <div class="summary-head">
+                        <strong>Stage 03</strong>
+                        <span class="muted">model ready</span>
+                    </div>
+                    <h3>AGCRN 主模型阶段可以按“已完成”汇报</h3>
+                    <div class="metric-pair">
+                        <div class="metric-line">
+                            <span>best val</span>
+                            <strong>0.4170</strong>
+                        </div>
+                        <div class="metric-line">
+                            <span>test MAE</span>
+                            <strong>4.35</strong>
+                        </div>
+                    </div>
+                    <p>当前已经不是“只会跑 smoke”，而是主模型训练闭环已经完成，后面更多是继续做效果增强。</p>
+                </article>
+                <article class="summary-card panel">
+                    <div class="summary-head">
+                        <strong>Stage 04</strong>
+                        <span class="muted">decision loop</span>
+                    </div>
+                    <h3>调度算法闭环已经先跑通</h3>
+                    <div class="metric-pair">
+                        <div class="metric-line">
+                            <span>决策时刻</span>
+                            <strong>1,716</strong>
+                        </div>
+                        <div class="metric-line">
+                            <span>空站改善</span>
+                            <strong>3544→548</strong>
+                        </div>
+                    </div>
+                    <p>从预测后处理到调度建议生成这条线已经闭环，后面更像是效果增强和平台呈现。</p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide" id="slide-4">
+        <div class="slide-content">
+            <span class="slide-number">04</span>
+            <div class="tag reveal">Stage 02 Delivery</div>
+            <h2 class="reveal-blur delay-1">阶段 2 已经把阶段 3 要吃的数据包完整交出来了</h2>
+            <div class="outputs-grid reveal-up delay-2">
+                <div class="data-card">
+                    <div class="number">Top 200</div>
+                    <div class="label">站点范围固定，不再扩站</div>
+                </div>
+                <div class="data-card">
+                    <div class="number">1h</div>
+                    <div class="label">统一小时粒度</div>
+                </div>
+                <div class="data-card">
+                    <div class="number">1,752,000</div>
+                    <div class="label">增强长表总行数</div>
+                </div>
+                <div class="data-card">
+                    <div class="number">8,760</div>
+                    <div class="label">小时长度覆盖 2022 全年</div>
+                </div>
+                <div class="data-card">
+                    <div class="number">[8760,200,35]</div>
+                    <div class="label">AGCRN bundle features 形状</div>
+                </div>
+                <div class="data-card">
+                    <div class="number">No Leak</div>
+                    <div class="label">容量估计只用训练段事件</div>
+                </div>
+            </div>
+            <div class="split-layout reveal-up delay-3">
+                <article class="dataset-panel panel">
+                    <h3>这一阶段交付的不是“想法”，而是直接可消费的工件</h3>
+                    <ul class="bullet-list">
+                        <li><code>station_hour_panel_enriched.parquet</code>：论文分析和排查主表。</li>
+                        <li><code>station_static_features.csv</code>：节点静态属性表。</li>
+                        <li><code>split_manifest.json</code>：唯一切分口径。</li>
+                        <li><code>feature_manifest.json</code>：字段分组协议。</li>
+                        <li><code>agcrn_stage3_bundle.npz</code>：阶段 3 可直接加载的张量包。</li>
+                    </ul>
+                </article>
+                <aside class="artifact-list panel">
+                    <h3>口径固定点</h3>
+                    <div class="artifact">
+                        <strong>默认目标</strong>
+                        <span><code>dep_count</code>，<code>arr_count</code> 保留为辅助目标。</span>
+                    </div>
+                    <div class="artifact">
+                        <strong>历史观测</strong>
+                        <span>流量、库存近似、天气都进 historical observed features。</span>
+                    </div>
+                    <div class="artifact">
+                        <strong>未来已知</strong>
+                        <span>时间字段 + 日历字段作为 future known features。</span>
+                    </div>
+                    <div class="artifact">
+                        <strong>真实数据终点</strong>
+                        <span>稳定覆盖到 <code>2022-12-31 23:00:00</code>，manifest 已注明。</span>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide" id="slide-5">
+        <div class="slide-content">
+            <span class="slide-number">05</span>
+            <div class="tag reveal">Stage 03 Status</div>
+            <h2 class="reveal-blur delay-1">阶段 3 的主模型训练闭环已经完成</h2>
+            <div class="stage3-layout reveal-up delay-2">
+                <article class="stage3-panel panel">
+                    <h3>现在已经确认的事实</h3>
+                    <div class="metric-stack">
+                        <div class="metric-chip-grid">
+                            <div class="metric-chip">
+                                <strong>lag = 12</strong>
+                                <span>encoder 长度</span>
+                            </div>
+                            <div class="metric-chip">
+                                <strong>horizon = 12</strong>
+                                <span>多步预测长度</span>
+                            </div>
+                            <div class="metric-chip">
+                                <strong>8,737</strong>
+                                <span>可切窗样本数</span>
+                            </div>
+                            <div class="metric-chip">
+                                <strong>MPS</strong>
+                                <span>quick run 当前设备</span>
+                            </div>
+                        </div>
+                        <div class="warning-strip">当前可以把阶段 3 按“已完成主模型闭环”汇报，后续主要做效果增强而不是补流程。</div>
+                    </div>
+                </article>
+                <aside class="stage3-panel panel">
+                    <h3>quick run 摘要</h3>
+                    <div class="metric-chip-grid">
+                        <div class="metric-chip">
+                            <strong>0.4170</strong>
+                            <span>best_val_loss</span>
+                        </div>
+                        <div class="metric-chip">
+                            <strong>4.35</strong>
+                            <span>test_mae</span>
+                        </div>
+                        <div class="metric-chip">
+                            <strong>6.44</strong>
+                            <span>test_rmse</span>
+                        </div>
+                        <div class="metric-chip">
+                            <strong>epoch 4</strong>
+                            <span>best checkpoint 落点</span>
+                        </div>
+                    </div>
+                    <p class="muted">
+                        这说明阶段 3 作为主模型阶段已经完成主体任务，接下来主要是继续做效果优化，并把结果服务阶段 4。
+                    </p>
+                </aside>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide" id="slide-6">
+        <div class="slide-content">
+            <span class="slide-number">06</span>
+            <div class="tag reveal">Stage 04 Logic</div>
+            <h2 class="reveal-blur delay-1">阶段 4 本质上是确定性调度，不是再训练一个模型</h2>
+            <p class="lede reveal-up delay-2">
+                只要给定当前库存、容量近似和未来多个步长的需求输入，就可以先做库存递推，再求调度建议。当前已经先用 oracle 未来值把这条线跑通。
+            </p>
+            <div class="flow-grid reveal-up delay-3">
+                <article class="flow-step">
+                    <div class="step-index">01</div>
+                    <h3>未来流量输入</h3>
+                    <p>吃未来多个步长的 <code>net_flow</code>，来源可以是 oracle，也可以是外部预测表。</p>
+                </article>
+                <article class="flow-step">
+                    <div class="step-index">02</div>
+                    <h3>库存递推</h3>
+                    <p>结合 <code>inventory_hat</code> 和 <code>capacity_hat</code> 推出未来库存轨迹。</p>
+                </article>
+                <article class="flow-step">
+                    <div class="step-index">03</div>
+                    <h3>安全库存带</h3>
+                    <p>按容量比例给每站目标库存区间，当前默认是 <code>20%</code> 到 <code>80%</code>。</p>
+                </article>
+                <article class="flow-step">
+                    <div class="step-index">04</div>
+                    <h3>距离优先匹配</h3>
+                    <p>把缺口和富余量转成调入 / 调出，再做 donor 和 receiver 的距离优先贪心匹配。</p>
+                </article>
+                <article class="flow-step">
+                    <div class="step-index">05</div>
+                    <h3>滚动仿真</h3>
+                    <p>用真实下一小时流量继续往前推，并与“不调度” baseline 做边界状态对照。</p>
+                </article>
+            </div>
+            <div class="callout reveal-up delay-4">
+                现在从数据构建、模型训练到调度求解的核心工程主链已经贯通，剩下更多是把预测效果做强、把系统展示做出来。
+            </div>
+        </div>
+    </section>
+
+    <section class="slide" id="slide-7">
+        <div class="slide-content">
+            <span class="slide-number">07</span>
+            <div class="tag reveal">Stage 04 Oracle Result</div>
+            <h2 class="reveal-blur delay-1">用真实未来值当 oracle 输入时，调度基线已经能显著压边界风险</h2>
+            <div class="oracle-note reveal-up delay-2">oracle 结果，不代表真实 forecast-driven 联调效果</div>
+            <div class="results-layout reveal-up delay-3">
+                <article class="compare-panel panel">
+                    <h3>边界状态对比</h3>
+                    <div class="compare-table">
+                        <div class="compare-row">
+                            <strong>空站 node-hour</strong>
+                            <span class="before">3544</span>
+                            <span class="after">548</span>
+                        </div>
+                        <div class="compare-row">
+                            <strong>满站 node-hour</strong>
+                            <span class="before">6311</span>
+                            <span class="after">0</span>
+                        </div>
+                        <div class="compare-row">
+                            <strong>低于下安全带</strong>
+                            <span class="before">110374</span>
+                            <span class="after">25272</span>
+                        </div>
+                        <div class="compare-row">
+                            <strong>高于上安全带</strong>
+                            <span class="before">139964</span>
+                            <span class="after">0</span>
+                        </div>
+                    </div>
+                </article>
+                <aside class="ops-panel panel">
+                    <h3>运行摘要</h3>
+                    <div class="ops-grid">
+                        <div class="ops-card">
+                            <strong>1716</strong>
+                            <span>决策时刻数</span>
+                        </div>
+                        <div class="ops-card">
+                            <strong>3506</strong>
+                            <span>转运动作数</span>
+                        </div>
+                        <div class="ops-card">
+                            <strong>15975</strong>
+                            <span>匹配车辆数</span>
+                        </div>
+                        <div class="ops-card">
+                            <strong>35494.87</strong>
+                            <span>bike-km</span>
+                        </div>
+                    </div>
+                    <p class="muted">
+                        这页的意义是说明“调度器本身已经工作，工程上已经能闭环出结果”；后面主要是把 forecast-driven 效果继续拉高。
+                    </p>
+                </aside>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide" id="slide-8">
+        <div class="slide-content">
+            <span class="slide-number">08</span>
+            <div class="tag reveal">Remaining Work</div>
+            <h2 class="reveal-blur delay-1">剩余工作已经明显收敛成三块：优化、平台、论文</h2>
+            <div class="risk-grid reveal-up delay-2">
+                <article class="risk-panel panel">
+                    <span class="risk-state">Work 01</span>
+                    <h3>效果优化</h3>
+                    <p>继续把 AGCRN 指标往上做，并把预测导出成阶段 4 输入表，让调度从 oracle 走向 forecast-driven。</p>
+                    <div class="truth-bar">
+                        第三阶段主模型已经完成，剩下是把结果继续做强。
+                    </div>
+                </article>
+                <article class="risk-panel panel">
+                    <span class="risk-state">Work 02</span>
+                    <h3>可视化平台</h3>
+                    <p>把训练结果、调度建议和关键指标做成网页展示或 Notebook，形成老师能直接看的演示平台。</p>
+                    <div class="truth-bar">
+                        底层结果都能稳定落盘，平台层主要做组织与呈现。
+                    </div>
+                </article>
+                <article class="risk-panel panel">
+                    <span class="risk-state">Work 03</span>
+                    <h3>论文撰写</h3>
+                    <p>把阶段 1 到阶段 4 的结果、图表和方法说明串成论文主体，进入写作和打磨阶段。</p>
+                    <div class="truth-bar">
+                        现在不是“没东西写”，而是已有材料足够，接下来做系统整理和表达。
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide end-slide" id="slide-9">
+        <div class="slide-content">
+            <span class="slide-number">09</span>
+            <div class="qna-grid">
+                <div class="qna-main">
+                    <div class="tag reveal">Next 1-2 Weeks</div>
+                    <div class="end-rule reveal"></div>
+                    <h2 class="reveal-blur delay-1">接下来两周更像是结果增强和展示收口，而不是继续搭流程</h2>
+                    <p class="reveal-up delay-2">
+                        顺序已经很清楚：在阶段 3 已完成的基础上继续做效果增强，再把预测驱动调度接稳，然后补可视化平台和论文主体。也就是说，后面更多是把已有主链做漂亮，而不是回头补基础设施。
+                    </p>
+                </div>
+                <aside class="qna-card panel reveal-up delay-3">
+                    <strong>推进顺序</strong>
+                    <p>1. 在已完成主模型基础上继续优化效果</p>
+                    <p>2. 固定预测驱动调度结果</p>
+                    <p>3. 补可视化平台 / 展示页</p>
+                    <p>4. 整理论文主体与图表</p>
+                    <p>5. 收口阶段 5 展示</p>
+                    <p class="muted">Q&amp;A / 欢迎老师拍砖</p>
+                </aside>
+            </div>
+        </div>
+    </section>
+
+    <div class="keyboard-hint">滚轮 / 方向键翻页，按 <strong>F</strong> 可全屏</div>
+
+    <script>
+        class SlidePresentation {
+            constructor() {
+                this.slides = Array.from(document.querySelectorAll(".slide"));
+                this.nav = document.querySelector(".nav-dots");
+                this.currentIndex = 0;
+                this.isScrolling = false;
+                this.touchStartY = 0;
+                this.touchDeltaY = 0;
+                this.buildNav();
+                this.setupObserver();
+                this.setupKeyboard();
+                this.setupWheel();
+                this.setupTouch();
+                this.updateProgress();
+                this.updateActiveNav();
+            }
+
+            buildNav() {
+                this.slides.forEach((slide, index) => {
+                    const dot = document.createElement("button");
+                    dot.type = "button";
+                    dot.className = "nav-dot";
+                    dot.setAttribute("aria-label", `Go to slide ${index + 1}`);
+                    dot.addEventListener("click", () => this.goTo(index));
+                    this.nav.appendChild(dot);
+                });
+            }
+
+            setupObserver() {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add("visible");
+                            this.currentIndex = this.slides.indexOf(entry.target);
+                            this.updateProgress();
+                            this.updateActiveNav();
+                        }
+                    });
+                }, { threshold: 0.55 });
+
+                this.slides.forEach((slide) => observer.observe(slide));
+            }
+
+            setupKeyboard() {
+                document.addEventListener("keydown", (e) => {
+                    if (["ArrowDown", "ArrowRight", " ", "PageDown"].includes(e.key)) {
+                        e.preventDefault();
+                        this.next();
+                    }
+                    if (["ArrowUp", "ArrowLeft", "PageUp"].includes(e.key)) {
+                        e.preventDefault();
+                        this.prev();
+                    }
+                    if (e.key === "Home") {
+                        e.preventDefault();
+                        this.goTo(0);
+                    }
+                    if (e.key === "End") {
+                        e.preventDefault();
+                        this.goTo(this.slides.length - 1);
+                    }
+                    if (e.key.toLowerCase() === "f") {
+                        if (!document.fullscreenElement) {
+                            document.documentElement.requestFullscreen().catch(() => {});
+                        } else {
+                            document.exitFullscreen().catch(() => {});
+                        }
+                    }
+                });
+            }
+
+            setupWheel() {
+                window.addEventListener("wheel", (e) => {
+                    if (this.isScrolling) {
+                        return;
+                    }
+                    if (Math.abs(e.deltaY) < 25) {
+                        return;
+                    }
+                    this.isScrolling = true;
+                    if (e.deltaY > 0) {
+                        this.next();
+                    } else {
+                        this.prev();
+                    }
+                    window.setTimeout(() => {
+                        this.isScrolling = false;
+                    }, 700);
+                }, { passive: true });
+            }
+
+            setupTouch() {
+                window.addEventListener("touchstart", (e) => {
+                    this.touchStartY = e.changedTouches[0].clientY;
+                }, { passive: true });
+
+                window.addEventListener("touchend", (e) => {
+                    this.touchDeltaY = e.changedTouches[0].clientY - this.touchStartY;
+                    if (Math.abs(this.touchDeltaY) < 50) {
+                        return;
+                    }
+                    if (this.touchDeltaY < 0) {
+                        this.next();
+                    } else {
+                        this.prev();
+                    }
+                }, { passive: true });
+            }
+
+            next() {
+                this.goTo(Math.min(this.currentIndex + 1, this.slides.length - 1));
+            }
+
+            prev() {
+                this.goTo(Math.max(this.currentIndex - 1, 0));
+            }
+
+            goTo(index) {
+                this.slides[index].scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+
+            updateProgress() {
+                const progress = ((this.currentIndex + 1) / this.slides.length) * 100;
+                document.documentElement.style.setProperty("--progress", `${progress}%`);
+            }
+
+            updateActiveNav() {
+                const dots = Array.from(document.querySelectorAll(".nav-dot"));
+                dots.forEach((dot, index) => {
+                    dot.classList.toggle("active", index === this.currentIndex);
+                });
+            }
+        }
+
+        new SlidePresentation();
+    </script>
+</body>
+</html>

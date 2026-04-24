@@ -129,12 +129,16 @@ uv run scripts/data/extract_csv_field_metadata.py \
 
 ### 第 2 步：生成站点小时级面板数据
 
+当前原始 CSV 存在跨文件边界时间混入，所以阶段 1 的固定底座会显式裁到 `2022` 日历年。
+
 ```bash
 uv run stages/stage_01_citibike_mvp/preprocess_citibike.py \
   --input data/raw/stage_01_citibike_mvp/citi-bike-nyc \
   --output-dir data/processed/stage_01_citibike_mvp \
   --freq 1H \
   --top-n-stations 200 \
+  --start-ts 2022-01-01T00:00:00 \
+  --end-ts 2023-01-01T00:00:00 \
   --workers 3
 ```
 

@@ -1,32 +1,39 @@
 # Stage 02: Feature Enrichment
 
-这是阶段 1 之后的直接下一阶段。
-
-阶段 1 已经证明 Citi Bike + TFT 最小链路可以跑通，阶段 2 的任务就是在这个基线上补关键外生特征，让模型更接近论文里的正式实验版本。
+阶段 2 的任务已经从“继续堆实验”收口成“把增强数据底座正式交给阶段 3”。
 
 ## 阶段状态
 
 - 阶段名称：`stage_02_feature_enrichment`
-- 当前状态：`计划中`
+- 当前状态：`已完成数据交付`
 - 上游依赖：`stage_01_citibike_mvp`
+- 下游交付：`stage_03_baselines_and_ablation`
 
 ## 阶段目标
 
-在不改变主线结构的前提下，引入最重要的外生特征：
+在不改变阶段 1 主线结构的前提下，引入阶段 3 必需的外生与近似特征：
 
 - 天气
 - 日历 / 节假日
 - 站点容量或容量近似
 - 库存近似
+
+本次收工明确不包含：
+
 - POI
-
-## 本阶段预期产物
-
-- 增强版数据整合脚本
-- 增强版面板数据
 - 增强版 TFT run
-- 特征效果分析
-- 可直接写进论文的特征工程说明
+- 阶段 2 内部的模型对比
+
+## 本阶段交付产物
+
+- `stages/stage_02_feature_enrichment/build_stage2_dataset.py`
+- `data/processed/stage_02_feature_enrichment/station_capacity_closed_form.csv`
+- `data/processed/stage_02_feature_enrichment/station_static_features.csv`
+- `data/processed/stage_02_feature_enrichment/station_hour_panel_enriched.parquet`
+- `data/processed/stage_02_feature_enrichment/split_manifest.json`
+- `data/processed/stage_02_feature_enrichment/feature_manifest.json`
+- `data/processed/stage_02_feature_enrichment/agcrn_stage3_bundle.npz`
+- `data/processed/stage_02_feature_enrichment/agcrn_stage3_smoke_check.json`
 
 ## 阶段文档
 

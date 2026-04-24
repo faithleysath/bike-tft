@@ -1,0 +1,25 @@
+{
+  "station_scope": "top_200",
+  "protocol": "strict_no_leakage",
+  "default_target": "dep_count",
+  "splits": {
+    "train": {
+      "start": "2022-01-01 00:00:00",
+      "end": "2022-09-14 17:00:00"
+    },
+    "validation": {
+      "start": "2022-09-14 18:00:00",
+      "end": "2022-10-21 10:00:00"
+    },
+    "test": {
+      "start": "2022-10-21 11:00:00",
+      "end": "2022-12-31 23:00:00"
+    }
+  },
+  "capacity_estimation": {
+    "raw_event_start": "2022-01-01 00:00:00",
+    "raw_event_end_exclusive": "2022-09-14 18:00:00"
+  },
+  "available_data_end": "2022-12-31 23:00:00",
+  "planned_test_end": "2023-01-02 19:00:00"
+}

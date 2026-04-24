@@ -1,0 +1,26 @@
+{
+  "device": "cpu",
+  "target_key": "target_dep",
+  "feature_dim": 35,
+  "num_nodes": 200,
+  "best_epoch": 1,
+  "best_val_loss": 0.9805843234062195,
+  "window_counts": {
+    "train": 6139,
+    "validation": 870,
+    "test": 1706
+  },
+  "limit_train_batches": 2,
+  "limit_val_batches": 1,
+  "limit_test_batches": 1,
+  "validation_metrics": {
+    "mae": 7.983211040496826,
+    "rmse": 9.468589782714844,
+    "mape": 2.667436122894287
+  },
+  "test_metrics": {
+    "mae": 7.325255393981934,
+    "rmse": 9.371777534484863,
+    "mape": 1.4472116231918335
+  }
+}

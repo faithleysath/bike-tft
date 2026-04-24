@@ -24,8 +24,8 @@
 | 阶段 | 状态 | 研究问题 | 主要方法 | 关键产出 | 论文可对应内容 |
 | --- | --- | --- | --- | --- | --- |
 | `stage_01_citibike_mvp` | 已完成 | 公开订单数据能否跑通站点级需求预测最小链路 | 订单聚合、站点小时面板、TFT 基线 | 面板数据、训练 run、中文报告 | 数据来源、问题定义、MVP 基线实验 |
-| `stage_02_feature_enrichment` | 计划中 | 外生特征能否提升预测能力与可解释性 | 天气、日历、容量/库存近似、POI 特征融合 | 增强版数据集、增强版 TFT run、特征效果分析 | 特征工程、扩展实验 |
-| `stage_03_baselines_and_ablation` | 计划中 | 在增强版站点级数据上，AGCRN 能否成为足够强的主模型，以及哪些模型机制真正有效 | AGCRN 主模型、基线对比、模型级消融 | AGCRN run、对比指标表、消融结论 | 主模型选择、实验设计、对比实验、消融实验 |
+| `stage_02_feature_enrichment` | 已完成数据交付 | 外生特征能否补足阶段 3 的训练输入并保持协议清晰 | 天气、日历、容量/库存近似、bundle/manifest 交付 | 增强版数据集、AGCRN bundle、split/feature manifest、smoke check | 特征工程、阶段衔接、数据协议 |
+| `stage_03_baselines_and_ablation` | 进行中 | 在增强版站点级数据上，AGCRN 能否成为足够强的主模型，以及哪些模型机制真正有效 | AGCRN 主模型、基线对比、模型级消融 | AGCRN run、对比指标表、消融结论 | 主模型选择、实验设计、对比实验、消融实验 |
 | `stage_04_inventory_and_rebalancing` | 计划中 | AGCRN 预测结果如何转成缺车/溢车识别与调度建议 | 库存近似、任务生成、调度优化 | 调度输入表、路线/任务结果、成本或服务指标 | 方法扩展、调度决策模块 |
 | `stage_05_campus_transfer_and_demo` | 计划中 | 基于 AGCRN 的预测与调度链路如何迁移到校园场景并形成完整展示 | 校园数据适配、AGCRN 迁移、展示页面/Notebook、系统联调 | 校园实验结果、演示材料 | 系统实现、应用验证、总结与展望 |
 

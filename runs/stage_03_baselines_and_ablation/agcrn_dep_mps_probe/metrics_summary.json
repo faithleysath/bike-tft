@@ -1,0 +1,26 @@
+{
+  "device": "mps",
+  "target_key": "target_dep",
+  "feature_dim": 35,
+  "num_nodes": 200,
+  "best_epoch": 1,
+  "best_val_loss": 1.0047370195388794,
+  "window_counts": {
+    "train": 6139,
+    "validation": 870,
+    "test": 1706
+  },
+  "limit_train_batches": 1,
+  "limit_val_batches": 1,
+  "limit_test_batches": 1,
+  "validation_metrics": {
+    "mae": 8.179845809936523,
+    "rmse": 10.40837574005127,
+    "mape": 1.8170160055160522
+  },
+  "test_metrics": {
+    "mae": 7.602693557739258,
+    "rmse": 9.006502151489258,
+    "mape": 2.2577931880950928
+  }
+}

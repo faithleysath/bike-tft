@@ -57,6 +57,14 @@ def as_frame(value: object) -> pd.DataFrame:
     return cast(pd.DataFrame, value)
 
 
+def parse_timestamp(value: str) -> pd.Timestamp:
+    """Parse a CLI timestamp into a pandas Timestamp."""
+    timestamp = pd.Timestamp(value)
+    if timestamp is pd.NaT:
+        raise argparse.ArgumentTypeError(f"Invalid timestamp: {value!r}")
+    return cast(pd.Timestamp, timestamp)
+
+
 def norm_station_id(series: pd.Series) -> pd.Series:
     """Normalize station ids into trimmed nullable strings."""
     normalized = series.astype("string").str.strip()
@@ -176,6 +184,37 @@ def combine_event_frames(
     return events
 
 
+def load_station_ids(path: str | Path) -> set[str]:
+    """Read a one-station-id-per-line filter file."""
+    resolved = project_path(path)
+    values = {
+        line.strip()
+        for line in resolved.read_text(encoding="utf-8").splitlines()
+        if line.strip()
+    }
+    if not values:
+        raise ValueError(f"No station ids found in {resolved}")
+    return values
+
+
+def filter_events(
+    events: pd.DataFrame,
+    *,
+    start_ts: pd.Timestamp | None,
+    end_ts_exclusive: pd.Timestamp | None,
+    station_ids: set[str] | None,
+) -> pd.DataFrame:
+    """Apply optional timestamp and station filters to aggregated events."""
+    filtered = events
+    if start_ts is not None:
+        filtered = as_frame(filtered.loc[filtered["ts"] >= start_ts].copy())
+    if end_ts_exclusive is not None:
+        filtered = as_frame(filtered.loc[filtered["ts"] < end_ts_exclusive].copy())
+    if station_ids is not None:
+        filtered = as_frame(filtered.loc[filtered["station_id"].isin(sorted(station_ids))].copy())
+    return as_frame(filtered.sort_values(["station_id", "ts"], kind="stable").reset_index(drop=True))
+
+
 def solve_station_group(group: pd.DataFrame, timestamp_mode: TimestampMode) -> dict[str, Any]:
     """Solve the minimum-feasible initial inventory and capacity for one station."""
     station_id = str(group.iloc[0]["station_id"])
@@ -259,6 +298,26 @@ def parse_args() -> argparse.Namespace:
             "'departure-first' is more conservative and is the default."
         ),
     )
+    parser.add_argument(
+        "--start-ts",
+        type=parse_timestamp,
+        default=None,
+        help="Optional inclusive timestamp filter applied before solving capacities.",
+    )
+    parser.add_argument(
+        "--end-ts",
+        type=parse_timestamp,
+        default=None,
+        help=(
+            "Optional exclusive timestamp filter applied before solving capacities. "
+            "Use the next panel hour boundary when matching hourly train/val/test splits."
+        ),
+    )
+    parser.add_argument(
+        "--station-ids-file",
+        default=None,
+        help="Optional text file containing one station_id per line.",
+    )
     return parser.parse_args()
 
 
@@ -276,14 +335,32 @@ def main() -> None:
     print(f"Found {len(files)} file(s)")
     departure_frames, arrival_frames = process_files(files, workers)
     events = combine_event_frames(departure_frames, arrival_frames)
+    station_ids = (
+        load_station_ids(args.station_ids_file) if args.station_ids_file is not None else None
+    )
+    events = filter_events(
+        events,
+        start_ts=args.start_ts,
+        end_ts_exclusive=args.end_ts,
+        station_ids=station_ids,
+    )
+    if events.empty:
+        raise SystemExit("No station events remain after applying filters")
     station_capacities = solve_station_capacities(
         events,
         timestamp_mode=cast(TimestampMode, args.timestamp_mode),
     )
     summary = build_summary(
-        station_capacities["capacity_closed_form"],
+        as_series(station_capacities["capacity_closed_form"]),
         timestamp_mode=cast(TimestampMode, args.timestamp_mode),
         station_count=len(station_capacities),
+    )
+    summary.update(
+        {
+            "start_ts": args.start_ts.isoformat() if args.start_ts is not None else None,
+            "end_ts_exclusive": args.end_ts.isoformat() if args.end_ts is not None else None,
+            "station_filter_count": len(station_ids) if station_ids is not None else None,
+        }
     )
 
     capacities_path = output_dir / "station_capacity_closed_form.csv"

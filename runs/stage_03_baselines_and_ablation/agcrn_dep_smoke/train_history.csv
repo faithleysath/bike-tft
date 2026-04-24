@@ -1,0 +1,2 @@
+epoch,train_loss,val_loss,train_batches,val_batches
+1,0.9448098838329315,0.9805843234062195,2,1

@@ -58,6 +58,14 @@ def as_frame(value: object) -> pd.DataFrame:
     return cast(pd.DataFrame, value)
 
 
+def parse_timestamp(value: str) -> pd.Timestamp:
+    """Parse CLI timestamps used to trim the output panel."""
+    timestamp = pd.Timestamp(value)
+    if timestamp is pd.NaT:
+        raise argparse.ArgumentTypeError(f"Invalid timestamp: {value!r}")
+    return cast(pd.Timestamp, timestamp)
+
+
 def normalize_freq(freq: str) -> str:
     """Normalize deprecated pandas hour aliases used in CLI input."""
     return freq.replace("H", "h")
@@ -257,6 +265,18 @@ def main():
         default=2,
         help="Number of files to process in parallel; capped by file count and CPU count",
     )
+    parser.add_argument(
+        "--start-ts",
+        type=parse_timestamp,
+        default=None,
+        help="Optional inclusive timestamp filter applied before station selection and panel build.",
+    )
+    parser.add_argument(
+        "--end-ts",
+        type=parse_timestamp,
+        default=None,
+        help="Optional exclusive timestamp filter applied before station selection and panel build.",
+    )
     args = parser.parse_args()
     args.freq = normalize_freq(args.freq)
     if args.workers < 1:
@@ -276,6 +296,12 @@ def main():
     arr_all = as_frame(
         pd.concat(arrs, ignore_index=True).groupby(["ts", "station_id"], as_index=False).sum()
     )
+    if args.start_ts is not None:
+        dep_all = as_frame(dep_all.loc[dep_all["ts"] >= args.start_ts].copy())
+        arr_all = as_frame(arr_all.loc[arr_all["ts"] >= args.start_ts].copy())
+    if args.end_ts is not None:
+        dep_all = as_frame(dep_all.loc[dep_all["ts"] < args.end_ts].copy())
+        arr_all = as_frame(arr_all.loc[arr_all["ts"] < args.end_ts].copy())
     meta_all = as_frame(
         pd.concat(metas, ignore_index=True)
         .groupby("station_id", as_index=False)

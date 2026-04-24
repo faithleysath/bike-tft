@@ -13,7 +13,7 @@
 ## 阶段状态
 
 - 阶段名称：`stage_03_baselines_and_ablation`
-- 当前状态：`计划中`
+- 当前状态：`进行中`
 - 上游依赖：`stage_01_citibike_mvp`、`stage_02_feature_enrichment`
 
 ## 阶段目标
@@ -31,6 +31,30 @@
 - 站点静态属性：位置、容量或容量近似
 - 动态特征：流入、流出、库存或库存近似
 - 外生变量：时间周期、天气、气温
+
+当前已经固定好的阶段 2 输入如下：
+
+- 增强长表：`data/processed/stage_02_feature_enrichment/station_hour_panel_enriched.parquet`
+- 节点静态表：`data/processed/stage_02_feature_enrichment/station_static_features.csv`
+- 训练切分：`data/processed/stage_02_feature_enrichment/split_manifest.json`
+- 特征分组：`data/processed/stage_02_feature_enrichment/feature_manifest.json`
+- 直接训练 bundle：`data/processed/stage_02_feature_enrichment/agcrn_stage3_bundle.npz`
+- 数据 smoke check：`data/processed/stage_02_feature_enrichment/agcrn_stage3_smoke_check.json`
+
+默认目标字段是 `dep_count`。
+
+## 当前已跑通的入口
+
+- 训练脚本：`stages/stage_03_baselines_and_ablation/train_agcrn_stage3.py`
+- 数据自检脚本：`stages/stage_03_baselines_and_ablation/smoke_check_stage2_bundle.py`
+- 已验证的最小 smoke run：
+  `runs/stage_03_baselines_and_ablation/agcrn_dep_smoke/`
+
+这说明阶段 3 现在已经不是“只有数据没入口”，而是：
+
+- bundle 可以切成 AGCRN 窗口
+- AGCRN 可以完成前向、反向、验证与测试
+- checkpoint、指标摘要和 scaler 都能正常落盘
 
 ## 本阶段关键输出
 
