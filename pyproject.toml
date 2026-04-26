@@ -5,7 +5,19 @@ description = "Clean-room workspace for bike sharing forecasting, rebalancing, v
 requires-python = ">=3.13"
 dependencies = [
     "kaggle>=2.1.0",
+    "numpy>=2.4.4",
+    "pandas>=3.0.2",
+    "pyarrow>=24.0.0",
+    "torch>=2.11.0",
 ]
 
 [tool.uv]
 package = false
+
+[tool.uv.sources]
+torch = { index = "pytorch-cu126" }
+
+[[tool.uv.index]]
+name = "pytorch-cu126"
+url = "https://download.pytorch.org/whl/cu126"
+explicit = true
