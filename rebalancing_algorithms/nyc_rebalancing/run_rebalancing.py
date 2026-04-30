@@ -50,7 +50,16 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--forecast-file",
         default=None,
-        help="CSV/Parquet with decision_ts,target_ts,node_idx|station_id and net_flow_pred or dep_pred+arr_pred.",
+        help="CSV/Parquet with decision_ts,target_ts,node_idx|station_id and net_flow_pred, quantile net_flow columns, or dep_pred+arr_pred.",
+    )
+    parser.add_argument(
+        "--forecast-risk-mode",
+        choices=("median", "conservative", "aggressive"),
+        default="median",
+        help=(
+            "Forecast column selection for quantile forecast files. "
+            "median uses net_flow_q50, conservative uses net_flow_q10, aggressive uses net_flow_q90."
+        ),
     )
     parser.add_argument("--lag", type=int, default=12)
     parser.add_argument("--horizon", type=int, default=12)
@@ -197,7 +206,30 @@ def haversine_distance_km(lat: np.ndarray, lng: np.ndarray) -> np.ndarray:
     return (radius_km * c).astype(np.float32)
 
 
-def normalize_forecast_table(forecast: pd.DataFrame, station_static: pd.DataFrame) -> pd.DataFrame:
+def select_net_flow_forecast(normalized: pd.DataFrame, *, risk_mode: str) -> pd.Series:
+    """Select or derive the net-flow forecast column for a risk mode."""
+    risk_columns = {
+        "median": "net_flow_q50",
+        "conservative": "net_flow_q10",
+        "aggressive": "net_flow_q90",
+    }
+    risk_column = risk_columns[risk_mode]
+    if risk_column in normalized.columns:
+        return normalized[risk_column].astype(np.float32)
+    if risk_mode != "median":
+        raise ValueError(f"Forecast risk mode {risk_mode!r} requires column {risk_column!r}")
+    if "net_flow_pred" in normalized.columns:
+        return normalized["net_flow_pred"].astype(np.float32)
+    if {"dep_q10", "dep_q50", "dep_q90", "arr_q10", "arr_q50", "arr_q90"}.issubset(normalized.columns):
+        return normalized["arr_q50"].astype(np.float32) - normalized["dep_q50"].astype(np.float32)
+    dep_col = next((name for name in ("dep_pred", "dep_count_pred") if name in normalized.columns), None)
+    arr_col = next((name for name in ("arr_pred", "arr_count_pred") if name in normalized.columns), None)
+    if dep_col is None or arr_col is None:
+        raise ValueError("Forecast file must contain net_flow_pred, net_flow_q50, or dep_pred+arr_pred")
+    return normalized[arr_col].astype(np.float32) - normalized[dep_col].astype(np.float32)
+
+
+def normalize_forecast_table(forecast: pd.DataFrame, station_static: pd.DataFrame, *, risk_mode: str = "median") -> pd.DataFrame:
     """Normalize external forecasts to decision_ts,target_ts,node_idx,net_flow_pred."""
     normalized = forecast.copy()
     normalized["decision_ts"] = pd.to_datetime(normalized["decision_ts"], errors="raise")
@@ -211,20 +243,16 @@ def normalize_forecast_table(forecast: pd.DataFrame, station_static: pd.DataFram
         normalized = normalized.merge(id_map, on="station_id", how="left")
     if normalized["node_idx"].isna().any():
         raise ValueError("Forecast file contains unknown stations")
-    if "net_flow_pred" not in normalized.columns:
-        dep_col = next((name for name in ("dep_pred", "dep_count_pred") if name in normalized.columns), None)
-        arr_col = next((name for name in ("arr_pred", "arr_count_pred") if name in normalized.columns), None)
-        if dep_col is None or arr_col is None:
-            raise ValueError("Forecast file must contain net_flow_pred or dep_pred+arr_pred")
-        normalized["net_flow_pred"] = normalized[arr_col].astype(np.float32) - normalized[dep_col].astype(np.float32)
+    normalized["net_flow_pred"] = select_net_flow_forecast(normalized, risk_mode=risk_mode)
     normalized["node_idx"] = normalized["node_idx"].astype("int32")
     normalized["net_flow_pred"] = normalized["net_flow_pred"].astype(np.float32)
-    return (
+    normalized = (
         normalized.loc[:, ["decision_ts", "target_ts", "node_idx", "net_flow_pred"]]
         .sort_values(["decision_ts", "target_ts", "node_idx"], kind="stable")
         .drop_duplicates(subset=["decision_ts", "target_ts", "node_idx"], keep="last")
         .reset_index(drop=True)
     )
+    return normalized.set_index(["decision_ts", "target_ts", "node_idx"]).sort_index()
 
 
 def load_forecast_table(args: argparse.Namespace, station_static: pd.DataFrame) -> pd.DataFrame | None:
@@ -239,7 +267,7 @@ def load_forecast_table(args: argparse.Namespace, station_static: pd.DataFrame) 
         frame = pd.read_parquet(path)
     else:
         raise ValueError("Forecast file must be .csv or .parquet")
-    return normalize_forecast_table(frame, station_static)
+    return normalize_forecast_table(frame, station_static, risk_mode=getattr(args, "forecast_risk_mode", "median"))
 
 
 def future_net_flow(
@@ -261,14 +289,15 @@ def future_net_flow(
         return actual_net_flow[decision_index + 1 : decision_index + 1 + effective_horizon], target_ts
     assert forecast_table is not None
     decision_ts = timestamps[decision_index]
-    frame = forecast_table.loc[
-        forecast_table["decision_ts"].eq(decision_ts)
-        & forecast_table["target_ts"].isin(target_ts.tolist())
-    ].copy()
+    assert isinstance(forecast_table.index, pd.MultiIndex)
+    try:
+        frame = forecast_table.loc[(decision_ts, target_ts.tolist(), slice(None)), :]
+    except KeyError:
+        frame = forecast_table.iloc[0:0]
     expected_rows = effective_horizon * node_count
     if len(frame) != expected_rows:
         raise ValueError(f"Forecast rows missing for {decision_ts}; expected {expected_rows}, found {len(frame)}")
-    ordered = frame.sort_values(["target_ts", "node_idx"], kind="stable")
+    ordered = frame.sort_index(level=["target_ts", "node_idx"], sort_remaining=False)
     return ordered["net_flow_pred"].to_numpy(dtype=np.float32, copy=False).reshape(effective_horizon, node_count), target_ts
 
 
@@ -571,6 +600,7 @@ def simulate(args: argparse.Namespace) -> dict[str, Any]:
         "split": asdict(split_config),
         "forecast_mode": args.forecast_mode,
         "forecast_file": args.forecast_file,
+        "forecast_risk_mode": args.forecast_risk_mode,
         "node_count": int(len(station_ids)),
         "decision_count": int(len(step_summary)),
         "decision_start": str(timestamps[int(decision_indices[0])]),

@@ -1,0 +1,12 @@
+{
+  "output": "graph_wavenet_ijcai2019_translation_draft_v1.docx",
+  "generated_at": "2026-04-29T08:15:25.337Z",
+  "source_paper": "Graph WaveNet for Deep Spatial-Temporal Graph Modeling, IJCAI 2019, DOI 10.24963/ijcai.2019/264",
+  "template": "../附件12：外文文献翻译撰写规范及模板.docx",
+  "notes": [
+    "Draft v1 follows the template structure: cover, translated title, authors, affiliations, abstract, keywords, body, figures/tables, acknowledgments, references.",
+    "Student name, student ID, major, college, and advisor are placeholders because the repository did not contain those fields.",
+    "References are kept in English as allowed by the template.",
+    "Figures were converted from the original LaTeX source PDFs into PNG files under translation_draft_assets/."
+  ]
+}

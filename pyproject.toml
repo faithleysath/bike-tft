@@ -4,11 +4,13 @@ version = "0.1.0"
 description = "Clean-room workspace for bike sharing forecasting, rebalancing, visualization, and thesis assets."
 requires-python = ">=3.13"
 dependencies = [
+    "fastapi>=0.136.1",
     "kaggle>=2.1.0",
     "numpy>=2.4.4",
     "pandas>=3.0.2",
     "pyarrow>=24.0.0",
     "torch>=2.11.0",
+    "uvicorn>=0.46.0",
 ]
 
 [tool.uv]

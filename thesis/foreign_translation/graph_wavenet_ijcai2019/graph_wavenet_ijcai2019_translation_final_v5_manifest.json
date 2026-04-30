@@ -1,0 +1,28 @@
+{
+  "output": "graph_wavenet_ijcai2019_translation_final_v5.docx",
+  "source": "graph_wavenet_ijcai2019_translation_final_v4.docx",
+  "generated_at": "2026-04-29T09:11:59.639767+00:00",
+  "change": "Restored underlined cover-field values.",
+  "changes": [
+    {
+      "field": "学生姓名：",
+      "value": "吴天一"
+    },
+    {
+      "field": "学    号：",
+      "value": "202283250010"
+    },
+    {
+      "field": "专    业：",
+      "value": "数据科学与大数据技术"
+    },
+    {
+      "field": "学    院：",
+      "value": "未来技术学院"
+    },
+    {
+      "field": "指导教师：",
+      "value": "胡伟"
+    }
+  ]
+}

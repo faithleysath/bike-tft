@@ -1,0 +1,49 @@
+{
+  "output": "graph_wavenet_ijcai2019_translation_draft_v2.docx",
+  "source": "graph_wavenet_ijcai2019_translation_draft_v1.docx",
+  "generated_at": "2026-04-29T08:41:13.387275+00:00",
+  "change": "Replaced ten linear text formulas with Word OMML formulas generated from LaTeX via Pandoc.",
+  "formula_count": 10,
+  "replacements": [
+    {
+      "plain": "[X^(t-S):t, G]  --f-->  X^(t+1):(t+T)    (1)",
+      "latex": "[\\mathbf{X}^{(t-S):t},G] \\xrightarrow{f} \\mathbf{X}^{(t+1):(t+T)}\\, (1)"
+    },
+    {
+      "plain": "Z = Ã X W    (2)",
+      "latex": "\\mathbf{Z}=\\tilde{\\mathbf{A}}\\mathbf{X}\\mathbf{W}\\, (2)"
+    },
+    {
+      "plain": "Z = Σ(k=0..K) P^k X W_k    (3)",
+      "latex": "\\mathbf{Z}=\\sum_{k=0}^{K}\\mathbf{P}^{k}\\mathbf{X}\\mathbf{W}_{k}\\, (3)"
+    },
+    {
+      "plain": "Z = Σ(k=0..K) P_f^k X W_{k1} + P_b^k X W_{k2}    (4)",
+      "latex": "\\mathbf{Z}=\\sum_{k=0}^{K}\\mathbf{P}_{f}^{k}\\mathbf{X}\\mathbf{W}_{k1}+\\mathbf{P}_{b}^{k}\\mathbf{X}\\mathbf{W}_{k2}\\, (4)"
+    },
+    {
+      "plain": "Ã_adp = SoftMax(ReLU(E_1 E_2^T))    (5)",
+      "latex": "\\tilde{\\mathbf{A}}_{\\mathrm{adp}}=\\operatorname{SoftMax}(\\operatorname{ReLU}(\\mathbf{E}_{1}\\mathbf{E}_{2}^{T}))\\, (5)"
+    },
+    {
+      "plain": "Z = Σ(k=0..K) P_f^k X W_{k1} + P_b^k X W_{k2} + Ã_apt^k X W_{k3}    (6)",
+      "latex": "\\mathbf{Z}=\\sum_{k=0}^{K}\\mathbf{P}_{f}^{k}\\mathbf{X}\\mathbf{W}_{k1}+\\mathbf{P}_{b}^{k}\\mathbf{X}\\mathbf{W}_{k2}+\\tilde{\\mathbf{A}}_{\\mathrm{apt}}^{k}\\mathbf{X}\\mathbf{W}_{k3}\\, (6)"
+    },
+    {
+      "plain": "Z = Σ(k=0..K) Ã_apt^k X W_k    (7)",
+      "latex": "\\mathbf{Z}=\\sum_{k=0}^{K}\\tilde{\\mathbf{A}}_{\\mathrm{apt}}^{k}\\mathbf{X}\\mathbf{W}_{k}\\, (7)"
+    },
+    {
+      "plain": "x * f(t) = Σ(s=0..K-1) f(s) x(t - d × s)    (8)",
+      "latex": "\\mathbf{x}\\star\\mathbf{f}(t)=\\sum_{s=0}^{K-1}\\mathbf{f}(s)\\mathbf{x}(t-d\\times s)\\, (8)"
+    },
+    {
+      "plain": "h = g(Θ_1 * X + b) ⊙ σ(Θ_2 * X + c)    (9)",
+      "latex": "\\mathbf{h}=g(\\mathbf{\\Theta}_{1}\\star\\mathbf{\\mathcal{X}}+\\mathbf{b})\\odot\\sigma(\\mathbf{\\Theta}_{2}\\star\\mathbf{\\mathcal{X}}+\\mathbf{c})\\, (9)"
+    },
+    {
+      "plain": "L(X̂^(t+1):(t+T); Θ) = (1 / TND) Σ_i Σ_j Σ_k |X̂_jk^(t+i) - X_jk^(t+i)|    (10)",
+      "latex": "L(\\hat{\\mathbf{X}}^{(t+1):(t+T)};\\mathbf{\\Theta})=\\frac{1}{TND}\\sum_{i=1}^{T}\\sum_{j=1}^{N}\\sum_{k=1}^{D}|\\hat{\\mathbf{X}}_{jk}^{(t+i)}-\\mathbf{X}_{jk}^{(t+i)}|\\, (10)"
+    }
+  ]
+}

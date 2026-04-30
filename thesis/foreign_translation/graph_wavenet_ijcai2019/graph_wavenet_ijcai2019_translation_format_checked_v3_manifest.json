@@ -1,0 +1,22 @@
+{
+  "output": "graph_wavenet_ijcai2019_translation_format_checked_v3.docx",
+  "source": "graph_wavenet_ijcai2019_translation_draft_v2.docx",
+  "generated_at": "2026-04-29T08:54:26.793900+00:00",
+  "template_compliance_checks": [
+    "Cover uses the required graduation-thesis English-translation structure.",
+    "Original title is Times New Roman 15 pt; translated title is SimHei 15 pt bold on cover.",
+    "Main translated title is SimHei 16 pt bold and centered.",
+    "Author names are retained in English, comma-separated, Times New Roman 12 pt bold.",
+    "Affiliations are centered, 10.5 pt, single-spaced.",
+    "Abstract label is SimHei 12 pt; abstract body is KaiTi 12 pt with 1.5 line spacing.",
+    "Keyword label is SimHei 12 pt; keywords use KaiTi 12 pt.",
+    "Body Chinese text uses SimSun 12 pt; Latin text uses Times New Roman 12 pt; paragraphs use 1.5 line spacing.",
+    "Figure captions are centered and 10.5 pt.",
+    "English references are listed directly."
+  ],
+  "changes": [
+    "Removed first-line indent from 摘要 paragraph",
+    "Removed first-line indent from 关键词 paragraph",
+    "Changed reference heading to 参考文献："
+  ]
+}

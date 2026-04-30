@@ -1,0 +1,35 @@
+{
+  "output": "graph_wavenet_ijcai2019_translation_final_v4.docx",
+  "source": "graph_wavenet_ijcai2019_translation_format_checked_v3.docx",
+  "generated_at": "2026-04-29T09:02:00.092042+00:00",
+  "change": "Filled cover student information.",
+  "student": {
+    "name": "吴天一",
+    "student_id": "202283250010",
+    "major": "数据科学与大数据技术",
+    "college": "未来技术学院",
+    "advisor": "胡伟"
+  },
+  "replacements": [
+    {
+      "from": "学生姓名：________________",
+      "to": "学生姓名：吴天一"
+    },
+    {
+      "from": "学    号：________________",
+      "to": "学    号：202283250010"
+    },
+    {
+      "from": "专    业：________________",
+      "to": "专    业：数据科学与大数据技术"
+    },
+    {
+      "from": "学    院：________________",
+      "to": "学    院：未来技术学院"
+    },
+    {
+      "from": "指导教师：________________",
+      "to": "指导教师：胡伟"
+    }
+  ]
+}

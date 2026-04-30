@@ -1,0 +1,181 @@
+\begin{thebibliography}{}
+
+\bibitem[\protect\citeauthoryear{Atwood and
+  Towsley}{2016}]{atwood2016diffusion}
+James Atwood and Don Towsley.
+\newblock Diffusion-convolutional neural networks.
+\newblock In {\em NIPS}, pages 1993--2001, 2016.
+
+\bibitem[\protect\citeauthoryear{Bruna \bgroup \em et al.\egroup
+  }{2014}]{bruna2013spectral}
+Joan Bruna, Wojciech Zaremba, Arthur Szlam, and Yann LeCun.
+\newblock Spectral networks and locally connected networks on graphs.
+\newblock In {\em ICLR}, 2014.
+
+\bibitem[\protect\citeauthoryear{Dauphin \bgroup \em et al.\egroup
+  }{2017}]{dauphin2017language}
+Yann~N Dauphin, Angela Fan, Michael Auli, and David Grangier.
+\newblock Language modeling with gated convolutional networks.
+\newblock In {\em ICML}, pages 933--941, 2017.
+
+\bibitem[\protect\citeauthoryear{Defferrard \bgroup \em et al.\egroup
+  }{2016}]{defferrard2016convolutional}
+Micha{\"e}l Defferrard, Xavier Bresson, and Pierre Vandergheynst.
+\newblock Convolutional neural networks on graphs with fast localized spectral
+  filtering.
+\newblock In {\em NIPS}, pages 3844--3852, 2016.
+
+\bibitem[\protect\citeauthoryear{Gilmer \bgroup \em et al.\egroup
+  }{2017}]{gilmer2017neural}
+Justin Gilmer, Samuel~S Schoenholz, Patrick~F Riley, Oriol Vinyals, and
+  George~E Dahl.
+\newblock Neural message passing for quantum chemistry.
+\newblock In {\em ICML}, pages 1263--1272, 2017.
+
+\bibitem[\protect\citeauthoryear{Hamilton \bgroup \em et al.\egroup
+  }{2017}]{hamilton2017inductive}
+Will Hamilton, Zhitao Ying, and Jure Leskovec.
+\newblock Inductive representation learning on large graphs.
+\newblock In {\em NIPS}, pages 1024--1034, 2017.
+
+\bibitem[\protect\citeauthoryear{Jain \bgroup \em et al.\egroup
+  }{2016}]{jain2016structural}
+Ashesh Jain, Amir~R Zamir, Silvio Savarese, and Ashutosh Saxena.
+\newblock Structural-rnn: Deep learning on spatio-temporal graphs.
+\newblock In {\em CVPR}, pages 5308--5317, 2016.
+
+\bibitem[\protect\citeauthoryear{Kalchbrenner \bgroup \em et al.\egroup
+  }{2016}]{kalchbrenner2016neural}
+Nal Kalchbrenner, Lasse Espeholt, Karen Simonyan, Aaron van~den Oord, Alex
+  Graves, and Koray Kavukcuoglu.
+\newblock Neural machine translation in linear time.
+\newblock {\em arXiv preprint arXiv:1610.10099}, 2016.
+
+\bibitem[\protect\citeauthoryear{Kipf and Welling}{2017}]{kipf2016semi}
+Thomas~N Kipf and Max Welling.
+\newblock Semi-supervised classification with graph convolutional networks.
+\newblock In {\em ICLR}, 2017.
+
+\bibitem[\protect\citeauthoryear{Li \bgroup \em et al.\egroup
+  }{2018a}]{li2018adaptive}
+Ruoyu Li, Sheng Wang, Feiyun Zhu, and Junzhou Huang.
+\newblock Adaptive graph convolutional neural networks.
+\newblock In {\em AAAI}, pages 3546--3553, 2018.
+
+\bibitem[\protect\citeauthoryear{Li \bgroup \em et al.\egroup
+  }{2018b}]{li2018diffusion}
+Yaguang Li, Rose Yu, Cyrus Shahabi, and Yan Liu.
+\newblock Diffusion convolutional recurrent neural network: Data-driven traffic
+  forecasting.
+\newblock In {\em ICLR}, 2018.
+
+\bibitem[\protect\citeauthoryear{Liu \bgroup \em et al.\egroup
+  }{2019}]{liu2018geniepath}
+Ziqi Liu, Chaochao Chen, Longfei Li, Jun Zhou, Xiaolong Li, Le~Song, and Yuan
+  Qi.
+\newblock Geniepath: Graph neural networks with adaptive receptive paths.
+\newblock In {\em AAAI}, 2019.
+
+\bibitem[\protect\citeauthoryear{Monti \bgroup \em et al.\egroup
+  }{2017}]{monti2017geometric}
+Federico Monti, Davide Boscaini, Jonathan Masci, Emanuele Rodola, Jan Svoboda,
+  and Michael~M Bronstein.
+\newblock Geometric deep learning on graphs and manifolds using mixture model
+  cnns.
+\newblock In {\em CVPR}, pages 5115--5124, 2017.
+
+\bibitem[\protect\citeauthoryear{Oord \bgroup \em et al.\egroup
+  }{2016}]{oord2016wavenet}
+Aaron van~den Oord, Sander Dieleman, Heiga Zen, Karen Simonyan, Oriol Vinyals,
+  Alex Graves, Nal Kalchbrenner, Andrew Senior, and Koray Kavukcuoglu.
+\newblock Wavenet: A generative model for raw audio.
+\newblock {\em arXiv preprint arXiv:1609.03499}, 2016.
+
+\bibitem[\protect\citeauthoryear{Pan \bgroup \em et al.\egroup
+  }{2018}]{pan2019learning}
+Shirui Pan, Ruiqi Hu, Sai-fu Fung, Guodong Long, Jing Jiang, and Chengqi Zhang.
+\newblock Learning graph embedding with adversarial training methods.
+\newblock In {\em IJCAI}, 2018.
+
+\bibitem[\protect\citeauthoryear{Seo \bgroup \em et al.\egroup
+  }{2018}]{seo2018structured}
+Youngjoo Seo, Micha{\"e}l Defferrard, Pierre Vandergheynst, and Xavier Bresson.
+\newblock Structured sequence modeling with graph convolutional recurrent
+  networks.
+\newblock In {\em NIPS}, pages 362--373, 2018.
+
+\bibitem[\protect\citeauthoryear{Shuman \bgroup \em et al.\egroup
+  }{2012}]{shuman2012emerging}
+David~I Shuman, Sunil~K Narang, Pascal Frossard, Antonio Ortega, and Pierre
+  Vandergheynst.
+\newblock The emerging field of signal processing on graphs: Extending
+  high-dimensional data analysis to networks and other irregular domains.
+\newblock {\em arXiv preprint arXiv:1211.0053}, 2012.
+
+\bibitem[\protect\citeauthoryear{Velickovic \bgroup \em et al.\egroup
+  }{2017}]{velickovic2017graph}
+Petar Velickovic, Guillem Cucurull, Arantxa Casanova, Adriana Romero, Pietro
+  Lio, and Yoshua Bengio.
+\newblock Graph attention networks.
+\newblock In {\em ICLR}, 2017.
+
+\bibitem[\protect\citeauthoryear{Wang \bgroup \em et al.\egroup
+  }{2017}]{wang2017mgae}
+Chun Wang, Shirui Pan, Guodong Long, Xingquan Zhu, and Jing Jiang.
+\newblock Mgae: Marginalized graph autoencoder for graph clustering.
+\newblock In {\em CIKM}, pages 889--898. ACM, 2017.
+
+\bibitem[\protect\citeauthoryear{Wu \bgroup \em et al.\egroup
+  }{2019}]{wu2019comprehensive}
+Zonghan Wu, Shirui Pan, Fengwen Chen, Guodong Long, Chengqi Zhang, and Philip~S
+  Yu.
+\newblock A comprehensive survey on graph neural networks.
+\newblock {\em arXiv preprint arXiv:1901.00596}, 2019.
+
+\bibitem[\protect\citeauthoryear{Yan \bgroup \em et al.\egroup
+  }{2018}]{yan2018spatial}
+Sijie Yan, Yuanjun Xiong, and Dahua Lin.
+\newblock Spatial temporal graph convolutional networks for skeleton-based
+  action recognition.
+\newblock In {\em AAAI}, pages 3482--3489, 2018.
+
+\bibitem[\protect\citeauthoryear{Yao \bgroup \em et al.\egroup
+  }{2018}]{yao2018deep}
+Huaxiu Yao, Fei Wu, Jintao Ke, Xianfeng Tang, Yitian Jia, Siyu Lu, Pinghua
+  Gong, Jieping Ye, and Zhenhui Li.
+\newblock Deep multi-view spatial-temporal network for taxi demand prediction.
+\newblock In {\em AAAI}, pages 2588--2595, 2018.
+
+\bibitem[\protect\citeauthoryear{Ying \bgroup \em et al.\egroup
+  }{2018}]{ying2018hierarchical}
+Zhitao Ying, Jiaxuan You, Christopher Morris, Xiang Ren, Will Hamilton, and
+  Jure Leskovec.
+\newblock Hierarchical graph representation learning with differentiable
+  pooling.
+\newblock In {\em NIPS}, pages 4800--4810, 2018.
+
+\bibitem[\protect\citeauthoryear{Yu and Koltun}{2016}]{yu2016multi}
+Fisher Yu and Vladlen Koltun.
+\newblock Multi-scale context aggregation by dilated convolutions.
+\newblock In {\em ICLR}, 2016.
+
+\bibitem[\protect\citeauthoryear{Yu \bgroup \em et al.\egroup
+  }{2018}]{yu2018spatio}
+Bing Yu, Haoteng Yin, and Zhanxing Zhu.
+\newblock Spatio-temporal graph convolutional networks: A deep learning
+  framework for traffic forecasting.
+\newblock In {\em IJCAI}, pages 3634--3640, 2018.
+
+\bibitem[\protect\citeauthoryear{Zhang and Chen}{2018}]{zhang2018link}
+Muhan Zhang and Yixin Chen.
+\newblock Link prediction based on graph neural networks.
+\newblock In {\em NIPS}, pages 5165--5175, 2018.
+
+\bibitem[\protect\citeauthoryear{Zhang \bgroup \em et al.\egroup
+  }{2018}]{zhang2018gaan}
+Jiani Zhang, Xingjian Shi, Junyuan Xie, Hao Ma, Irwin King, and Dit-Yan Yeung.
+\newblock Gaan: Gated attention networks for learning on large and
+  spatiotemporal graphs.
+\newblock {\em arXiv preprint arXiv:1803.07294}, 2018.
+
+\end{thebibliography}

@@ -1,0 +1,16 @@
+\BOOKMARK [1][-]{section.1}{Introduction}{}% 1
+\BOOKMARK [1][-]{section.2}{Related Works}{}% 2
+\BOOKMARK [2][-]{subsection.2.1}{Graph Convolution Networks}{section.2}% 3
+\BOOKMARK [2][-]{subsection.2.2}{Spatial-temporal Graph Networks}{section.2}% 4
+\BOOKMARK [1][-]{section.3}{Methodology}{}% 5
+\BOOKMARK [2][-]{subsection.3.1}{Problem Definition}{section.3}% 6
+\BOOKMARK [2][-]{subsection.3.2}{Graph Convolution Layer}{section.3}% 7
+\BOOKMARK [2][-]{subsection.3.3}{Temporal Convolution Layer}{section.3}% 8
+\BOOKMARK [2][-]{subsection.3.4}{Framework of Graph WaveNet}{section.3}% 9
+\BOOKMARK [1][-]{section.4}{Experiments}{}% 10
+\BOOKMARK [2][-]{subsection.4.1}{Baselines}{section.4}% 11
+\BOOKMARK [2][-]{subsection.4.2}{Experimental Setups}{section.4}% 12
+\BOOKMARK [2][-]{subsection.4.3}{Experimental Results}{section.4}% 13
+\BOOKMARK [3][-]{section*.8}{Effect of the Self-Adaptive Adjacency Matrix}{subsection.4.3}% 14
+\BOOKMARK [3][-]{section*.11}{Computation Time}{subsection.4.3}% 15
+\BOOKMARK [1][-]{section.5}{Conclusion}{}% 16
