@@ -1,0 +1,71 @@
+{
+  "generated_at": "2026-04-29T14:13:22.493924Z",
+  "device": "cuda",
+  "torch_version": "2.11.0+cu126",
+  "cuda_available": true,
+  "best_epoch": 7,
+  "best_val_pinball_loss": 0.13353085802360015,
+  "window_counts": {
+    "train": 6115,
+    "validation": 873,
+    "test": 1749,
+    "total": 8737
+  },
+  "model_config": {
+    "num_nodes": 883,
+    "input_dim": 88,
+    "future_time_dim": 7,
+    "output_dim": 2,
+    "quantile_count": 3,
+    "horizon": 12,
+    "hidden_dim": 32,
+    "station_embed_dim": 16,
+    "attention_heads": 4,
+    "dropout": 0.1
+  },
+  "quantiles": [
+    0.1,
+    0.5,
+    0.9
+  ],
+  "target_mode": "log1p",
+  "q50_metrics": {
+    "targets": {
+      "dep": {
+        "mae": 1.5939266681671143,
+        "rmse": 2.8480801582336426,
+        "mape": 0.6761254668235779
+      },
+      "arr": {
+        "mae": 1.5858484506607056,
+        "rmse": 2.8927433490753174,
+        "mape": 0.661388099193573
+      }
+    },
+    "average": {
+      "mae": 1.5898874998092651,
+      "rmse": 2.8704986572265625,
+      "mape": 0.6687569618225098
+    }
+  },
+  "interval_metrics": {
+    "dep": {
+      "picp_80": 0.8152335286140442,
+      "interval_width": 5.046777725219727
+    },
+    "arr": {
+      "picp_80": 0.8061970472335815,
+      "interval_width": 4.747256755828857
+    },
+    "average": {
+      "picp_80": 0.8107153177261353,
+      "interval_width": 4.897017002105713
+    }
+  },
+  "test_model_space_pinball_loss": 0.1308349370956421,
+  "limits": {
+    "train": null,
+    "validation": null,
+    "test": null
+  }
+}

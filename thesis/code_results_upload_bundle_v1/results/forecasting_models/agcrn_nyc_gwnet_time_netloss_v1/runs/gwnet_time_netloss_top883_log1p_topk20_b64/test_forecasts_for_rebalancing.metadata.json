@@ -1,0 +1,21 @@
+{
+  "generated_at": "2026-04-27T16:12:44.216864Z",
+  "checkpoint": "forecasting_models/agcrn_nyc_gwnet_time_netloss_v1/runs/gwnet_time_netloss_top883_log1p_topk20_b64/best_model.pt",
+  "bundle": "dataset/preprocessing/processed/nyc_top883/nyc_agcrn_bundle.npz",
+  "relation_graphs": "dataset/preprocessing/processed/nyc_top883_relation_graphs_topk_v1_k20.npz",
+  "output": "forecasting_models/agcrn_nyc_gwnet_time_netloss_v1/runs/gwnet_time_netloss_top883_log1p_topk20_b64/test_forecasts_for_rebalancing.parquet",
+  "row_count": 18532404,
+  "window_count": 1749,
+  "horizon": 12,
+  "node_count": 883,
+  "columns": [
+    "decision_ts",
+    "target_ts",
+    "node_idx",
+    "net_flow_pred"
+  ],
+  "decision_start": "2022-10-19 15:00:00",
+  "decision_end": "2022-12-31 11:00:00",
+  "target_start": "2022-10-19 16:00:00",
+  "target_end": "2022-12-31 23:00:00"
+}

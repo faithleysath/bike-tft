@@ -1,0 +1,16 @@
+/mnt/data/projects/github.com/faithleysath/bike-tft/forecasting_models/gmrl_nyc_v1/model.py:118: UserWarning: reduction: 'mean' divides the total loss by both the batch size and the support size.'batchmean' divides only by the batch size, and aligns with the KL div math definition.'mean' will be changed to behave the same as 'batchmean' in the next major release.
+  kl_loss = F.kl_div(q_z, alpha, reduction="mean")
+epoch=1 train_loss=0.723232 feature_loss=567786897.023631 val_loss=0.748747 seconds=213.14
+epoch=2 train_loss=0.591218 feature_loss=1530936337.675393 val_loss=0.570748 seconds=212.94
+epoch=3 train_loss=0.500408 feature_loss=2458150639.664921 val_loss=0.566410 seconds=212.88
+epoch=4 train_loss=0.493148 feature_loss=3067087302.031414 val_loss=0.552013 seconds=212.88
+epoch=5 train_loss=0.517970 feature_loss=3407865884.984293 val_loss=0.520921 seconds=212.89
+epoch=6 train_loss=0.491921 feature_loss=4580899182.575916 val_loss=0.531412 seconds=212.88
+epoch=7 train_loss=0.474209 feature_loss=6184465955.350785 val_loss=0.514867 seconds=212.89
+epoch=8 train_loss=0.466998 feature_loss=4860442143.664922 val_loss=0.506237 seconds=212.87
+epoch=9 train_loss=0.457401 feature_loss=7323211061.612565 val_loss=0.493246 seconds=212.90
+epoch=10 train_loss=0.451816 feature_loss=6785885296.586388 val_loss=0.490805 seconds=212.88
+epoch=11 train_loss=0.453988 feature_loss=7564435777.005236 val_loss=0.495290 seconds=212.91
+epoch=12 train_loss=0.454573 feature_loss=7523217676.062827 val_loss=0.494706 seconds=212.86
+Wrote forecasting_models/gmrl_nyc_v1/runs/gmrl_top883_log1p_mae_b4_e12/best_model.pt
+Wrote forecasting_models/gmrl_nyc_v1/runs/gmrl_top883_log1p_mae_b4_e12/metrics_summary.json

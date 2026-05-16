@@ -1,0 +1,56 @@
+{
+  "generated_at": "2026-04-26T15:07:47.235047Z",
+  "device": "cuda",
+  "torch_version": "2.11.0+cu126",
+  "cuda_available": true,
+  "best_epoch": 1,
+  "best_val_loss": 1.1126657724380493,
+  "window_counts": {
+    "train": 6115,
+    "validation": 873,
+    "test": 1749,
+    "total": 8737
+  },
+  "model_config": {
+    "num_nodes": 883,
+    "num_sources": 2,
+    "input_dim": 1,
+    "output_dim": 1,
+    "lag": 12,
+    "horizon": 12,
+    "num_components": 17,
+    "hidden_channels": 24,
+    "kernel_size": 2,
+    "use_hra": true,
+    "gmre_chunk_size": 2048
+  },
+  "target_mode": "log1p",
+  "loss": {
+    "loss_type": "mae",
+    "feature_loss_weight": 0.01
+  },
+  "metrics": {
+    "targets": {
+      "dep": {
+        "mae": 2.979491710662842,
+        "rmse": 5.05056619644165,
+        "mape": 0.8098572492599487
+      },
+      "arr": {
+        "mae": 2.9104466438293457,
+        "rmse": 5.119110107421875,
+        "mape": 0.7862247824668884
+      }
+    },
+    "average": {
+      "mae": 2.944969415664673,
+      "rmse": 5.084953308105469,
+      "mape": 0.7979539036750793
+    }
+  },
+  "limits": {
+    "train": 1,
+    "validation": 1,
+    "test": 1
+  }
+}

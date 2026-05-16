@@ -1,0 +1,121 @@
+{
+  "generated_at": "2026-04-29T14:38:48.773700Z",
+  "checkpoint": "forecasting_models/tft_quantile_calibrator_v1/runs/tft_quantile_top883_poi_v1_b16_e8/best_model.pt",
+  "bundle": "dataset/preprocessing/processed/nyc_top883_poi_v1/nyc_agcrn_bundle.npz",
+  "output_dir": "forecasting_models/tft_quantile_calibrator_v1/runs/tft_quantile_top883_poi_v1_b16_e8/interpretability_v1",
+  "attention_batches": 16,
+  "saliency_batches": 8,
+  "sampled_test_windows_for_attention": 16,
+  "sampled_test_windows_for_saliency": 8,
+  "top_attention_relative_hour": 0,
+  "top_attention_weight": 0.10759989096561258,
+  "top_feature_saliency": [
+    {
+      "feature": "dep_rolling_168h",
+      "group": "history",
+      "importance": 6.265437463210546e-06
+    },
+    {
+      "feature": "station_lat",
+      "group": "static_station",
+      "importance": 5.680046115659821e-06
+    },
+    {
+      "feature": "arr_rolling_168h",
+      "group": "history",
+      "importance": 5.59741154062766e-06
+    },
+    {
+      "feature": "dep_rolling_24h",
+      "group": "history",
+      "importance": 5.477393935858168e-06
+    },
+    {
+      "feature": "station_lng",
+      "group": "static_station",
+      "importance": 5.464755380494544e-06
+    },
+    {
+      "feature": "month",
+      "group": "time",
+      "importance": 5.356194511219077e-06
+    },
+    {
+      "feature": "hour_cos",
+      "group": "time",
+      "importance": 4.731483086690492e-06
+    },
+    {
+      "feature": "arr_rolling_24h",
+      "group": "history",
+      "importance": 4.251461932080541e-06
+    },
+    {
+      "feature": "dep_classic_count",
+      "group": "ride_type",
+      "importance": 3.7893684294036805e-06
+    },
+    {
+      "feature": "arr_lag_24h",
+      "group": "history",
+      "importance": 3.7669633800306603e-06
+    },
+    {
+      "feature": "hour_sin",
+      "group": "time",
+      "importance": 3.2589718073299917e-06
+    },
+    {
+      "feature": "member_arr_count",
+      "group": "ride_type",
+      "importance": 3.196799785015481e-06
+    }
+  ],
+  "feature_group_saliency": [
+    {
+      "group": "history",
+      "importance": 4.816131056528543e-05
+    },
+    {
+      "group": "time",
+      "importance": 2.1870184131898336e-05
+    },
+    {
+      "group": "poi",
+      "importance": 2.0856992111406153e-05
+    },
+    {
+      "group": "ride_type",
+      "importance": 1.6072595092648937e-05
+    },
+    {
+      "group": "static_station",
+      "importance": 1.1974119330960631e-05
+    },
+    {
+      "group": "weather",
+      "importance": 1.1208325077722633e-05
+    },
+    {
+      "group": "flow_inventory",
+      "importance": 6.960258482661479e-06
+    },
+    {
+      "group": "holiday",
+      "importance": 2.5977887580823926e-06
+    }
+  ],
+  "artifacts": {
+    "attention_lag_summary": "attention_lag_summary.csv",
+    "attention_horizon_lag_matrix": "attention_horizon_lag_matrix.csv",
+    "attention_head_lag_summary": "attention_head_lag_summary.csv",
+    "feature_saliency": "feature_saliency.csv",
+    "feature_group_saliency": "feature_group_saliency.csv",
+    "attention_heatmap": "attention_heatmap.html",
+    "feature_saliency_html": "feature_saliency.html"
+  },
+  "notes": [
+    "Attention weights are averaged over sampled test windows, all stations, all heads, and forecast horizons.",
+    "Feature saliency is post-hoc gradient times input sensitivity in normalized input space, not official PyTorch Forecasting variable selection."
+  ]
+}

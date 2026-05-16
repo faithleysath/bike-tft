@@ -1,0 +1,59 @@
+{
+  "generated_at": "2026-04-26T10:25:28.843839Z",
+  "device": "cuda",
+  "torch_version": "2.11.0+cu126",
+  "cuda_available": true,
+  "best_epoch": 9,
+  "best_val_loss": 0.39426097699574064,
+  "window_counts": {
+    "train": 6115,
+    "validation": 873,
+    "test": 1749,
+    "total": 8737
+  },
+  "model_config": {
+    "num_nodes": 883,
+    "input_dim": 38,
+    "output_dim": 2,
+    "horizon": 12,
+    "embed_dim": 10,
+    "rnn_units": 64,
+    "num_layers": 2,
+    "support_count": 3,
+    "spatial_top_k": 20,
+    "spatial_sigma_km": null,
+    "spatial_init_mix": 0.5,
+    "spatial_mode": "separate"
+  },
+  "spatial_metadata": {
+    "node_count": 883,
+    "spatial_top_k": 20,
+    "spatial_sigma_km": 0.5600869059562683,
+    "mean_neighbor_distance_km": 0.6202486157417297,
+    "median_neighbor_distance_km": 0.5600869059562683
+  },
+  "metrics": {
+    "targets": {
+      "dep": {
+        "mae": 2.374528646469116,
+        "rmse": 3.9357028007507324,
+        "mape": 1.0495723485946655
+      },
+      "arr": {
+        "mae": 2.355980157852173,
+        "rmse": 3.929359197616577,
+        "mape": 1.039062261581421
+      }
+    },
+    "average": {
+      "mae": 2.3652544021606445,
+      "rmse": 3.932532548904419,
+      "mape": 1.044317364692688
+    }
+  },
+  "limits": {
+    "train": null,
+    "validation": null,
+    "test": null
+  }
+}

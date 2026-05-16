@@ -1,0 +1,52 @@
+{
+  "generated_at": "2026-04-26T16:10:18.448923Z",
+  "paper": "CCRNN, AAAI 2021",
+  "source": "https://github.com/Essaim/CGCDemandPrediction",
+  "device": "cuda",
+  "torch_version": "2.11.0+cu126",
+  "cuda_available": true,
+  "best_epoch": 10,
+  "best_val_loss": 0.6684860652143305,
+  "window_counts": {
+    "train": 6115,
+    "validation": 873,
+    "test": 1749,
+    "total": 8737
+  },
+  "model_config": {
+    "num_nodes": 883,
+    "input_dim": 38,
+    "output_dim": 2,
+    "horizon": 12,
+    "hidden_size": 25,
+    "node_dim": 50,
+    "k_hop": 3,
+    "rnn_layers": 1,
+    "gconv_layers": 3
+  },
+  "target_mode": "log1p",
+  "metrics": {
+    "targets": {
+      "dep": {
+        "mae": 2.9035451412200928,
+        "rmse": 4.376689910888672,
+        "mape": 1.0668538808822632
+      },
+      "arr": {
+        "mae": 2.886610269546509,
+        "rmse": 4.392652988433838,
+        "mape": 1.0647894144058228
+      }
+    },
+    "average": {
+      "mae": 2.895077705383301,
+      "rmse": 4.384678840637207,
+      "mape": 1.065821647644043
+    }
+  },
+  "limits": {
+    "train": null,
+    "validation": null,
+    "test": null
+  }
+}

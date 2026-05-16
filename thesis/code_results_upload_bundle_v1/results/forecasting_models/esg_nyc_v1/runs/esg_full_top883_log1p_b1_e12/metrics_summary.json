@@ -1,0 +1,52 @@
+{
+  "generated_at": "2026-04-27T01:20:22.496955Z",
+  "paper": "ESG, KDD 2022",
+  "source": "https://github.com/LiuZH-19/ESG",
+  "device": "cuda",
+  "torch_version": "2.11.0+cu126",
+  "cuda_available": true,
+  "best_epoch": 9,
+  "best_val_loss": 0.4333134304821696,
+  "window_counts": {
+    "train": 6115,
+    "validation": 873,
+    "test": 1749,
+    "total": 8737
+  },
+  "model_config": {
+    "num_nodes": 883,
+    "input_dim": 38,
+    "output_dim": 2,
+    "horizon": 12,
+    "dy_embedding_dim": 20,
+    "st_embedding_dim": 40,
+    "layers": 3,
+    "conv_channels": 32,
+    "residual_channels": 32
+  },
+  "target_mode": "log1p",
+  "metrics": {
+    "targets": {
+      "dep": {
+        "mae": 1.8793011903762817,
+        "rmse": 3.180961847305298,
+        "mape": 0.8359696269035339
+      },
+      "arr": {
+        "mae": 1.8726166486740112,
+        "rmse": 3.23865008354187,
+        "mape": 0.823373019695282
+      }
+    },
+    "average": {
+      "mae": 1.8759586811065674,
+      "rmse": 3.209935426712036,
+      "mape": 0.8296715021133423
+    }
+  },
+  "limits": {
+    "train": null,
+    "validation": null,
+    "test": null
+  }
+}

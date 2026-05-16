@@ -1,0 +1,50 @@
+{
+  "generated_at": "2026-04-27T08:37:21.749041Z",
+  "panel": "/mnt/data/projects/github.com/faithleysath/bike-tft/dataset/preprocessing/processed/nyc_top883_v2/nyc_station_hour_panel.parquet",
+  "station_static": "/mnt/data/projects/github.com/faithleysath/bike-tft/dataset/preprocessing/processed/nyc_top883_v2/nyc_station_static_features.csv",
+  "split": {
+    "lag": 12,
+    "horizon": 12,
+    "train_ratio": 0.7,
+    "val_ratio": 0.1,
+    "decision_split": "test"
+  },
+  "forecast_mode": "oracle",
+  "forecast_file": null,
+  "matching_policy": "penalty_aware_unit_flow",
+  "distance_cost_weight": 3.0,
+  "min_net_benefit": 0.0,
+  "candidate_unit_limit": 200,
+  "max_station_transfer_bikes": 20,
+  "node_count": 883,
+  "decision_count": 3,
+  "decision_start": "2022-10-19 15:00:00",
+  "decision_end": "2022-10-19 17:00:00",
+  "min_inventory_ratio": 0.2,
+  "max_inventory_ratio": 0.8,
+  "max_transfer_bikes_per_decision": 200,
+  "total_transfer_actions": 56,
+  "total_matched_bikes": 600,
+  "total_bike_km": 1820.8723940849304,
+  "avg_matched_bikes_per_decision": 200.0,
+  "avg_transfer_actions_per_decision": 18.666666666666668,
+  "avg_infeasible_stations_per_decision": 0.0,
+  "rebalanced_boundary_hours": {
+    "empty": 0,
+    "full": 1,
+    "below_lower_band": 623,
+    "above_upper_band": 843
+  },
+  "baseline_boundary_hours": {
+    "empty": 0,
+    "full": 1,
+    "below_lower_band": 625,
+    "above_upper_band": 850
+  },
+  "improvement_vs_baseline": {
+    "empty_hours_reduction": 0,
+    "full_hours_reduction": 0,
+    "below_lower_band_reduction": 2,
+    "above_upper_band_reduction": 7
+  }
+}

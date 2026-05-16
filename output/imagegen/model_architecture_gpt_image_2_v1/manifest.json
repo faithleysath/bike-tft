@@ -1,0 +1,68 @@
+{
+  "version": "model_architecture_gpt_image_2_v1",
+  "created_date": "2026-05-13",
+  "purpose": "Publication-style neural network architecture diagrams for AGCRN, Graph WaveNet, and TFT-style forecasting models.",
+  "generator": {
+    "tool": "imagegen CLI fallback",
+    "model": "gpt-image-2",
+    "size": "2048x1152",
+    "quality": "high",
+    "output_format": "png",
+    "prompt_file": "prompts.jsonl"
+  },
+  "source_code_references": [
+    "forecasting_models/agcrn_nyc/model.py",
+    "forecasting_models/agcrn_nyc_gwnet_time_netloss_v1/model.py",
+    "forecasting_models/agcrn_nyc_gwnet_time_netloss_v1/README.md",
+    "forecasting_models/tft_quantile_calibrator_v1/model.py",
+    "forecasting_models/tft_quantile_calibrator_v1/README.md"
+  ],
+  "outputs": [
+    {
+      "model": "AGCRN",
+      "role": "overview",
+      "file": "agcrn_overview.png",
+      "dimensions": "2048x1152"
+    },
+    {
+      "model": "AGCRN",
+      "role": "AGCRNCell and AVWGCN detail",
+      "file": "agcrn_cell_avwgcn_detail.png",
+      "dimensions": "2048x1152"
+    },
+    {
+      "model": "Graph WaveNet",
+      "role": "time-aware net-flow overview",
+      "file": "graph_wavenet_overview.png",
+      "dimensions": "2048x1152"
+    },
+    {
+      "model": "Graph WaveNet",
+      "role": "dilated temporal block and fused support detail",
+      "file": "graph_wavenet_block_support_detail.png",
+      "dimensions": "2048x1152"
+    },
+    {
+      "model": "TFT-style",
+      "role": "quantile model overview",
+      "file": "tft_style_overview.png",
+      "dimensions": "2048x1152"
+    },
+    {
+      "model": "TFT-style",
+      "role": "attention and monotone quantile detail",
+      "file": "tft_style_attention_quantile_detail.png",
+      "dimensions": "2048x1152"
+    },
+    {
+      "model": "all",
+      "role": "visual review contact sheet",
+      "file": "contact_sheet.png",
+      "dimensions": "1280x1230"
+    }
+  ],
+  "review": {
+    "status": "visually checked",
+    "notes": "Generated raster diagrams were inspected for overall structure, legibility, and coverage of the project-local model components."
+  }
+}

@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>论文 v19 产物下载页</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f7f8fb;
+      --panel: #ffffff;
+      --text: #111827;
+      --muted: #4b5563;
+      --line: #d7dde6;
+      --accent: #1d4ed8;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .wrap { max-width: 1080px; margin: 0 auto; padding: 32px 20px 40px; }
+    header, section {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 22px 24px;
+      margin-bottom: 18px;
+    }
+    h1 { margin: 0 0 8px; font-size: 28px; line-height: 1.2; }
+    h2 { margin: 0 0 12px; font-size: 20px; }
+    .sub, .note, .footer { color: var(--muted); }
+    .sub { margin: 0; font-size: 14px; }
+    .status, .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
+    }
+    .status { margin-top: 18px; }
+    .pill {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 8px 12px;
+      background: #f9fafb;
+      font-size: 14px;
+      text-align: center;
+    }
+    a.btn {
+      display: block;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px 16px;
+      color: var(--text);
+      text-decoration: none;
+      background: #fff;
+    }
+    a.btn:hover { border-color: var(--accent); }
+    a.btn strong { display: block; font-size: 16px; margin-bottom: 4px; }
+    a.btn span { display: block; color: var(--muted); font-size: 13px; }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+      background: #eef2ff;
+      padding: 0 4px;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>论文 v19 产物下载页</h1>
+      <p class="sub">多源特征驱动的共享单车需求预测与调度系统</p>
+      <div class="status">
+        <div class="pill">42 页 A4</div>
+        <div class="pill">DOCX 校验通过</div>
+        <div class="pill">22 个 Word 公式</div>
+        <div class="pill">逐页视觉检查完成</div>
+      </div>
+    </header>
+
+    <section>
+      <h2>直接下载</h2>
+      <div class="grid">
+        <a class="btn" href="main_thesis_word_v19_final.docx" download>
+          <strong>Word 成稿 v19</strong>
+          <span>封面等宽下划线，声明页加入电子签名和日期</span>
+        </a>
+        <a class="btn" href="main_thesis_word_v19_final.pdf" download>
+          <strong>PDF 成稿 v19</strong>
+          <span>适合预览、打印和逐页核对</span>
+        </a>
+        <a class="btn" href="bike_tft_code_results_upload_bundle_v1.zip" download>
+          <strong>代码与结果附件包</strong>
+          <span>源码、实验摘要、论文产物，约 29M</span>
+        </a>
+        <a class="btn" href="visual_check_report.md" download>
+          <strong>视觉检查报告</strong>
+          <span>自动校验与人工视觉核对记录</span>
+        </a>
+        <a class="btn" href="main_thesis_word_v19_manifest.json" download>
+          <strong>Manifest</strong>
+          <span>产物、标题、作者和校验信息</span>
+        </a>
+      </div>
+    </section>
+
+    <section>
+      <h2>逐页检查</h2>
+      <div class="grid">
+        <a class="btn" href="contact_sheets/" target="_blank" rel="noopener">
+          <strong>Contact Sheets</strong>
+          <span>按页拼图，快速查看整本排版</span>
+        </a>
+        <a class="btn" href="pages/" target="_blank" rel="noopener">
+          <strong>Page PNGs</strong>
+          <span>逐页渲染图，用于精查单页</span>
+        </a>
+      </div>
+      <p class="note">推荐下载 <code>main_thesis_word_v19_final.docx</code> 和 <code>main_thesis_word_v19_final.pdf</code>。</p>
+    </section>
+
+    <section>
+      <h2>附件文件</h2>
+      <div class="grid">
+        <a class="btn" href="attachments/attachment4_thesis_writing_template.docx" download>
+          <strong>附件4 撰写规范模板</strong>
+          <span>毕业论文（设计）撰写规范及模板</span>
+        </a>
+        <a class="btn" href="attachments/attachment11_reference_format_examples.docx" download>
+          <strong>附件11 参考文献格式</strong>
+          <span>参考文献著录格式示例</span>
+        </a>
+        <a class="btn" href="attachments/attachment12_foreign_translation_template.docx" download>
+          <strong>附件12 外文翻译模板</strong>
+          <span>外文文献翻译撰写规范及模板</span>
+        </a>
+        <a class="btn" href="attachments/task_statement.md" target="_blank" rel="noopener">
+          <strong>任务书详情</strong>
+          <span>毕业设计系统填报记录</span>
+        </a>
+        <a class="btn" href="attachments/proposal_report.md" target="_blank" rel="noopener">
+          <strong>开题报告详情</strong>
+          <span>毕业设计系统填报记录</span>
+        </a>
+        <a class="btn" href="attachments/foreign_original_graph_wavenet_ijcai2019.pdf" download>
+          <strong>外文原文 PDF</strong>
+          <span>Graph WaveNet IJCAI 2019</span>
+        </a>
+        <a class="btn" href="attachments/foreign_translation_graph_wavenet_final_v6.docx" download>
+          <strong>外文翻译终稿</strong>
+          <span>Graph WaveNet 中文译文 v6</span>
+        </a>
+      </div>
+    </section>
+
+    <div class="footer">产物目录：<code>thesis/main_thesis_word_v19/</code></div>
+  </div>
+</body>
+</html>

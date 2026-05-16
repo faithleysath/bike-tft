@@ -1,0 +1,4 @@
+decision_ts,next_ts,effective_horizon,receiver_station_count,donor_station_count,requested_inbound_bikes,requested_outbound_bikes,matched_bikes,transfer_action_count,bike_km,infeasible_station_count
+2022-10-19 15:00:00,2022-10-19 16:00:00,12,13,13,19851,15341,200,14,36.908006228506565,0
+2022-10-19 16:00:00,2022-10-19 17:00:00,12,10,10,19455,14974,200,10,46.54551123082638,0
+2022-10-19 17:00:00,2022-10-19 18:00:00,12,14,14,19448,14964,200,14,48.9328046515584,0

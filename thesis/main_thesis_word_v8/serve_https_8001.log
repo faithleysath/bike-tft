@@ -1,0 +1,6 @@
+Serving HTTPS on :: port 8001 from /mnt/data/projects/github.com/faithleysath/bike-tft/thesis/main_thesis_word_v8
+2409:8a21:4282:c450::965 - - [10/May/2026 22:21:20] "HEAD /main_thesis_word_v8_final.docx HTTP/1.1" 200 -
+2409:8a21:4282:c450::965 - - [10/May/2026 22:21:20] "GET / HTTP/1.1" 200 -
+2408:893a:1223:4664:dca:407f:9bf2:6f56 - - [10/May/2026 22:21:41] "GET / HTTP/1.1" 200 -
+2408:893a:1223:4664:dca:407f:9bf2:6f56 - - [10/May/2026 22:21:44] "GET /main_thesis_word_v8_final.docx HTTP/1.1" 200 -
+2408:893a:1223:4664:dca:407f:9bf2:6f56 - - [10/May/2026 22:21:46] "GET /visual_check_report.md HTTP/1.1" 200 -

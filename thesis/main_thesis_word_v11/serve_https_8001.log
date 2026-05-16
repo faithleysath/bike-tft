@@ -1,0 +1,42 @@
+Serving HTTPS on :: port 8001 from /mnt/data/projects/github.com/faithleysath/bike-tft/thesis/main_thesis_word_v11
+2409:8a21:4282:c450::965 - - [10/May/2026 23:02:36] "HEAD / HTTP/1.1" 200 -
+2409:8a21:4282:c450::965 - - [10/May/2026 23:02:36] "HEAD /main_thesis_word_v11_final.docx HTTP/1.1" 200 -
+2409:8a21:4282:c450::965 - - [10/May/2026 23:02:36] "HEAD /main_thesis_word_v11_final.pdf HTTP/1.1" 200 -
+2409:8a21:4282:c450::965 - - [10/May/2026 23:02:53] "GET / HTTP/1.1" 200 -
+2409:8a21:4282:c450::965 - - [10/May/2026 23:02:53] "HEAD /main_thesis_word_v11_manifest.json HTTP/1.1" 200 -
+2408:893a:1223:4664:dca:407f:9bf2:6f56 - - [10/May/2026 23:04:09] "GET / HTTP/1.1" 200 -
+2408:893a:1223:4664:dca:407f:9bf2:6f56 - - [10/May/2026 23:04:10] "GET /main_thesis_word_v11_final.docx HTTP/1.1" 200 -
+----------------------------------------
+Exception occurred during processing of request from ('2408:893a:1223:4664:dca:407f:9bf2:6f56', 57212, 0, 0)
+Traceback (most recent call last):
+  File "/usr/lib/python3.13/socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/http/server.py", line 672, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "/usr/lib/python3.13/http/server.py", line 436, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.13/http/server.py", line 404, in handle_one_request
+    self.raw_requestline = self.rfile.readline(65537)
+                           ~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "/usr/lib/python3.13/socket.py", line 719, in readinto
+    return self._sock.recv_into(b)
+           ~~~~~~~~~~~~~~~~~~~~^^^
+  File "/usr/lib/python3.13/ssl.py", line 1304, in recv_into
+    return self.read(nbytes, buffer)
+           ~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/ssl.py", line 1138, in read
+    return self._sslobj.read(len, buffer)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+ConnectionResetError: [Errno 104] Connection reset by peer
+----------------------------------------
+2408:893a:1223:4664:dca:407f:9bf2:6f56 - - [10/May/2026 23:07:38] "GET / HTTP/1.1" 304 -
+2408:893a:1223:4664:dca:407f:9bf2:6f56 - - [10/May/2026 23:07:40] "GET /main_thesis_word_v11_final.pdf HTTP/1.1" 200 -

@@ -1,0 +1,53 @@
+{
+  "generated_at": "2026-04-26T15:35:02.160937Z",
+  "paper": "ReMo, IJCAI 2023",
+  "source": "paper implementation; no official public repository found on IJCAI page",
+  "device": "cuda",
+  "torch_version": "2.11.0+cu126",
+  "cuda_available": true,
+  "best_epoch": 1,
+  "best_val_loss": 0.9889613389968872,
+  "window_counts": {
+    "train": 6115,
+    "validation": 873,
+    "test": 1749,
+    "total": 8737
+  },
+  "model_config": {
+    "num_nodes": 883,
+    "input_dim": 38,
+    "output_dim": 2,
+    "horizon": 12,
+    "hidden_dim": 64,
+    "node_embed_dim": 16,
+    "num_views": 2,
+    "num_hyperedges": 16,
+    "num_relation_types": 4,
+    "dropout": 0.1
+  },
+  "target_mode": "log1p",
+  "metrics": {
+    "targets": {
+      "dep": {
+        "mae": 3.83284592628479,
+        "rmse": 6.519078254699707,
+        "mape": 0.6191365122795105
+      },
+      "arr": {
+        "mae": 3.816899061203003,
+        "rmse": 6.586688041687012,
+        "mape": 0.6179292798042297
+      }
+    },
+    "average": {
+      "mae": 3.8248727321624756,
+      "rmse": 6.552969932556152,
+      "mape": 0.6185324788093567
+    }
+  },
+  "limits": {
+    "train": 20,
+    "validation": 2,
+    "test": 2
+  }
+}

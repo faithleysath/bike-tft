@@ -1,0 +1,153 @@
+{
+  "generated_at": "2026-04-26T12:18:57.403709Z",
+  "device": "cuda",
+  "torch_version": "2.11.0+cu126",
+  "cuda_available": true,
+  "best_epoch": 7,
+  "best_val_loss": 0.39091697335243225,
+  "window_counts": {
+    "train": 6115,
+    "validation": 873,
+    "test": 1749,
+    "total": 8737
+  },
+  "model_config": {
+    "num_nodes": 883,
+    "input_dim": 38,
+    "output_dim": 2,
+    "horizon": 12,
+    "embed_dim": 10,
+    "rnn_units": 64,
+    "num_layers": 2,
+    "support_count": 2,
+    "relation_mode": "fused",
+    "adaptive_init_weight": 0.95,
+    "od_forward_init_weight": 0.025,
+    "od_reverse_init_weight": 0.025
+  },
+  "relation_metadata": {
+    "generated_at": "2026-04-26T12:04:29.909186Z",
+    "source": {
+      "base_graph": "/mnt/data/projects/github.com/faithleysath/bike-tft/dataset/preprocessing/processed/nyc_top883_relation_graphs_v1.npz",
+      "base_graph_metadata": {
+        "generated_at": "2026-04-26T10:44:04.258482Z",
+        "source": {
+          "orders_dir": "/mnt/data/projects/github.com/faithleysath/bike-tft/dataset/data_sources/nyc_citibike_orders/raw/citi-bike-nyc",
+          "order_files": [
+            "202201-citibike-tripdata.csv",
+            "202202-citibike-tripdata.csv",
+            "202203-citibike-tripdata.csv",
+            "202204-citibike-tripdata.csv",
+            "202205-citibike-tripdata.csv",
+            "202206-citbike-tripdata.csv",
+            "202207-citbike-tripdata.csv",
+            "202208-citibike-tripdata.csv",
+            "202209-citibike-tripdata.csv",
+            "202210-citibike-tripdata.csv",
+            "202211-citibike-tripdata.csv",
+            "202212-citibike-tripdata.csv"
+          ],
+          "bundle": "/mnt/data/projects/github.com/faithleysath/bike-tft/dataset/preprocessing/processed/nyc_top883/nyc_agcrn_bundle.npz"
+        },
+        "parameters": {
+          "lag": 12,
+          "horizon": 12,
+          "train_ratio": 0.7,
+          "val_ratio": 0.1,
+          "chunksize": 500000
+        },
+        "training_relation_window": {
+          "start_ts": "2022-01-01T00:00:00",
+          "end_ts_inclusive": "2022-09-13T17:00:00",
+          "end_ts_exclusive": "2022-09-13T18:00:00",
+          "train": 6115,
+          "validation": 873,
+          "test": 1749,
+          "total": 8737,
+          "train_relation_end_index": 6137
+        },
+        "graph": {
+          "node_count": 883,
+          "nonzero_edges": 510308,
+          "density": 0.654501987330846,
+          "counted_trips": 18519342,
+          "zero_outgoing_station_count": 4,
+          "zero_incoming_station_count": 4,
+          "max_outgoing_trips": 92067,
+          "max_incoming_trips": 92923
+        },
+        "count_stats": {
+          "raw_rows_seen": 30689921,
+          "time_window_rows": 21399557,
+          "selected_station_rows": 18519342,
+          "counted_trips": 18519342
+        },
+        "leakage_rule": "OD supports are built only from trips whose start and end timestamps fall inside the training relation window."
+      }
+    },
+    "parameters": {
+      "top_k": 50,
+      "include_self": false
+    },
+    "forward_graph": {
+      "node_count": 883,
+      "requested_top_k": 50,
+      "effective_top_k": 50,
+      "include_self": false,
+      "nonzero_edges": 43950,
+      "density": 0.05636862903029285,
+      "zero_row_count": 4,
+      "min_nonzero_per_nonzero_row": 50,
+      "max_nonzero_per_row": 50,
+      "mean_nonzero_per_row": 49.77349943374858,
+      "eligible_trip_mass": 17482376.0,
+      "retained_trip_mass": 9084987.0,
+      "retained_trip_mass_share": 0.5196654619486505
+    },
+    "reverse_graph": {
+      "node_count": 883,
+      "requested_top_k": 50,
+      "effective_top_k": 50,
+      "include_self": false,
+      "nonzero_edges": 43950,
+      "density": 0.05636862903029285,
+      "zero_row_count": 4,
+      "min_nonzero_per_nonzero_row": 50,
+      "max_nonzero_per_row": 50,
+      "mean_nonzero_per_row": 49.77349943374858,
+      "eligible_trip_mass": 17482376.0,
+      "retained_trip_mass": 9074602.0,
+      "retained_trip_mass_share": 0.5190714351413103
+    },
+    "leakage_rule": "Top-k graphs are derived from the base training-period OD graph; no validation or test trips are added."
+  },
+  "relation_weights": {
+    "adaptive": 0.8935431241989136,
+    "od_forward": 0.054988689720630646,
+    "od_reverse": 0.05146824195981026
+  },
+  "metrics": {
+    "targets": {
+      "dep": {
+        "mae": 2.2070069313049316,
+        "rmse": 3.6485486030578613,
+        "mape": 0.9676392078399658
+      },
+      "arr": {
+        "mae": 2.195621967315674,
+        "rmse": 3.6622910499572754,
+        "mape": 0.9622300863265991
+      }
+    },
+    "average": {
+      "mae": 2.201314687728882,
+      "rmse": 3.655426263809204,
+      "mape": 0.9649346470832825
+    }
+  },
+  "limits": {
+    "train": null,
+    "validation": null,
+    "test": null
+  }
+}

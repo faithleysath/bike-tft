@@ -1,0 +1,128 @@
+[
+  {
+    "index": 1,
+    "number": "2-1",
+    "placeholder": "@@FORMULA_001@@",
+    "latex": "L_q(y, \\hat{y}) = \\max(q(y-\\hat{y}), (q-1)(y-\\hat{y}))"
+  },
+  {
+    "index": 2,
+    "number": "3-1",
+    "placeholder": "@@FORMULA_002@@",
+    "latex": "\\mathrm{net\\_flow}_{t,i}=\\mathrm{arr\\_count}_{t,i}-\\mathrm{dep\\_count}_{t,i}"
+  },
+  {
+    "index": 3,
+    "number": "3-2",
+    "placeholder": "@@FORMULA_003@@",
+    "latex": "X_{t-11:t} \\rightarrow Y_{t+1:t+12}"
+  },
+  {
+    "index": 4,
+    "number": "4-1",
+    "placeholder": "@@FORMULA_004@@",
+    "latex": "X \\in \\mathbb{R}^{B \\times T_{\\mathrm{in}} \\times N \\times F}"
+  },
+  {
+    "index": 5,
+    "number": "4-2",
+    "placeholder": "@@FORMULA_005@@",
+    "latex": "\\hat{Y} \\in \\mathbb{R}^{B \\times T_{\\mathrm{out}} \\times N \\times 2}"
+  },
+  {
+    "index": 6,
+    "number": "4-3",
+    "placeholder": "@@FORMULA_006@@",
+    "latex": "\\hat{Y} \\in \\mathbb{R}^{B \\times T_{\\mathrm{out}} \\times N \\times 2 \\times 3}"
+  },
+  {
+    "index": 7,
+    "number": "4-4",
+    "placeholder": "@@FORMULA_007@@",
+    "latex": "y'=\\log(1+y)"
+  },
+  {
+    "index": 8,
+    "number": "4-5",
+    "placeholder": "@@FORMULA_008@@",
+    "latex": "\\mathrm{Loss}=\\mathrm{MAE}_{\\mathrm{dep,arr}}^{\\mathrm{model}}+\\lambda\\mathrm{MAE}_{\\mathrm{net}}^{\\mathrm{count}}"
+  },
+  {
+    "index": 9,
+    "number": "4-6",
+    "placeholder": "@@FORMULA_009@@",
+    "latex": "\\mathrm{net\\_flow}_{q10}=\\mathrm{arr}_{q10}-\\mathrm{dep}_{q90}"
+  },
+  {
+    "index": 10,
+    "number": "4-7",
+    "placeholder": "@@FORMULA_010@@",
+    "latex": "\\mathrm{net\\_flow}_{q50}=\\mathrm{arr}_{q50}-\\mathrm{dep}_{q50}"
+  },
+  {
+    "index": 11,
+    "number": "4-8",
+    "placeholder": "@@FORMULA_011@@",
+    "latex": "\\mathrm{net\\_flow}_{q90}=\\mathrm{arr}_{q90}-\\mathrm{dep}_{q10}"
+  },
+  {
+    "index": 12,
+    "number": "5-1",
+    "placeholder": "@@FORMULA_012@@",
+    "latex": "\\mathrm{lower}_i=0.2\\times\\mathrm{capacity}_i"
+  },
+  {
+    "index": 13,
+    "number": "5-2",
+    "placeholder": "@@FORMULA_013@@",
+    "latex": "\\mathrm{upper}_i=0.8\\times\\mathrm{capacity}_i"
+  },
+  {
+    "index": 14,
+    "number": "5-3",
+    "placeholder": "@@FORMULA_014@@",
+    "latex": "\\hat{I}_{t+h,i}=I_{t,i}+\\sum_{k=1}^{h}\\widehat{\\mathrm{net\\_flow}}_{t+k,i}"
+  },
+  {
+    "index": 15,
+    "number": "5-4",
+    "placeholder": "@@FORMULA_015@@",
+    "latex": "source \\rightarrow 供给站点 \\rightarrow 需求站点 \\rightarrow sink"
+  },
+  {
+    "index": 16,
+    "number": "5-5",
+    "placeholder": "@@FORMULA_016@@",
+    "latex": "\\min \\sum_{i \\in D}\\sum_{j \\in R} c_{ij}x_{ij}"
+  },
+  {
+    "index": 17,
+    "placeholder": "@@INLINE_MATH_001@@",
+    "latex": "\\lambda=0.10"
+  },
+  {
+    "index": 18,
+    "placeholder": "@@INLINE_MATH_002@@",
+    "latex": "\\mathrm{MAE}_{\\mathrm{dep,arr}}^{\\mathrm{model}}"
+  },
+  {
+    "index": 19,
+    "placeholder": "@@INLINE_MATH_003@@",
+    "latex": "\\mathrm{MAE}_{\\mathrm{net}}^{\\mathrm{count}}"
+  },
+  {
+    "index": 20,
+    "placeholder": "@@INLINE_MATH_004@@",
+    "latex": "\\mathrm{arr}-\\mathrm{dep}"
+  },
+  {
+    "index": 21,
+    "placeholder": "@@INLINE_MATH_005@@",
+    "latex": "x_{ij}"
+  },
+  {
+    "index": 22,
+    "placeholder": "@@INLINE_MATH_006@@",
+    "latex": "c_{ij}"
+  }
+]

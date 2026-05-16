@@ -1,0 +1,14 @@
+epoch=1 train_loss=0.478015 val_loss=0.464800 seconds=2501.07
+epoch=2 train_loss=0.440641 val_loss=0.459199 seconds=2500.58
+epoch=3 train_loss=0.432370 val_loss=0.468039 seconds=2500.51
+epoch=4 train_loss=0.427985 val_loss=0.445525 seconds=2500.42
+epoch=5 train_loss=0.424602 val_loss=0.448037 seconds=2500.42
+epoch=6 train_loss=0.421358 val_loss=0.439677 seconds=2500.17
+epoch=7 train_loss=0.419779 val_loss=0.440787 seconds=2500.33
+epoch=8 train_loss=0.416958 val_loss=0.469429 seconds=2500.30
+epoch=9 train_loss=0.416367 val_loss=0.433313 seconds=2500.36
+epoch=10 train_loss=0.415203 val_loss=0.442792 seconds=2500.29
+epoch=11 train_loss=0.414199 val_loss=0.441249 seconds=2500.22
+epoch=12 train_loss=0.413542 val_loss=0.436128 seconds=2500.47
+Wrote forecasting_models/esg_nyc_v1/runs/esg_full_top883_log1p_b1_e12/best_model.pt
+Wrote forecasting_models/esg_nyc_v1/runs/esg_full_top883_log1p_b1_e12/metrics_summary.json

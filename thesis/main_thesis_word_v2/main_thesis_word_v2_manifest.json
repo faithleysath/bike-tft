@@ -1,0 +1,53 @@
+{
+  "output_docx": "thesis/main_thesis_word_v2/main_thesis_word_v2_final.docx",
+  "output_pdf": "thesis/main_thesis_word_v2/main_thesis_word_v2_final.pdf",
+  "source_markdown": "thesis/main_thesis_v1/thesis_draft.md",
+  "generated_at": "2026-05-10T07:31:36.136Z",
+  "title_on_cover": "多源特征驱动的共享单车需求预测与调度系统",
+  "original_task_title": "多源外部特征与TFT融合的共享单车需求预测与智能调度系统",
+  "student": {
+    "name": "吴天一",
+    "student_id": "202283250010",
+    "major": "数据科学与大数据技术",
+    "college": "未来技术学院",
+    "advisor": "胡伟"
+  },
+  "formatting_basis": [
+    "thesis/thesis_template.dotx",
+    "thesis/review_inputs/20260509_upload/附件4：毕业论文（设计）撰写规范及模板.docx"
+  ],
+  "checks": {
+    "pageCount": 41,
+    "pageSize": {
+      "width": 595.304,
+      "height": 841.89
+    },
+    "a4": true,
+    "ommlFormulaCount": 16,
+    "expectedFormulaCount": 16,
+    "formulaPlaceholdersRemaining": 0,
+    "citationSuperscriptRuns": 29,
+    "hasCoverTitle": true,
+    "hasDeclaration": true,
+    "hasChineseAbstract": true,
+    "hasEnglishAbstract": true,
+    "hasReferences": true,
+    "hasAcknowledgement": true,
+    "hasAppendix": true,
+    "bodyStartPage": 7,
+    "tocMissingHeadings": [],
+    "figureSourceCount": 11,
+    "renderedPageCount": 41,
+    "contactSheets": [
+      "contact_sheet_01.png",
+      "contact_sheet_02.png",
+      "contact_sheet_03.png",
+      "contact_sheet_04.png"
+    ]
+  },
+  "artifacts": {
+    "page_images_dir": "thesis/main_thesis_word_v2/pages",
+    "contact_sheets_dir": "thesis/main_thesis_word_v2/contact_sheets",
+    "visual_report": "thesis/main_thesis_word_v2/visual_check_report.md"
+  }
+}

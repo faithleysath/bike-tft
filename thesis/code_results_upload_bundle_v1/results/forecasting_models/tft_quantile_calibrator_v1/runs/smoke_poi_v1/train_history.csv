@@ -1,0 +1,2 @@
+epoch,train_pinball_loss,val_pinball_loss,seconds
+1,0.339846134185791,0.3233342170715332,0.18172502517700195
